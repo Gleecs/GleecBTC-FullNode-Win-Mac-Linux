@@ -1601,6 +1601,7 @@ void CConnman::ProcessOneShot()
 void CConnman::ThreadOpenConnections()
 {
     // Connect to specific addresses
+ //   LogPrintf("1OOOOOOOOOOO - size = %i should be more than 60  %dms\n", addrman.size(), GetTime());
     if (gArgs.IsArgSet("-connect")) {
         for (int64_t nLoop = 0;; nLoop++) {
             ProcessOneShot();
@@ -1616,7 +1617,7 @@ void CConnman::ThreadOpenConnections()
                 return;
         }
     }
-
+  //  LogPrintf("2OOOOOOOOOOO - size = %i should be more than 60  %dms\n", addrman.size(), GetTime());
     // Initiate network connections
     int64_t nStart = GetTime();
 
@@ -1636,7 +1637,8 @@ void CConnman::ThreadOpenConnections()
         // We do not add seed nodes if we have forked - if you have made seed
         // nodes for your fork, you will need to update chainparams and remove
         // this check.
-        if (!fork_conforksus.active && addrman.size() == 0 && (GetTime() - nStart > 60)) {
+       // LogPrintf("3OOOOOOOOOOO - size = %i should be more than 60  %dms\n", addrman.size(), GetTime() - nStart);
+        if (/*!fork_conforksus.active && */addrman.size() == 0 && (GetTime() - nStart > 10)) {
             static bool done = false;
             if (!done) {
                 LogPrintf("Adding fixed seed nodes as DNS doesn't seem to be available.\n");
@@ -2268,6 +2270,7 @@ bool CConnman::Start(CScheduler& scheduler, const Options& connOptions)
 
     // Initiate outbound connections unless connect=0
     if (!gArgs.IsArgSet("-connect") || gArgs.GetArgs("-connect").size() != 1 || gArgs.GetArgs("-connect")[0] != "0")
+       // LogPrintf("4OOOOOOOOOOO - size = %i should be more than 60  %dms\n", addrman.size(), GetTime());
         threadOpenConnections = std::thread(&TraceThread<std::function<void()>>, "opencon", std::function<void()>(std::bind(&CConnman::ThreadOpenConnections, this)));
 
     // Process messages

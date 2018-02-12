@@ -65,7 +65,8 @@ void CChainParams::UpdateForkPorts()
     if (nDefaultPostForkPort && nDefaultPostForkPort != nDefaultPort && fork_conforksus.active) {
         nDefaultPort = nDefaultPostForkPort;
         vSeeds.clear();
-        vFixedSeeds.clear();
+       // LogPrintf("CLEAR2.\n");
+      //  vFixedSeeds.clear();
     }
 }
 
@@ -149,11 +150,9 @@ public:
 
         // Note that of those with the service bits flag, most only support a subset of possible options
         vSeeds.emplace_back("seed.gleecbtc.sipa.be", true); // Pieter Wuille, only supports x1, x5, x9, and xd
-        vSeeds.emplace_back("dnsseed.bluematt.me", true); // Matt Corallo, only supports x9
         vSeeds.emplace_back("dnsseed.gleecbtc.dashjr.org", false); // Luke Dashjr
         vSeeds.emplace_back("seed.gleecbtcstats.com", true); // Christian Decker, supports x1 - xf
         vSeeds.emplace_back("seed.gleecbtc.jonasschnelli.ch", true); // Jonas Schnelli, only supports x1, x5, x9, and xd
-        vSeeds.emplace_back("seed.btc.petertodd.org", true); // Peter Todd, only supports x1, x5, x9, and xd
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,35);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,38);
@@ -161,6 +160,7 @@ public:
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x88, 0xB2, 0x1E};
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4};
 
+      //  LogPrintf("CREATE!!!2.\n");
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
 
         fDefaultConsistencyChecks = false;
@@ -206,6 +206,7 @@ class CTestNetParams : public CChainParams
 public:
     CTestNetParams()
     {
+       // LogPrintf("TEST??????????.\n");
         strNetworkID = "test";
         consensus.nSubsidyHalvingInterval = 210000;
         consensus.BIP34Height = 21111;
@@ -292,6 +293,7 @@ class CRegTestParams : public CChainParams
 public:
     CRegTestParams()
     {
+      //  LogPrintf("TEST2???????.\n");
         strNetworkID = "regtest";
         consensus.nSubsidyHalvingInterval = 150;
         consensus.BIP34Height = 500; // This is deactivated on gleecbtc, but we activate it on the fork block here, as we otherwise won't get the fork hash coinbase
