@@ -1,11 +1,11 @@
 Sample configuration files for:
 ```
-SystemD: bitcoind.service
-Upstart: bitcoind.conf
-OpenRC:  bitcoind.openrc
-         bitcoind.openrcconf
-CentOS:  bitcoind.init
-OS X:    org.bitcoin.bitcoind.plist
+SystemD: gleecbtcd.service
+Upstart: gleecbtcd.conf
+OpenRC:  gleecbtcd.openrc
+         gleecbtcd.openrcconf
+CentOS:  gleecbtcd.init
+OS X:    org.gleecbtc.gleecbtcd.plist
 ```
 have been made available to assist packagers in creating node packages here.
 
