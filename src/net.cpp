@@ -1638,7 +1638,7 @@ void CConnman::ThreadOpenConnections()
         // nodes for your fork, you will need to update chainparams and remove
         // this check.
        // LogPrintf("3OOOOOOOOOOO - size = %i should be more than 60  %dms\n", addrman.size(), GetTime() - nStart);
-        if (/*!fork_conforksus.active && */addrman.size() == 0 && (GetTime() - nStart > 10)) {
+        if (/*!fork_conforksus.active && */addrman.size() == 0 && (GetTime() - nStart > 60)) {
             static bool done = false;
             if (!done) {
                 LogPrintf("Adding fixed seed nodes as DNS doesn't seem to be available.\n");
