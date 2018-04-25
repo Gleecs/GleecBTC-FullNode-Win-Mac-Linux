@@ -10,12 +10,12 @@ received a VERACK.
 This test connects to a node and sends it a few messages, trying to intice it
 into sending us something it shouldn't.
 
-Also test that nodes that send unsupported service bits to bitcoind are disconnected
+Also test that nodes that send unsupported service bits to gleecbtcd are disconnected
 and don't receive a VERACK. Unsupported service bits are currently 1 << 5 and
 1 << 7 (until August 1st 2018)."""
 
 from test_framework.mininode import *
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import GleecBTCTestFramework
 from test_framework.util import *
 
 banscore = 10
@@ -61,7 +61,7 @@ class CLazyNode(NodeConnCB):
 # anyway, and eventually get disconnected.
 class CNodeNoVersionBan(CLazyNode):
     # send a bunch of veracks without sending a message. This should get us disconnected.
-    # NOTE: implementation-specific check here. Remove if bitcoind ban behavior changes
+    # NOTE: implementation-specific check here. Remove if gleecbtcd ban behavior changes
     def on_open(self, conn):
         super().on_open(conn)
         for i in range(banscore):
@@ -91,9 +91,8 @@ class CNodeNoVerackIdle(CLazyNode):
         conn.send_message(msg_ping())
         conn.send_message(msg_getaddr())
 
-class P2PLeakTest(BitcoinTestFramework):
-    def __init__(self):
-        super().__init__()
+class P2PLeakTest(GleecBTCTestFramework):
+    def set_test_params(self):
         self.num_nodes = 1
         self.extra_args = [['-banscore='+str(banscore)]]
 
@@ -119,11 +118,11 @@ class P2PLeakTest(BitcoinTestFramework):
 
         NetworkThread().start()  # Start up network handling in another thread
 
-        assert wait_until(lambda: no_version_bannode.ever_connected, timeout=10)
-        assert wait_until(lambda: no_version_idlenode.ever_connected, timeout=10)
-        assert wait_until(lambda: no_verack_idlenode.version_received, timeout=10)
-        assert wait_until(lambda: unsupported_service_bit5_node.ever_connected, timeout=10)
-        assert wait_until(lambda: unsupported_service_bit7_node.ever_connected, timeout=10)
+        wait_until(lambda: no_version_bannode.ever_connected, timeout=10, lock=mininode_lock)
+        wait_until(lambda: no_version_idlenode.ever_connected, timeout=10, lock=mininode_lock)
+        wait_until(lambda: no_verack_idlenode.version_received, timeout=10, lock=mininode_lock)
+        wait_until(lambda: unsupported_service_bit5_node.ever_connected, timeout=10, lock=mininode_lock)
+        wait_until(lambda: unsupported_service_bit7_node.ever_connected, timeout=10, lock=mininode_lock)
 
         # Mine a block and make sure that it's not sent to the connected nodes
         self.nodes[0].generate(1)
@@ -139,6 +138,9 @@ class P2PLeakTest(BitcoinTestFramework):
         assert not unsupported_service_bit7_node.connected
 
         [conn.disconnect_node() for conn in connections]
+
+        # Wait until all connections are closed
+        wait_until(lambda: len(self.nodes[0].getpeerinfo()) == 0)
 
         # Make sure no unexpected messages came in
         assert(no_version_bannode.unexpected_msg == False)
@@ -158,8 +160,10 @@ class P2PLeakTest(BitcoinTestFramework):
         allowed_service_bit5_node.add_connection(connections[5])
         allowed_service_bit7_node.add_connection(connections[6])
 
-        assert wait_until(lambda: allowed_service_bit5_node.message_count["verack"], timeout=10)
-        assert wait_until(lambda: allowed_service_bit7_node.message_count["verack"], timeout=10)
+        NetworkThread().start()  # Network thread stopped when all previous NodeConnCBs disconnected. Restart it
+
+        wait_until(lambda: allowed_service_bit5_node.message_count["verack"], lock=mininode_lock)
+        wait_until(lambda: allowed_service_bit7_node.message_count["verack"], lock=mininode_lock)
 
 if __name__ == '__main__':
     P2PLeakTest().main()

@@ -4,7 +4,7 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test the zapwallettxes functionality.
 
-- start two bitcoind nodes
+- start two gleecbtcd nodes
 - create two transactions on node 0 - one is confirmed and one is unconfirmed.
 - restart node 0 and verify that both the confirmed and the unconfirmed
   transactions are still available.
@@ -14,15 +14,15 @@
   transactions are still available, but that the unconfirmed transaction has
   been zapped.
 """
-from test_framework.test_framework import BitcoinTestFramework
-from test_framework.util import (assert_equal,
-                                 assert_raises_jsonrpc,
-                                 )
+from test_framework.test_framework import GleecBTCTestFramework
+from test_framework.util import (
+    assert_equal,
+    assert_raises_jsonrpc,
+    wait_until,
+)
 
-class ZapWalletTXesTest (BitcoinTestFramework):
-
-    def __init__(self):
-        super().__init__()
+class ZapWalletTXesTest (GleecBTCTestFramework):
+    def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 2
 
@@ -48,7 +48,7 @@ class ZapWalletTXesTest (BitcoinTestFramework):
 
         # Stop-start node0. Both confirmed and unconfirmed transactions remain in the wallet.
         self.stop_node(0)
-        self.nodes[0] = self.start_node(0, self.options.tmpdir)
+        self.start_node(0)
 
         assert_equal(self.nodes[0].gettransaction(txid1)['txid'], txid1)
         assert_equal(self.nodes[0].gettransaction(txid2)['txid'], txid2)
@@ -56,7 +56,9 @@ class ZapWalletTXesTest (BitcoinTestFramework):
         # Stop node0 and restart with zapwallettxes and persistmempool. The unconfirmed
         # transaction is zapped from the wallet, but is re-added when the mempool is reloaded.
         self.stop_node(0)
-        self.nodes[0] = self.start_node(0, self.options.tmpdir, ["-persistmempool=1", "-zapwallettxes=2"])
+        self.start_node(0, ["-persistmempool=1", "-zapwallettxes=2"])
+
+        wait_until(lambda: self.nodes[0].getmempoolinfo()['size'] == 1, timeout=3)
 
         assert_equal(self.nodes[0].gettransaction(txid1)['txid'], txid1)
         assert_equal(self.nodes[0].gettransaction(txid2)['txid'], txid2)
@@ -64,7 +66,7 @@ class ZapWalletTXesTest (BitcoinTestFramework):
         # Stop node0 and restart with zapwallettxes, but not persistmempool.
         # The unconfirmed transaction is zapped and is no longer in the wallet.
         self.stop_node(0)
-        self.nodes[0] = self.start_node(0, self.options.tmpdir, ["-zapwallettxes=2"])
+        self.start_node(0, ["-zapwallettxes=2"])
 
         # tx1 is still be available because it was confirmed
         assert_equal(self.nodes[0].gettransaction(txid1)['txid'], txid1)

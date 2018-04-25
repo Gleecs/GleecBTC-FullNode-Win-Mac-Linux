@@ -4,7 +4,7 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test the RBF code."""
 
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import GleecBTCTestFramework
 from test_framework.util import *
 from test_framework.script import *
 from test_framework.mininode import *
@@ -59,18 +59,17 @@ def make_utxo(node, amount, confirmed=True, scriptPubKey=CScript([1])):
 
     return COutPoint(int(txid, 16), 0)
 
-class ReplaceByFeeTest(BitcoinTestFramework):
+class ReplaceByFeeTest(GleecBTCTestFramework):
 
-    def __init__(self):
-        super().__init__()
-        self.num_nodes = 1
-        self.setup_clean_chain = False
+    def set_test_params(self):
+        self.num_nodes = 2
         self.extra_args= [["-maxorphantx=1000",
                            "-whitelist=127.0.0.1",
                            "-limitancestorcount=50",
                            "-limitancestorsize=101",
                            "-limitdescendantcount=200",
-                           "-limitdescendantsize=101"]]
+                           "-limitdescendantsize=101"],
+                           ["-mempoolreplacement=0"]]
 
     def run_test(self):
         make_utxo(self.nodes[0], 1*COIN)
@@ -117,6 +116,8 @@ class ReplaceByFeeTest(BitcoinTestFramework):
         tx1a_hex = txToHex(tx1a)
         tx1a_txid = self.nodes[0].sendrawtransaction(tx1a_hex, True)
 
+        self.sync_all([self.nodes])
+
         # Should fail because we haven't changed the fee
         tx1b = CTransaction()
         tx1b.vin = [CTxIn(tx0_outpoint, nSequence=0)]
@@ -125,12 +126,17 @@ class ReplaceByFeeTest(BitcoinTestFramework):
 
         # This will raise an exception due to insufficient fee
         assert_raises_jsonrpc(-26, "insufficient fee", self.nodes[0].sendrawtransaction, tx1b_hex, True)
+        # This will raise an exception due to transaction replacement being disabled
+        assert_raises_jsonrpc(-26, "txn-mempool-conflict", self.nodes[1].sendrawtransaction, tx1b_hex, True)
 
-        # Extra 0.1 BTC fee
+        # Extra 0.1 GBC fee
         tx1b = CTransaction()
         tx1b.vin = [CTxIn(tx0_outpoint, nSequence=0)]
         tx1b.vout = [CTxOut(int(0.9*COIN), CScript([b'b']))]
         tx1b_hex = txToHex(tx1b)
+        # Replacement still disabled even with "enough fee"
+        assert_raises_jsonrpc(-26, "txn-mempool-conflict", self.nodes[1].sendrawtransaction, tx1b_hex, True)
+        # Works when enabled
         tx1b_txid = self.nodes[0].sendrawtransaction(tx1b_hex, True)
 
         mempool = self.nodes[0].getrawmempool()
@@ -139,6 +145,11 @@ class ReplaceByFeeTest(BitcoinTestFramework):
         assert (tx1b_txid in mempool)
 
         assert_equal(tx1b_hex, self.nodes[0].getrawtransaction(tx1b_txid))
+
+        # Second node is running mempoolreplacement=0, will not replace originally-seen txn
+        mempool = self.nodes[1].getrawmempool()
+        assert tx1a_txid in mempool
+        assert tx1b_txid not in mempool
 
     def test_doublespend_chain(self):
         """Doublespend of a long chain"""
@@ -160,7 +171,7 @@ class ReplaceByFeeTest(BitcoinTestFramework):
             prevout = COutPoint(int(txid, 16), 0)
 
         # Whether the double-spend is allowed is evaluated by including all
-        # child fees - 40 BTC - so this attempt is rejected.
+        # child fees - 40 GBC - so this attempt is rejected.
         dbl_tx = CTransaction()
         dbl_tx.vin = [CTxIn(tx0_outpoint, nSequence=0)]
         dbl_tx.vout = [CTxOut(initial_nValue - 30*COIN, CScript([1]))]
@@ -230,7 +241,7 @@ class ReplaceByFeeTest(BitcoinTestFramework):
         # This will raise an exception due to insufficient fee
         assert_raises_jsonrpc(-26, "insufficient fee", self.nodes[0].sendrawtransaction, dbl_tx_hex, True)
 
-        # 1 BTC fee is enough
+        # 1 GBC fee is enough
         dbl_tx = CTransaction()
         dbl_tx.vin = [CTxIn(tx0_outpoint, nSequence=0)]
         dbl_tx.vout = [CTxOut(initial_nValue - fee*n - 1*COIN, CScript([1]))]

@@ -3,12 +3,11 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test the importmulti RPC."""
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import GleecBTCTestFramework
 from test_framework.util import *
 
-class ImportMultiTest (BitcoinTestFramework):
-    def __init__(self):
-        super().__init__()
+class ImportMultiTest (GleecBTCTestFramework):
+    def set_test_params(self):
         self.num_nodes = 2
         self.setup_clean_chain = True
 
@@ -46,7 +45,7 @@ class ImportMultiTest (BitcoinTestFramework):
 
         # RPC importmulti -----------------------------------------------
 
-        # Bitcoin Address
+        # GleecBTC Address
         self.log.info("Should import an address")
         address = self.nodes[0].validateaddress(self.nodes[0].getnewaddress())
         result = self.nodes[1].importmulti([{
@@ -169,6 +168,18 @@ class ImportMultiTest (BitcoinTestFramework):
         assert_equal(address_assert['iswatchonly'], False)
         assert_equal(address_assert['ismine'], True)
         assert_equal(address_assert['timestamp'], timestamp)
+
+        self.log.info("Should not import an address with private key if is already imported")
+        result = self.nodes[1].importmulti([{
+            "scriptPubKey": {
+                "address": address['address']
+            },
+            "timestamp": "now",
+            "keys": [ self.nodes[0].dumpprivkey(address['address']) ]
+        }])
+        assert_equal(result[0]['success'], False)
+        assert_equal(result[0]['error']['code'], -4)
+        assert_equal(result[0]['error']['message'], 'The wallet already contains the private key for this address or script')
 
         # Address + Private key + watchonly
         self.log.info("Should not import an address with private key and with watchonly")
@@ -429,7 +440,7 @@ class ImportMultiTest (BitcoinTestFramework):
 
         # restart nodes to check for proper serialization/deserialization of watch only address
         self.stop_nodes()
-        self.nodes = self.start_nodes(2, self.options.tmpdir)
+        self.start_nodes()
         address_assert = self.nodes[1].validateaddress(watchonly_address)
         assert_equal(address_assert['iswatchonly'], True)
         assert_equal(address_assert['ismine'], False)

@@ -4,7 +4,7 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test the SegWit changeover logic."""
 
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import GleecBTCTestFramework
 from test_framework.util import *
 from test_framework.mininode import sha256, CTransaction, CTxIn, COutPoint, CTxOut, COIN, ToHex, FromHex
 from test_framework.address import script_to_p2sh, key_to_p2pkh
@@ -74,10 +74,8 @@ def find_unspent(node, min_value):
         if utxo['amount'] >= min_value:
             return utxo
 
-class SegWitTest(BitcoinTestFramework):
-
-    def __init__(self):
-        super().__init__()
+class SegWitTest(GleecBTCTestFramework):
+    def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 3
         self.extra_args = [["-walletprematurewitness", "-rpcserialversion=0"],

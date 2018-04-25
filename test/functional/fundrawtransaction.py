@@ -4,7 +4,7 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test the fundrawtransaction RPC."""
 
-from test_framework.test_framework import BitcoinTestFramework, BITCOIND_PROC_WAIT_TIMEOUT
+from test_framework.test_framework import GleecBTCTestFramework
 from test_framework.util import *
 
 
@@ -14,13 +14,10 @@ def get_unspent(listunspent, amount):
             return utx
     raise AssertionError('Could not find unspent with amount={}'.format(amount))
 
-
-class RawTransactionsTest(BitcoinTestFramework):
-
-    def __init__(self):
-        super().__init__()
-        self.setup_clean_chain = True
+class RawTransactionsTest(GleecBTCTestFramework):
+    def set_test_params(self):
         self.num_nodes = 4
+        self.setup_clean_chain = True
 
     def setup_network(self, split=False):
         self.setup_nodes()
@@ -195,7 +192,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         dec_tx  = self.nodes[2].decoderawtransaction(rawtx)
         assert_equal(utx['txid'], dec_tx['vin'][0]['txid'])
 
-        assert_raises_jsonrpc(-5, "changeAddress must be a valid bitcoin address", self.nodes[2].fundrawtransaction, rawtx, {'changeAddress':'foobar'})
+        assert_raises_jsonrpc(-5, "changeAddress must be a valid gleecbtc address", self.nodes[2].fundrawtransaction, rawtx, {'changeAddress':'foobar'})
 
         ############################################################
         # test a fundrawtransaction with a provided change address #
@@ -425,7 +422,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         mSigObj = self.nodes[2].addmultisigaddress(2, [addr1Obj['pubkey'], addr2Obj['pubkey']])
 
 
-        # send 1.2 BTC to msig addr
+        # send 1.2 GBC to msig addr
         txId = self.nodes[0].sendtoaddress(mSigObj, 1.2)
         self.sync_all()
         self.nodes[1].generate(1)
@@ -449,12 +446,11 @@ class RawTransactionsTest(BitcoinTestFramework):
         ############################################################
         # locked wallet test
         self.stop_node(0)
+        self.nodes[1].node_encrypt_wallet("test")
         self.stop_node(2)
         self.stop_node(3)
-        self.nodes[1].encryptwallet("test")
-        self.bitcoind_processes[1].wait(timeout=BITCOIND_PROC_WAIT_TIMEOUT)
 
-        self.nodes = self.start_nodes(self.num_nodes, self.options.tmpdir)
+        self.start_nodes()
         # This test is not meant to test fee estimation and we'd like
         # to be sure all txs are sent at a consistent desired feerate
         for node in self.nodes:

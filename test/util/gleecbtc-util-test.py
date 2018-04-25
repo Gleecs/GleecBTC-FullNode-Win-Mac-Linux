@@ -3,15 +3,20 @@
 # Copyright 2016-2017 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-"""Test framework for bitcoin utils.
+"""Test framework for gleecbtc utils.
 
 Runs automatically during `make check`.
 
 Can also be run manually."""
 
+from __future__ import division,print_function,unicode_literals
+
 import argparse
 import binascii
-import configparser
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 import difflib
 import json
 import logging
@@ -22,7 +27,9 @@ import sys
 
 def main():
     config = configparser.ConfigParser()
-    config.read_file(open(os.path.dirname(__file__) + "/../config.ini"))
+    config.optionxform = str
+    config.readfp(open(os.path.join(os.path.dirname(__file__), "../config.ini")))
+    env_conf = dict(config.items('environment'))
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('-v', '--verbose', action='store_true')
@@ -37,7 +44,7 @@ def main():
     # Add the format/level to the logger
     logging.basicConfig(format=formatter, level=level)
 
-    bctester(config["environment"]["SRCDIR"] + "/test/util/data", "bitcoin-util-test.json", config["environment"])
+    bctester(os.path.join(env_conf["SRCDIR"], "test/util/data"), "gleecbtc-util-test.json", env_conf)
 
 def bctester(testDir, input_basename, buildenv):
     """ Loads and parses the input file, runs all tests and reports results"""
@@ -146,7 +153,7 @@ def bctest(testDir, testObj, buildenv):
         want_error = testObj["error_txt"]
         # Compare error text
         # TODO: ideally, we'd compare the strings exactly and also assert
-        # That stderr is empty if no errors are expected. However, bitcoin-tx
+        # That stderr is empty if no errors are expected. However, gleecbtc-tx
         # emits DISPLAY errors when running as a windows application on
         # linux through wine. Just assert that the expected error text appears
         # somewhere in stderr.

@@ -4,18 +4,16 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test descendant package tracking code."""
 
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import GleecBTCTestFramework
 from test_framework.util import *
 from test_framework.mininode import COIN
 
 MAX_ANCESTORS = 25
 MAX_DESCENDANTS = 25
 
-class MempoolPackagesTest(BitcoinTestFramework):
-    def __init__(self):
-        super().__init__()
+class MempoolPackagesTest(GleecBTCTestFramework):
+    def set_test_params(self):
         self.num_nodes = 2
-        self.setup_clean_chain = False
         self.extra_args = [["-maxorphantx=1000"], ["-maxorphantx=1000", "-limitancestorcount=5"]]
 
     # Build a transaction that spends parent_txid:vout

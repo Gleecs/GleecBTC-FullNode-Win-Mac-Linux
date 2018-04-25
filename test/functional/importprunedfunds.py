@@ -3,14 +3,11 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test the importprunedfunds and removeprunedfunds RPCs."""
-from test_framework.test_framework import BitcoinTestFramework
+from test_framework.test_framework import GleecBTCTestFramework
 from test_framework.util import *
 
-
-class ImportPrunedFundsTest(BitcoinTestFramework):
-
-    def __init__(self):
-        super().__init__()
+class ImportPrunedFundsTest(GleecBTCTestFramework):
+    def set_test_params(self):
         self.setup_clean_chain = True
         self.num_nodes = 2
 
@@ -82,8 +79,8 @@ class ImportPrunedFundsTest(BitcoinTestFramework):
         assert_equal(balance2, Decimal('0.05'))
 
         #Import with private key with no rescan
-        self.nodes[1].importprivkey(address3_privkey, "add3", False)
-        result3 = self.nodes[1].importprunedfunds(rawtxn3, proof3)
+        self.nodes[1].importprivkey(privkey=address3_privkey, label="add3", rescan=False)
+        self.nodes[1].importprunedfunds(rawtxn3, proof3)
         balance3 = self.nodes[1].getbalance("add3", 0, False)
         assert_equal(balance3, Decimal('0.025'))
         balance3 = self.nodes[1].getbalance("*", 0, True)
