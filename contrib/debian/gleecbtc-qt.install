@@ -1,0 +1,6 @@
+usr/local/bin/gleecbtc-qt usr/bin
+share/pixmaps/gleecbtc32.xpm usr/share/pixmaps
+share/pixmaps/gleecbtc16.xpm usr/share/pixmaps
+share/pixmaps/gleecbtc128.png usr/share/pixmaps
+debian/gleecbtc-qt.desktop usr/share/applications
+debian/gleecbtc-qt.protocol usr/share/kde4/services/

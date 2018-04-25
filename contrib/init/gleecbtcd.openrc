@@ -1,0 +1,92 @@
+#!/sbin/runscript
+
+# backward compatibility for existing gentoo layout 
+#
+if [ -d "/var/lib/gleecbtc/.gleecbtc" ]; then
+	GLEECGBCD_DEFAULT_DATADIR="/var/lib/gleecbtc/.gleecbtc"
+else
+	GLEECGBCD_DEFAULT_DATADIR="/var/lib/gleecbtcd"
+fi
+
+GLEECGBCD_CONFIGFILE=${GLEECGBCD_CONFIGFILE:-/etc/gleecbtc/gleecbtc.conf}
+GLEECGBCD_PIDDIR=${GLEECGBCD_PIDDIR:-/var/run/gleecbtcd}
+GLEECGBCD_PIDFILE=${GLEECGBCD_PIDFILE:-${GLEECGBCD_PIDDIR}/gleecbtcd.pid}
+GLEECGBCD_DATADIR=${GLEECGBCD_DATADIR:-${GLEECGBCD_DEFAULT_DATADIR}}
+GLEECGBCD_USER=${GLEECGBCD_USER:-${GLEECGBC_USER:-gleecbtc}}
+GLEECGBCD_GROUP=${GLEECGBCD_GROUP:-gleecbtc}
+GLEECGBCD_BIN=${GLEECGBCD_BIN:-/usr/bin/gleecbtcd}
+GLEECGBCD_NICE=${GLEECGBCD_NICE:-${NICELEVEL:-0}}
+GLEECGBCD_OPTS="${GLEECGBCD_OPTS:-${GLEECGBC_OPTS}}"
+
+name="GleecBTC Core Daemon"
+description="GleecBTC cryptocurrency P2P network daemon"
+
+command="/usr/bin/gleecbtcd"
+command_args="-pid=\"${GLEECGBCD_PIDFILE}\" \
+		-conf=\"${GLEECGBCD_CONFIGFILE}\" \
+		-datadir=\"${GLEECGBCD_DATADIR}\" \
+		-daemon \
+		${GLEECGBCD_OPTS}"
+
+required_files="${GLEECGBCD_CONFIGFILE}"
+start_stop_daemon_args="-u ${GLEECGBCD_USER} \
+			-N ${GLEECGBCD_NICE} -w 2000"
+pidfile="${GLEECGBCD_PIDFILE}"
+
+# The retry schedule to use when stopping the daemon. Could be either
+# a timeout in seconds or multiple signal/timeout pairs (like
+# "SIGKILL/180 SIGTERM/300")
+retry="${GLEECGBCD_SIGTERM_TIMEOUT}"
+
+depend() {
+	need localmount net
+}
+
+# verify
+# 1) that the datadir exists and is writable (or create it)
+# 2) that a directory for the pid exists and is writable
+# 3) ownership and permissions on the config file
+start_pre() {
+	checkpath \
+	-d \
+	--mode 0750 \
+	--owner "${GLEECGBCD_USER}:${GLEECGBCD_GROUP}" \
+	"${GLEECGBCD_DATADIR}"
+
+	checkpath \
+	-d \
+	--mode 0755 \
+	--owner "${GLEECGBCD_USER}:${GLEECGBCD_GROUP}" \
+	"${GLEECGBCD_PIDDIR}"
+
+	checkpath -f \
+	-o ${GLEECGBCD_USER}:${GLEECGBCD_GROUP} \
+	-m 0660 \
+	${GLEECGBCD_CONFIGFILE}
+
+	checkconfig || return 1
+}
+
+checkconfig()
+{
+	if ! grep -qs '^rpcpassword=' "${GLEECGBCD_CONFIGFILE}" ; then
+		eerror ""
+		eerror "ERROR: You must set a secure rpcpassword to run gleecbtcd."
+		eerror "The setting must appear in ${GLEECGBCD_CONFIGFILE}"
+		eerror ""
+		eerror "This password is security critical to securing wallets "
+		eerror "and must not be the same as the rpcuser setting."
+		eerror "You can generate a suitable random password using the following"
+		eerror "command from the shell:"
+		eerror ""
+		eerror "bash -c 'tr -dc a-zA-Z0-9 < /dev/urandom | head -c32 && echo'"
+		eerror ""
+		eerror "It is also recommended that you also set alertnotify so you are "
+		eerror "notified of problems:"
+		eerror ""
+		eerror "ie: alertnotify=echo %%s | mail -s \"GleecBTC Alert\"" \
+			"admin@foo.com"
+		eerror ""
+		return 1
+	fi
+}

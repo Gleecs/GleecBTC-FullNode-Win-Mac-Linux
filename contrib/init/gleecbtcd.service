@@ -1,0 +1,22 @@
+[Unit]
+Description=GleecBTC's distributed currency daemon
+After=network.target
+
+[Service]
+User=gleecbtc
+Group=gleecbtc
+
+Type=forking
+PIDFile=/var/lib/gleecbtcd/gleecbtcd.pid
+ExecStart=/usr/bin/gleecbtcd -daemon -pid=/var/lib/gleecbtcd/gleecbtcd.pid \
+-conf=/etc/gleecbtc/gleecbtc.conf -datadir=/var/lib/gleecbtcd -disablewallet
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target

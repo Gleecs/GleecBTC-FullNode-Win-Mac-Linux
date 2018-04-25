@@ -1,0 +1,8 @@
+/usr/bin/gleecbtc-cli		--	gen_context(system_u:object_r:gleecbtc_exec_t,s0)
+/usr/sbin/gleecbtcd		--	gen_context(system_u:object_r:gleecbtc_exec_t,s0)
+/usr/lib(64)?/gleecbtc/gleecbtcd		--	gen_context(system_u:object_r:gleecbtc_exec_t,s0)
+
+/etc/gleecbtc(/.*)?		gen_context(system_u:object_r:gleecbtc_conf_t,s0)
+/var/lib/gleecbtc(/.*)?		gen_context(system_u:object_r:gleecbtc_var_lib_t,s0)
+
+(/var)?/run/gleecbtcd(/.*)?   gen_context(system_u:object_r:gleecbtc_var_run_t,s0)

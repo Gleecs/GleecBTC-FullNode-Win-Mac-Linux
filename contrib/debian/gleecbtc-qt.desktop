@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=GleecBTC Core
+Comment=Connect to the GleecBTC P2P Network
+Comment[de]=Verbinde mit dem GleecBTC peer-to-peer Netzwerk
+Comment[fr]=GleecBTC, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=GleecBTC, eşten eşe kriptografik sanal para birimi
+Exec=gleecbtc-qt %u
+Terminal=false
+Type=Application
+Icon=gleecbtc128
+MimeType=x-scheme-handler/gleecbtc;
+Categories=Office;Finance;

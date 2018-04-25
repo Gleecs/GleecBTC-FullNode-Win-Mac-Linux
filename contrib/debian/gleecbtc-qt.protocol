@@ -1,0 +1,11 @@
+[Protocol]
+exec=gleecbtc-qt '%u'
+protocol=gleecbtc
+input=none
+output=none
+helper=true
+listing=
+reading=false
+writing=false
+makedir=false
+deleting=false

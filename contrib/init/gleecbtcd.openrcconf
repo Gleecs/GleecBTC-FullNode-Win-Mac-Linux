@@ -1,0 +1,33 @@
+# /etc/conf.d/gleecbtcd: config file for /etc/init.d/gleecbtcd
+
+# Config file location
+#GLEECGBCD_CONFIGFILE="/etc/gleecbtc/gleecbtc.conf"
+
+# What directory to write pidfile to?  (created and owned by $GLEECGBCD_USER)
+#GLEECGBCD_PIDDIR="/var/run/gleecbtcd"
+
+# What filename to give the pidfile
+#GLEECGBCD_PIDFILE="${GLEECGBCD_PIDDIR}/gleecbtcd.pid"
+
+# Where to write gleecbtcd data (be mindful that the blockchain is large)
+#GLEECGBCD_DATADIR="/var/lib/gleecbtcd"
+
+# User and group to own gleecbtcd process
+#GLEECGBCD_USER="gleecbtc"
+#GLEECGBCD_GROUP="gleecbtc"
+
+# Path to gleecbtcd executable
+#GLEECGBCD_BIN="/usr/bin/gleecbtcd"
+
+# Nice value to run gleecbtcd under
+#GLEECGBCD_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+#GLEECGBCD_OPTS=""
+
+# The timeout in seconds OpenRC will wait for gleecbtcd to terminate
+# after a SIGTERM has been raised.
+# Note that this will be mapped as argument to start-stop-daemon's
+# '--retry' option, which means you can specify a retry schedule
+# here. For more information see man 8 start-stop-daemon.
+GLEECGBCD_SIGTERM_TIMEOUT=60
