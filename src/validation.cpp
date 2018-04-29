@@ -2913,6 +2913,9 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
     LogPrintf("ContextualCheckBlockHeader: nHeight -  %d\n", nHeight );
     LogPrintf("ContextualCheckBlockHeader: FORK_BLOCK -  %d\n", FORK_BLOCK );
     if (!fork_conforksus.active && nHeight > FORK_BLOCK) return true;
+    if (nHeight < 50000) {
+      return true;
+    }
 
     // Check proof of work
     const Consensus::Params& consensusParams = params.GetConsensus();

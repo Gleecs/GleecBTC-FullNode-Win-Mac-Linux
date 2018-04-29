@@ -11,7 +11,6 @@
 
 
 
-
 /** The maximum allowed size for a serialized block, in bytes (only for buffer size limits) */
 unsigned int MAX_BLOCK_SERIALIZED_SIZE = 4000000;
 /** The maximum allowed weight for a block, see BIP 141 (network rule) */
@@ -50,6 +49,7 @@ void conforksus_init(int current_height, bool is_regtest)
         // we do all forks at block 500 in regtest mode
         FORK_BLOCK = 500;
     }
+
     if (current_height >= FORK_BLOCK) {
         // we are beyond the fork point; use new rules
         fork_conforksus.enable();

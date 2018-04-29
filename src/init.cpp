@@ -1483,6 +1483,7 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
                 }
 
                 // we have chain tip! apply conforksus modifier if appropriate
+                LogPrintf("conforksus_init: current_height -  %d\n", chainActive.Tip() ? chainActive.Tip()->nHeight : 0 );
                 conforksus_init(chainActive.Tip() ? chainActive.Tip()->nHeight : 0, Params().NetworkIDString() == "regtest");
                 if (fork_conforksus.active) {
                     // change port from default
