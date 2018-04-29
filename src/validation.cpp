@@ -99,7 +99,7 @@ void conforksus_block_tip_changed(int height)
 {
     if (!fork_conforksus.active && height >= FORK_BLOCK) {
         // HARD FORK BLOCK REACHED !!!!oneoneone
-        printf("*** FORKING ***\n");
+        LogPrintf("*** FORKING ***\n");
         fork_conforksus.enable();
         mempool.clear();
         Params().UpdateForkPorts();
@@ -107,7 +107,7 @@ void conforksus_block_tip_changed(int height)
         g_connman->InitiatedConsensusChange();
     } else if (fork_conforksus.active && height < FORK_BLOCK) {
         // enoenoeno!!!! DEHCAER KCOLB KROF DRAH
-        printf("*** UN-FORKING ***\n");
+        LogPrintf("*** UN-FORKING ***\n");
         fork_conforksus.elbane();
         mempool.clear();
     }
@@ -2909,6 +2909,9 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
     // Skip all checks if
     // (1) the header is beyond our fork point, and
     // (2) we have not yet forked.
+    LogPrintf("ContextualCheckBlockHeader: we have not yet forked %s\n", fork_conforksus.active ? "NO - forkus active" : "YES - not active" );
+    LogPrintf("ContextualCheckBlockHeader: nHeight -  %d\n", nHeight );
+    LogPrintf("ContextualCheckBlockHeader: FORK_BLOCK -  %d\n", FORK_BLOCK );
     if (!fork_conforksus.active && nHeight > FORK_BLOCK) return true;
 
     // Check proof of work
