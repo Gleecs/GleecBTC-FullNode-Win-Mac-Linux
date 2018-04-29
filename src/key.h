@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_KEY_H
-#define BITCOIN_KEY_H
+#ifndef GLEECGBC_KEY_H
+#define GLEECGBC_KEY_H
 
 #include "pubkey.h"
 #include "serialize.h"
@@ -29,7 +29,7 @@
  * secure_allocator is defined in allocators.h
  * CPrivKey is a serialized private key, with all parameters included (279 bytes)
  */
-typedef std::vector<unsigned char, secure_allocator<unsigned char> > CPrivKey;
+typedef std::vector<unsigned char, secure_allocator<unsigned char>> CPrivKey;
 
 /** An encapsulated private key. */
 class CKey
@@ -43,7 +43,7 @@ private:
     bool fCompressed;
 
     //! The actual byte data
-    std::vector<unsigned char, secure_allocator<unsigned char> > keydata;
+    std::vector<unsigned char, secure_allocator<unsigned char>> keydata;
 
     //! Check whether the 32-byte array pointed to by vch is valid keydata.
     bool static Check(const unsigned char* vch);
@@ -64,8 +64,8 @@ public:
     friend bool operator==(const CKey& a, const CKey& b)
     {
         return a.fCompressed == b.fCompressed &&
-            a.size() == b.size() &&
-            memcmp(a.keydata.data(), b.keydata.data(), a.size()) == 0;
+               a.size() == b.size() &&
+               memcmp(a.keydata.data(), b.keydata.data(), a.size()) == 0;
     }
 
     //! Initialize using begin and end iterators to byte data.
@@ -125,7 +125,7 @@ public:
     bool SignCompact(const uint256& hash, std::vector<unsigned char>& vchSig) const;
 
     //! Derive BIP32 child key.
-    bool Derive(CKey& keyChild, ChainCode &ccChild, unsigned int nChild, const ChainCode& cc) const;
+    bool Derive(CKey& keyChild, ChainCode& ccChild, unsigned int nChild, const ChainCode& cc) const;
 
     /**
      * Verify thoroughly whether a private key and a public key match.
@@ -147,10 +147,10 @@ struct CExtKey {
     friend bool operator==(const CExtKey& a, const CExtKey& b)
     {
         return a.nDepth == b.nDepth &&
-            memcmp(&a.vchFingerprint[0], &b.vchFingerprint[0], sizeof(vchFingerprint)) == 0 &&
-            a.nChild == b.nChild &&
-            a.chaincode == b.chaincode &&
-            a.key == b.key;
+               memcmp(&a.vchFingerprint[0], &b.vchFingerprint[0], sizeof(vchFingerprint)) == 0 &&
+               a.nChild == b.nChild &&
+               a.chaincode == b.chaincode &&
+               a.key == b.key;
     }
 
     void Encode(unsigned char code[BIP32_EXTKEY_SIZE]) const;
@@ -165,7 +165,7 @@ struct CExtKey {
         ::WriteCompactSize(s, len);
         unsigned char code[BIP32_EXTKEY_SIZE];
         Encode(code);
-        s.write((const char *)&code[0], len);
+        s.write((const char*)&code[0], len);
     }
     template <typename Stream>
     void Unserialize(Stream& s)
@@ -174,7 +174,7 @@ struct CExtKey {
         unsigned char code[BIP32_EXTKEY_SIZE];
         if (len != BIP32_EXTKEY_SIZE)
             throw std::runtime_error("Invalid extended key size\n");
-        s.read((char *)&code[0], len);
+        s.read((char*)&code[0], len);
         Decode(code);
     }
 };
@@ -188,4 +188,4 @@ void ECC_Stop(void);
 /** Check that required EC support is available at runtime. */
 bool ECC_InitSanityCheck(void);
 
-#endif // BITCOIN_KEY_H
+#endif // GLEECGBC_KEY_H

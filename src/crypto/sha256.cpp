@@ -6,8 +6,8 @@
 #include "crypto/common.h"
 
 #include <assert.h>
-#include <string.h>
 #include <atomic>
+#include <string.h>
 
 #if defined(__x86_64__) || defined(__amd64__)
 #if defined(EXPERIMENTAL_ASM)
@@ -145,15 +145,15 @@ void Transform(uint32_t* s, const unsigned char* chunk, size_t blocks)
 
 typedef void (*TransformType)(uint32_t*, const unsigned char*, size_t);
 
-bool SelfTest(TransformType tr) {
+bool SelfTest(TransformType tr)
+{
     static const unsigned char in1[65] = {0, 0x80};
     static const unsigned char in2[129] = {
         0,
-        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 
-        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 
+        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
         0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0
-    };
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0};
     static const uint32_t init[8] = {0x6a09e667ul, 0xbb67ae85ul, 0x3c6ef372ul, 0xa54ff53aul, 0x510e527ful, 0x9b05688cul, 0x1f83d9abul, 0x5be0cd19ul};
     static const uint32_t out1[8] = {0xe3b0c442ul, 0x98fc1c14ul, 0x9afbf4c8ul, 0x996fb924ul, 0x27ae41e4ul, 0x649b934cul, 0xa495991bul, 0x7852b855ul};
     static const uint32_t out2[8] = {0xce4153b0ul, 0x147c2a86ul, 0x3ed4298eul, 0xe0676bc8ul, 0x79fc77a1ul, 0x2abe1f49ul, 0xb2b055dful, 0x1069523eul};

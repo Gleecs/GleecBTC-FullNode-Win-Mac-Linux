@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_PUBKEY_H
-#define BITCOIN_PUBKEY_H
+#ifndef GLEECGBC_PUBKEY_H
+#define GLEECGBC_PUBKEY_H
 
 #include "hash.h"
 #include "serialize.h"
@@ -39,7 +39,6 @@ typedef uint256 ChainCode;
 class CPubKey
 {
 private:
-
     /**
      * Just store the serialized data.
      * Its length can very cheaply be computed from the first byte.
@@ -187,7 +186,7 @@ public:
     bool Decompress();
 
     //! Derive BIP32 child pubkey.
-    bool Derive(CPubKey& pubkeyChild, ChainCode &ccChild, unsigned int nChild, const ChainCode& cc) const;
+    bool Derive(CPubKey& pubkeyChild, ChainCode& ccChild, unsigned int nChild, const ChainCode& cc) const;
 };
 
 struct CExtPubKey {
@@ -197,13 +196,13 @@ struct CExtPubKey {
     ChainCode chaincode;
     CPubKey pubkey;
 
-    friend bool operator==(const CExtPubKey &a, const CExtPubKey &b)
+    friend bool operator==(const CExtPubKey& a, const CExtPubKey& b)
     {
         return a.nDepth == b.nDepth &&
-            memcmp(&a.vchFingerprint[0], &b.vchFingerprint[0], sizeof(vchFingerprint)) == 0 &&
-            a.nChild == b.nChild &&
-            a.chaincode == b.chaincode &&
-            a.pubkey == b.pubkey;
+               memcmp(&a.vchFingerprint[0], &b.vchFingerprint[0], sizeof(vchFingerprint)) == 0 &&
+               a.nChild == b.nChild &&
+               a.chaincode == b.chaincode &&
+               a.pubkey == b.pubkey;
     }
 
     void Encode(unsigned char code[BIP32_EXTKEY_SIZE]) const;
@@ -222,7 +221,7 @@ struct CExtPubKey {
         ::WriteCompactSize(s, len);
         unsigned char code[BIP32_EXTKEY_SIZE];
         Encode(code);
-        s.write((const char *)&code[0], len);
+        s.write((const char*)&code[0], len);
     }
     template <typename Stream>
     void Unserialize(Stream& s)
@@ -231,7 +230,7 @@ struct CExtPubKey {
         unsigned char code[BIP32_EXTKEY_SIZE];
         if (len != BIP32_EXTKEY_SIZE)
             throw std::runtime_error("Invalid extended key size\n");
-        s.read((char *)&code[0], len);
+        s.read((char*)&code[0], len);
         Decode(code);
     }
 };
@@ -247,4 +246,4 @@ public:
     ~ECCVerifyHandle();
 };
 
-#endif // BITCOIN_PUBKEY_H
+#endif // GLEECGBC_PUBKEY_H

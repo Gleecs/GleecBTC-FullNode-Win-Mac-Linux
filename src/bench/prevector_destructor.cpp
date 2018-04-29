@@ -19,7 +19,6 @@ static void PrevectorDestructor(benchmark::State& state)
 
 static void PrevectorClear(benchmark::State& state)
 {
-
     while (state.KeepRunning()) {
         for (auto x = 0; x < 1000; ++x) {
             prevector<28, unsigned char> t0;

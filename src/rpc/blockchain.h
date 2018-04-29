@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_RPC_BLOCKCHAIN_H
-#define BITCOIN_RPC_BLOCKCHAIN_H
+#ifndef GLEECGBC_RPC_BLOCKCHAIN_H
+#define GLEECGBC_RPC_BLOCKCHAIN_H
 
 class CBlock;
 class CBlockIndex;
@@ -19,7 +19,7 @@ class UniValue;
 double GetDifficulty(const CBlockIndex* blockindex = nullptr);
 
 /** Callback for when block tip changed. */
-void RPCNotifyBlockChange(bool ibd, const CBlockIndex *);
+void RPCNotifyBlockChange(bool ibd, const CBlockIndex*);
 
 /** Block description to JSON */
 UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool txDetails = false);
@@ -34,4 +34,3 @@ UniValue mempoolToJSON(bool fVerbose = false);
 UniValue blockheaderToJSON(const CBlockIndex* blockindex);
 
 #endif
-

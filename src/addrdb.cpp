@@ -15,8 +15,8 @@
 #include "tinyformat.h"
 #include "util.h"
 
-namespace {
-
+namespace
+{
 template <typename Stream, typename Data>
 bool SerializeDB(Stream& stream, const Data& data)
 {
@@ -43,7 +43,7 @@ bool SerializeFileDB(const std::string& prefix, const fs::path& path, const Data
 
     // open temp output file, and associate with CAutoFile
     fs::path pathTmp = GetDataDir() / tmpfn;
-    FILE *file = fsbridge::fopen(pathTmp, "wb");
+    FILE* file = fsbridge::fopen(pathTmp, "wb");
     CAutoFile fileout(file, SER_DISK, CLIENT_VERSION);
     if (fileout.IsNull())
         return error("%s: Failed to open file %s", __func__, pathTmp.string());
@@ -83,8 +83,7 @@ bool DeserializeDB(Stream& stream, Data& data, bool fCheckSum = true)
                 return error("%s: Checksum mismatch, data corrupted", __func__);
             }
         }
-    }
-    catch (const std::exception& e) {
+    } catch (const std::exception& e) {
         return error("%s: Deserialize or I/O error - %s", __func__, e.what());
     }
 
@@ -95,14 +94,13 @@ template <typename Data>
 bool DeserializeFileDB(const fs::path& path, Data& data)
 {
     // open input file, and associate with CAutoFile
-    FILE *file = fsbridge::fopen(path, "rb");
+    FILE* file = fsbridge::fopen(path, "rb");
     CAutoFile filein(file, SER_DISK, CLIENT_VERSION);
     if (filein.IsNull())
         return error("%s: Failed to open file %s", __func__, path.string());
 
     return DeserializeDB(filein, data);
 }
-
 }
 
 CBanDB::CBanDB()

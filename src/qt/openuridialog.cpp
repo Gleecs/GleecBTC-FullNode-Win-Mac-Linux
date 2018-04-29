@@ -10,13 +10,12 @@
 
 #include <QUrl>
 
-OpenURIDialog::OpenURIDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::OpenURIDialog)
+OpenURIDialog::OpenURIDialog(QWidget* parent) : QDialog(parent),
+                                                ui(new Ui::OpenURIDialog)
 {
     ui->setupUi(this);
 #if QT_VERSION >= 0x040700
-    ui->uriEdit->setPlaceholderText("bitcoin:");
+    ui->uriEdit->setPlaceholderText("gleecbtc:");
 #endif
 }
 
@@ -33,8 +32,7 @@ QString OpenURIDialog::getURI()
 void OpenURIDialog::accept()
 {
     SendCoinsRecipient rcp;
-    if(GUIUtil::parseBitcoinURI(getURI(), &rcp))
-    {
+    if (GUIUtil::parseGleecBTCURI(getURI(), &rcp)) {
         /* Only accept value URIs */
         QDialog::accept();
     } else {
@@ -45,8 +43,8 @@ void OpenURIDialog::accept()
 void OpenURIDialog::on_selectFileButton_clicked()
 {
     QString filename = GUIUtil::getOpenFileName(this, tr("Select payment request file to open"), "", "", nullptr);
-    if(filename.isEmpty())
+    if (filename.isEmpty())
         return;
     QUrl fileUri = QUrl::fromLocalFile(filename);
-    ui->uriEdit->setText("bitcoin:?r=" + QUrl::toPercentEncoding(fileUri.toString()));
+    ui->uriEdit->setText("gleecbtc:?r=" + QUrl::toPercentEncoding(fileUri.toString()));
 }

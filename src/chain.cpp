@@ -8,7 +8,8 @@
 /**
  * CChain implementation
  */
-void CChain::SetTip(CBlockIndex *pindex) {
+void CChain::SetTip(CBlockIndex* pindex)
+{
     if (pindex == nullptr) {
         vChain.clear();
         return;
@@ -20,7 +21,8 @@ void CChain::SetTip(CBlockIndex *pindex) {
     }
 }
 
-CBlockLocator CChain::GetLocator(const CBlockIndex *pindex) const {
+CBlockLocator CChain::GetLocator(const CBlockIndex* pindex) const
+{
     int nStep = 1;
     std::vector<uint256> vHave;
     vHave.reserve(32);
@@ -48,7 +50,8 @@ CBlockLocator CChain::GetLocator(const CBlockIndex *pindex) const {
     return CBlockLocator(vHave);
 }
 
-const CBlockIndex *CChain::FindFork(const CBlockIndex *pindex) const {
+const CBlockIndex* CChain::FindFork(const CBlockIndex* pindex) const
+{
     if (pindex == nullptr) {
         return nullptr;
     }
@@ -70,7 +73,8 @@ CBlockIndex* CChain::FindEarliestAtLeast(int64_t nTime) const
 int static inline InvertLowestOne(int n) { return n & (n - 1); }
 
 /** Compute what height to jump back to with the CBlockIndex::pskip pointer. */
-int static inline GetSkipHeight(int height) {
+int static inline GetSkipHeight(int height)
+{
     if (height < 2)
         return 0;
 
@@ -92,8 +96,8 @@ CBlockIndex* CBlockIndex::GetAncestor(int height)
         int heightSkipPrev = GetSkipHeight(heightWalk - 1);
         if (pindexWalk->pskip != nullptr &&
             (heightSkip == height ||
-             (heightSkip > height && !(heightSkipPrev < heightSkip - 2 &&
-                                       heightSkipPrev >= height)))) {
+                (heightSkip > height && !(heightSkipPrev < heightSkip - 2 &&
+                                            heightSkipPrev >= height)))) {
             // Only follow pskip if pprev->pskip isn't better than pskip->pprev.
             pindexWalk = pindexWalk->pskip;
             heightWalk = heightSkip;
@@ -151,7 +155,8 @@ int64_t GetBlockProofEquivalentTime(const CBlockIndex& to, const CBlockIndex& fr
 
 /** Find the last common ancestor two blocks have.
  *  Both pa and pb must be non-nullptr. */
-const CBlockIndex* LastCommonAncestor(const CBlockIndex* pa, const CBlockIndex* pb) {
+const CBlockIndex* LastCommonAncestor(const CBlockIndex* pa, const CBlockIndex* pb)
+{
     if (pa->nHeight > pb->nHeight) {
         pa = pa->GetAncestor(pb->nHeight);
     } else if (pb->nHeight > pa->nHeight) {

@@ -11,7 +11,7 @@
 
 std::string COutPoint::ToString() const
 {
-    return strprintf("COutPoint(%s, %u)", hash.ToString().substr(0,10), n);
+    return strprintf("COutPoint(%s, %u)", hash.ToString().substr(0, 10), n);
 }
 
 CTxIn::CTxIn(COutPoint prevoutIn, CScript scriptSigIn, uint32_t nSequenceIn)
@@ -77,8 +77,8 @@ uint256 CTransaction::GetWitnessHash() const
 
 /* For backward compatibility, the hash is initialized to 0. TODO: remove the need for this default constructor entirely. */
 CTransaction::CTransaction() : nVersion(CTransaction::CURRENT_VERSION), vin(), vout(), nLockTime(0), hash() {}
-CTransaction::CTransaction(const CMutableTransaction &tx) : nVersion(tx.nVersion), vin(tx.vin), vout(tx.vout), nLockTime(tx.nLockTime), hash(ComputeHash()) {}
-CTransaction::CTransaction(CMutableTransaction &&tx) : nVersion(tx.nVersion), vin(std::move(tx.vin)), vout(std::move(tx.vout)), nLockTime(tx.nLockTime), hash(ComputeHash()) {}
+CTransaction::CTransaction(const CMutableTransaction& tx) : nVersion(tx.nVersion), vin(tx.vin), vout(tx.vout), nLockTime(tx.nLockTime), hash(ComputeHash()) {}
+CTransaction::CTransaction(CMutableTransaction&& tx) : nVersion(tx.nVersion), vin(std::move(tx.vin)), vout(std::move(tx.vout)), nLockTime(tx.nLockTime), hash(ComputeHash()) {}
 
 CAmount CTransaction::GetValueOut() const
 {
@@ -100,7 +100,7 @@ std::string CTransaction::ToString() const
 {
     std::string str;
     str += strprintf("CTransaction(hash=%s, ver=%d, vin.size=%u, vout.size=%u, nLockTime=%u)\n",
-        GetHash().ToString().substr(0,10),
+        GetHash().ToString().substr(0, 10),
         nVersion,
         vin.size(),
         vout.size(),

@@ -2,11 +2,11 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_COMPAT_BYTESWAP_H
-#define BITCOIN_COMPAT_BYTESWAP_H
+#ifndef GLEECGBC_COMPAT_BYTESWAP_H
+#define GLEECGBC_COMPAT_BYTESWAP_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/bitcoin-config.h"
+#include "config/gleecbtc-config.h"
 #endif
 
 #include <stdint.h>
@@ -42,25 +42,18 @@ inline uint16_t bswap_16(uint16_t x)
 #if HAVE_DECL_BSWAP_32 == 0
 inline uint32_t bswap_32(uint32_t x)
 {
-    return (((x & 0xff000000U) >> 24) | ((x & 0x00ff0000U) >>  8) |
-            ((x & 0x0000ff00U) <<  8) | ((x & 0x000000ffU) << 24));
+    return (((x & 0xff000000U) >> 24) | ((x & 0x00ff0000U) >> 8) |
+            ((x & 0x0000ff00U) << 8) | ((x & 0x000000ffU) << 24));
 }
 #endif // HAVE_DECL_BSWAP32
 
 #if HAVE_DECL_BSWAP_64 == 0
 inline uint64_t bswap_64(uint64_t x)
 {
-     return (((x & 0xff00000000000000ull) >> 56)
-          | ((x & 0x00ff000000000000ull) >> 40)
-          | ((x & 0x0000ff0000000000ull) >> 24)
-          | ((x & 0x000000ff00000000ull) >> 8)
-          | ((x & 0x00000000ff000000ull) << 8)
-          | ((x & 0x0000000000ff0000ull) << 24)
-          | ((x & 0x000000000000ff00ull) << 40)
-          | ((x & 0x00000000000000ffull) << 56));
+    return (((x & 0xff00000000000000ull) >> 56) | ((x & 0x00ff000000000000ull) >> 40) | ((x & 0x0000ff0000000000ull) >> 24) | ((x & 0x000000ff00000000ull) >> 8) | ((x & 0x00000000ff000000ull) << 8) | ((x & 0x0000000000ff0000ull) << 24) | ((x & 0x000000000000ff00ull) << 40) | ((x & 0x00000000000000ffull) << 56));
 }
 #endif // HAVE_DECL_BSWAP64
 
 #endif // defined(__APPLE__)
 
-#endif // BITCOIN_COMPAT_BYTESWAP_H
+#endif // GLEECGBC_COMPAT_BYTESWAP_H

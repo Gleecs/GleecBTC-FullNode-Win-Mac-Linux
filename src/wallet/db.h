@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_WALLET_DB_H
-#define BITCOIN_WALLET_DB_H
+#ifndef GLEECGBC_WALLET_DB_H
+#define GLEECGBC_WALLET_DB_H
 
 #include "clientversion.h"
 #include "fs.h"
@@ -36,7 +36,7 @@ private:
 
 public:
     mutable CCriticalSection cs_db;
-    DbEnv *dbenv;
+    DbEnv* dbenv;
     std::map<std::string, int> mapFileUseCount;
     std::map<std::string, Db*> mapDb;
 
@@ -54,8 +54,8 @@ public:
      * Returns true if strFile is OK.
      */
     enum VerifyResult { VERIFY_OK,
-                        RECOVER_OK,
-                        RECOVER_FAIL };
+        RECOVER_OK,
+        RECOVER_FAIL };
     typedef bool (*recoverFunc_type)(const std::string& strFile, std::string& out_backup_filename);
     VerifyResult Verify(const std::string& strFile, recoverFunc_type recoverFunc, std::string& out_backup_filename);
     /**
@@ -65,7 +65,7 @@ public:
      * NOTE: reads the entire database into memory, so cannot be used
      * for huge databases.
      */
-    typedef std::pair<std::vector<unsigned char>, std::vector<unsigned char> > KeyValPair;
+    typedef std::pair<std::vector<unsigned char>, std::vector<unsigned char>> KeyValPair;
     bool Salvage(const std::string& strFile, bool fAggressive, std::vector<KeyValPair>& vResult);
 
     bool Open(const fs::path& path);
@@ -93,6 +93,7 @@ extern CDBEnv bitdb;
 class CWalletDBWrapper
 {
     friend class CDB;
+
 public:
     /** Create dummy DB handle */
     CWalletDBWrapper() : nUpdateCounter(0), nLastSeen(0), nLastFlushed(0), nLastWalletUpdate(0), env(nullptr)
@@ -100,14 +101,13 @@ public:
     }
 
     /** Create DB handle to real database */
-    CWalletDBWrapper(CDBEnv *env_in, const std::string &strFile_in) :
-        nUpdateCounter(0), nLastSeen(0), nLastFlushed(0), nLastWalletUpdate(0), env(env_in), strFile(strFile_in)
+    CWalletDBWrapper(CDBEnv* env_in, const std::string& strFile_in) : nUpdateCounter(0), nLastSeen(0), nLastFlushed(0), nLastWalletUpdate(0), env(env_in), strFile(strFile_in)
     {
     }
 
     /** Rewrite the entire database on disk, with the exception of key pszSkip if non-zero
      */
-    bool Rewrite(const char* pszSkip=nullptr);
+    bool Rewrite(const char* pszSkip = nullptr);
 
     /** Back up the entire database to a file.
      */
@@ -130,7 +130,7 @@ public:
 
 private:
     /** BerkeleyDB specific */
-    CDBEnv *env;
+    CDBEnv* env;
     std::string strFile;
 
     /** Return whether this database handle is a dummy for testing.
@@ -150,15 +150,15 @@ protected:
     DbTxn* activeTxn;
     bool fReadOnly;
     bool fFlushOnClose;
-    CDBEnv *env;
+    CDBEnv* env;
 
 public:
-    explicit CDB(CWalletDBWrapper& dbw, const char* pszMode = "r+", bool fFlushOnCloseIn=true);
+    explicit CDB(CWalletDBWrapper& dbw, const char* pszMode = "r+", bool fFlushOnCloseIn = true);
     ~CDB() { Close(); }
 
     void Flush();
     void Close();
-    static bool Recover(const std::string& filename, void *callbackDataIn, bool (*recoverKVcallback)(void* callbackData, CDataStream ssKey, CDataStream ssValue), std::string& out_backup_filename);
+    static bool Recover(const std::string& filename, void* callbackDataIn, bool (*recoverKVcallback)(void* callbackData, CDataStream ssKey, CDataStream ssValue), std::string& out_backup_filename);
 
     /* flush the wallet passively (TRY_LOCK)
        ideal to be called periodically */
@@ -369,4 +369,4 @@ public:
     bool static Rewrite(CWalletDBWrapper& dbw, const char* pszSkip = nullptr);
 };
 
-#endif // BITCOIN_WALLET_DB_H
+#endif // GLEECGBC_WALLET_DB_H

@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_SCRIPT_ISMINE_H
-#define BITCOIN_SCRIPT_ISMINE_H
+#ifndef GLEECGBC_SCRIPT_ISMINE_H
+#define GLEECGBC_SCRIPT_ISMINE_H
 
 #include "script/standard.h"
 
@@ -14,8 +14,7 @@ class CKeyStore;
 class CScript;
 
 /** IsMine() return codes */
-enum isminetype
-{
+enum isminetype {
     ISMINE_NO = 0,
     //! Indicates that we don't know how to create a scriptSig that would solve this if we were given the appropriate private keys
     ISMINE_WATCH_UNSOLVABLE = 1,
@@ -38,4 +37,4 @@ isminetype IsMine(const CKeyStore& keystore, const CScript& scriptPubKey, SigVer
 isminetype IsMine(const CKeyStore& keystore, const CTxDestination& dest, bool& isInvalid, SigVersion = SIGVERSION_BASE);
 isminetype IsMine(const CKeyStore& keystore, const CTxDestination& dest, SigVersion = SIGVERSION_BASE);
 
-#endif // BITCOIN_SCRIPT_ISMINE_H
+#endif // GLEECGBC_SCRIPT_ISMINE_H

@@ -7,8 +7,8 @@
 
 #include "leveldb/status.h"
 
-namespace leveldb {
-
+namespace leveldb
+{
 struct Options;
 struct FileMetaData;
 
@@ -23,12 +23,12 @@ class VersionEdit;
 // If no data is present in *iter, meta->file_size will be set to
 // zero, and no Table file will be produced.
 extern Status BuildTable(const std::string& dbname,
-                         Env* env,
-                         const Options& options,
-                         TableCache* table_cache,
-                         Iterator* iter,
-                         FileMetaData* meta);
+    Env* env,
+    const Options& options,
+    TableCache* table_cache,
+    Iterator* iter,
+    FileMetaData* meta);
 
-}  // namespace leveldb
+} // namespace leveldb
 
-#endif  // STORAGE_LEVELDB_DB_BUILDER_H_
+#endif // STORAGE_LEVELDB_DB_BUILDER_H_

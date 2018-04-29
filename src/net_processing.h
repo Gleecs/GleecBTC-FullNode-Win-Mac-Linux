@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_NET_PROCESSING_H
-#define BITCOIN_NET_PROCESSING_H
+#ifndef GLEECGBC_NET_PROCESSING_H
+#define GLEECGBC_NET_PROCESSING_H
 
 #include "net.h"
 #include "validationinterface.h"
@@ -27,7 +27,8 @@ void RegisterNodeSignals(CNodeSignals& nodeSignals);
 /** Unregister a network node */
 void UnregisterNodeSignals(CNodeSignals& nodeSignals);
 
-class PeerLogicValidation : public CValidationInterface {
+class PeerLogicValidation : public CValidationInterface
+{
 private:
     CConnman* connman;
 
@@ -35,9 +36,9 @@ public:
     PeerLogicValidation(CConnman* connmanIn);
 
     void BlockConnected(const std::shared_ptr<const CBlock>& pblock, const CBlockIndex* pindexConnected, const std::vector<CTransactionRef>& vtxConflicted) override;
-    void UpdatedBlockTip(const CBlockIndex *pindexNew, const CBlockIndex *pindexFork, bool fInitialDownload) override;
+    void UpdatedBlockTip(const CBlockIndex* pindexNew, const CBlockIndex* pindexFork, bool fInitialDownload) override;
     void BlockChecked(const CBlock& block, const CValidationState& state) override;
-    void NewPoWValidBlock(const CBlockIndex *pindex, const std::shared_ptr<const CBlock>& pblock) override;
+    void NewPoWValidBlock(const CBlockIndex* pindex, const std::shared_ptr<const CBlock>& pblock) override;
 };
 
 struct CNodeStateStats {
@@ -48,7 +49,7 @@ struct CNodeStateStats {
 };
 
 /** Get statistics from node state */
-bool GetNodeStateStats(NodeId nodeid, CNodeStateStats &stats);
+bool GetNodeStateStats(NodeId nodeid, CNodeStateStats& stats);
 /** Increase a node's misbehavior score. */
 void Misbehaving(NodeId nodeid, int howmuch);
 
@@ -64,4 +65,4 @@ bool ProcessMessages(CNode* pfrom, CConnman& connman, const std::atomic<bool>& i
  */
 bool SendMessages(CNode* pto, CConnman& connman, const std::atomic<bool>& interrupt);
 
-#endif // BITCOIN_NET_PROCESSING_H
+#endif // GLEECGBC_NET_PROCESSING_H

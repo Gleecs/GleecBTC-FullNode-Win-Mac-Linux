@@ -5,12 +5,12 @@
 #ifndef STORAGE_LEVELDB_INCLUDE_DUMPFILE_H_
 #define STORAGE_LEVELDB_INCLUDE_DUMPFILE_H_
 
-#include <string>
 #include "leveldb/env.h"
 #include "leveldb/status.h"
+#include <string>
 
-namespace leveldb {
-
+namespace leveldb
+{
 // Dump the contents of the file named by fname in text format to
 // *dst.  Makes a sequence of dst->Append() calls; each call is passed
 // the newline-terminated text corresponding to a single item found
@@ -20,6 +20,6 @@ namespace leveldb {
 // file, or if the file cannot be read.
 Status DumpFile(Env* env, const std::string& fname, WritableFile* dst);
 
-}  // namespace leveldb
+} // namespace leveldb
 
-#endif  // STORAGE_LEVELDB_INCLUDE_DUMPFILE_H_
+#endif // STORAGE_LEVELDB_INCLUDE_DUMPFILE_H_

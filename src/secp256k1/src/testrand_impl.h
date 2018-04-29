@@ -10,8 +10,8 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "testrand.h"
 #include "hash.h"
+#include "testrand.h"
 
 static secp256k1_rfc6979_hmac_sha256_t secp256k1_test_rng;
 static uint32_t secp256k1_test_rng_precomputed[8];
@@ -19,11 +19,13 @@ static int secp256k1_test_rng_precomputed_used = 8;
 static uint64_t secp256k1_test_rng_integer;
 static int secp256k1_test_rng_integer_bits_left = 0;
 
-SECP256K1_INLINE static void secp256k1_rand_seed(const unsigned char *seed16) {
+SECP256K1_INLINE static void secp256k1_rand_seed(const unsigned char* seed16)
+{
     secp256k1_rfc6979_hmac_sha256_initialize(&secp256k1_test_rng, seed16, 16);
 }
 
-SECP256K1_INLINE static uint32_t secp256k1_rand32(void) {
+SECP256K1_INLINE static uint32_t secp256k1_rand32(void)
+{
     if (secp256k1_test_rng_precomputed_used == 8) {
         secp256k1_rfc6979_hmac_sha256_generate(&secp256k1_test_rng, (unsigned char*)(&secp256k1_test_rng_precomputed[0]), sizeof(secp256k1_test_rng_precomputed));
         secp256k1_test_rng_precomputed_used = 0;
@@ -31,7 +33,8 @@ SECP256K1_INLINE static uint32_t secp256k1_rand32(void) {
     return secp256k1_test_rng_precomputed[secp256k1_test_rng_precomputed_used++];
 }
 
-static uint32_t secp256k1_rand_bits(int bits) {
+static uint32_t secp256k1_rand_bits(int bits)
+{
     uint32_t ret;
     if (secp256k1_test_rng_integer_bits_left < bits) {
         secp256k1_test_rng_integer |= (((uint64_t)secp256k1_rand32()) << secp256k1_test_rng_integer_bits_left);
@@ -44,7 +47,8 @@ static uint32_t secp256k1_rand_bits(int bits) {
     return ret;
 }
 
-static uint32_t secp256k1_rand_int(uint32_t range) {
+static uint32_t secp256k1_rand_int(uint32_t range)
+{
     /* We want a uniform integer between 0 and range-1, inclusive.
      * B is the smallest number such that range <= 2**B.
      * two mechanisms implemented here:
@@ -75,7 +79,7 @@ static uint32_t secp256k1_rand_int(uint32_t range) {
         trange = range;
         mult = 1;
     }
-    while(1) {
+    while (1) {
         uint32_t x = secp256k1_rand_bits(bits);
         if (x < trange) {
             return (mult == 1) ? x : (x % range);
@@ -83,11 +87,13 @@ static uint32_t secp256k1_rand_int(uint32_t range) {
     }
 }
 
-static void secp256k1_rand256(unsigned char *b32) {
+static void secp256k1_rand256(unsigned char* b32)
+{
     secp256k1_rfc6979_hmac_sha256_generate(&secp256k1_test_rng, b32, 32);
 }
 
-static void secp256k1_rand_bytes_test(unsigned char *bytes, size_t len) {
+static void secp256k1_rand_bytes_test(unsigned char* bytes, size_t len)
+{
     size_t bits = 0;
     memset(bytes, 0, len);
     while (bits < len * 8) {
@@ -103,7 +109,8 @@ static void secp256k1_rand_bytes_test(unsigned char *bytes, size_t len) {
     }
 }
 
-static void secp256k1_rand256_test(unsigned char *b32) {
+static void secp256k1_rand256_test(unsigned char* b32)
+{
     secp256k1_rand_bytes_test(b32, 32);
 }
 

@@ -8,10 +8,9 @@
 #include "wallet/db.h"
 #include "wallet/wallet.h"
 
-CWallet *pwalletMain;
+CWallet* pwalletMain;
 
-WalletTestingSetup::WalletTestingSetup(const std::string& chainName):
-    TestingSetup(chainName)
+WalletTestingSetup::WalletTestingSetup(const std::string& chainName) : TestingSetup(chainName)
 {
     bitdb.MakeMock();
 

@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_SCRIPT_STANDARD_H
-#define BITCOIN_SCRIPT_STANDARD_H
+#ifndef GLEECGBC_SCRIPT_STANDARD_H
+#define GLEECGBC_SCRIPT_STANDARD_H
 
 #include "script/interpreter.h"
 #include "uint256.h"
@@ -42,8 +42,7 @@ extern unsigned nMaxDatacarrierBytes;
  */
 static const unsigned int MANDATORY_SCRIPT_VERIFY_FLAGS = SCRIPT_VERIFY_P2SH;
 
-enum txnouttype
-{
+enum txnouttype {
     TX_NONSTANDARD,
     // 'standard' transaction types:
     TX_PUBKEY,
@@ -55,10 +54,11 @@ enum txnouttype
     TX_WITNESS_V0_KEYHASH,
 };
 
-class CNoDestination {
+class CNoDestination
+{
 public:
-    friend bool operator==(const CNoDestination &a, const CNoDestination &b) { return true; }
-    friend bool operator<(const CNoDestination &a, const CNoDestination &b) { return true; }
+    friend bool operator==(const CNoDestination& a, const CNoDestination& b) { return true; }
+    friend bool operator<(const CNoDestination& a, const CNoDestination& b) { return true; }
 };
 
 /** 
@@ -66,13 +66,13 @@ public:
  *  * CNoDestination: no destination set
  *  * CKeyID: TX_PUBKEYHASH destination
  *  * CScriptID: TX_SCRIPTHASH destination
- *  A CTxDestination is the internal data type encoded in a CBitcoinAddress
+ *  A CTxDestination is the internal data type encoded in a CGleecBTCAddress
  */
 typedef boost::variant<CNoDestination, CKeyID, CScriptID> CTxDestination;
 
 const char* GetTxnOutputType(txnouttype t);
 
-bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<std::vector<unsigned char> >& vSolutionsRet);
+bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<std::vector<unsigned char>>& vSolutionsRet);
 bool ExtractDestination(const CScript& scriptPubKey, CTxDestination& addressRet);
 bool ExtractDestinations(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<CTxDestination>& addressRet, int& nRequiredRet);
 
@@ -81,4 +81,4 @@ CScript GetScriptForRawPubKey(const CPubKey& pubkey);
 CScript GetScriptForMultisig(int nRequired, const std::vector<CPubKey>& keys);
 CScript GetScriptForWitness(const CScript& redeemscript);
 
-#endif // BITCOIN_SCRIPT_STANDARD_H
+#endif // GLEECGBC_SCRIPT_STANDARD_H

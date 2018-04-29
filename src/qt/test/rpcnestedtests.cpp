@@ -7,14 +7,13 @@
 #include "chainparams.h"
 #include "consensus/validation.h"
 #include "fs.h"
-#include "validation.h"
 #include "rpc/register.h"
 #include "rpc/server.h"
 #include "rpcconsole.h"
-#include "test/testutil.h"
-#include "test/test_bitcoin.h"
+#include "test/test_gleecbtc.h"
 #include "univalue.h"
 #include "util.h"
+#include "validation.h"
 
 #include <QDir>
 #include <QtGlobal>
@@ -28,8 +27,8 @@ static UniValue rpcNestedTest_rpc(const JSONRPCRequest& request)
 }
 
 static const CRPCCommand vRPCCommands[] =
-{
-    { "test", "rpcNestedTest", &rpcNestedTest_rpc, true, {} },
+    {
+        {"test", "rpcNestedTest", &rpcNestedTest_rpc, true, {}},
 };
 
 void RPCNestedTests::rpcNestedTests()
@@ -37,11 +36,6 @@ void RPCNestedTests::rpcNestedTests()
     // do some test setup
     // could be moved to a more generic place when we add more tests on QT level
     tableRPC.appendCommand("rpcNestedTest", &vRPCCommands[0]);
-    ClearDatadirCache();
-    std::string path = QDir::tempPath().toStdString() + "/" + strprintf("test_bitcoin_qt_%lu_%i", (unsigned long)GetTime(), (int)(GetRand(100000)));
-    QDir dir(QString::fromStdString(path));
-    dir.mkpath(".");
-    gArgs.ForceSetArg("-datadir", path);
     //mempool.setSanityCheck(1.0);
 
     TestingSetup test;
@@ -52,7 +46,7 @@ void RPCNestedTests::rpcNestedTests()
     std::string result2;
     std::string filtered;
     RPCConsole::RPCExecuteCommandLine(result, "getblockchaininfo()[chain]", &filtered); //simple result filtering with path
-    QVERIFY(result=="main");
+    QVERIFY(result == "main");
     QVERIFY(filtered == "getblockchaininfo()[chain]");
 
     RPCConsole::RPCExecuteCommandLine(result, "getblock(getbestblockhash())"); //simple 2 level nesting
@@ -61,13 +55,13 @@ void RPCNestedTests::rpcNestedTests()
     RPCConsole::RPCExecuteCommandLine(result, "getblock( getblock( getblock(getbestblockhash())[hash] )[hash], true)"); //4 level nesting with whitespace, filtering path and boolean parameter
 
     RPCConsole::RPCExecuteCommandLine(result, "getblockchaininfo");
-    QVERIFY(result.substr(0,1) == "{");
+    QVERIFY(result.substr(0, 1) == "{");
 
     RPCConsole::RPCExecuteCommandLine(result, "getblockchaininfo()");
-    QVERIFY(result.substr(0,1) == "{");
+    QVERIFY(result.substr(0, 1) == "{");
 
     RPCConsole::RPCExecuteCommandLine(result, "getblockchaininfo "); //whitespace at the end will be tolerated
-    QVERIFY(result.substr(0,1) == "{");
+    QVERIFY(result.substr(0, 1) == "{");
 
     (RPCConsole::RPCExecuteCommandLine(result, "getblockchaininfo()[\"chain\"]")); //Quote path identifier are allowed, but look after a child contaning the quotes in the key
     QVERIFY(result == "null");
@@ -136,6 +130,4 @@ void RPCNestedTests::rpcNestedTests()
     QVERIFY_EXCEPTION_THROWN(RPCConsole::RPCExecuteCommandLine(result, "rpcNestedTest(abc,,abc)"), std::runtime_error); //don't tollerate empty arguments when using ,
     QVERIFY_EXCEPTION_THROWN(RPCConsole::RPCExecuteCommandLine(result, "rpcNestedTest(abc,,)"), std::runtime_error); //don't tollerate empty arguments when using ,
 #endif
-
-    fs::remove_all(fs::path(path));
 }

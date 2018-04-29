@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_SYNC_H
-#define BITCOIN_SYNC_H
+#ifndef GLEECGBC_SYNC_H
+#define GLEECGBC_SYNC_H
 
 #include "threadsafety.h"
 
@@ -77,7 +77,9 @@ std::string LocksHeld();
 void AssertLockHeldInternal(const char* pszName, const char* pszFile, int nLine, void* cs);
 void DeleteLock(void* cs);
 #else
-void static inline EnterCritical(const char* pszName, const char* pszFile, int nLine, void* cs, bool fTry = false) {}
+void static inline EnterCritical(const char* pszName, const char* pszFile, int nLine, void* cs, bool fTry = false)
+{
+}
 void static inline LeaveCritical() {}
 void static inline AssertLockHeldInternal(const char* pszName, const char* pszFile, int nLine, void* cs) {}
 void static inline DeleteLock(void* cs) {}
@@ -91,7 +93,8 @@ void static inline DeleteLock(void* cs) {}
 class CCriticalSection : public AnnotatedMixin<boost::recursive_mutex>
 {
 public:
-    ~CCriticalSection() {
+    ~CCriticalSection()
+    {
         DeleteLock((void*)this);
     }
 };
@@ -169,7 +172,7 @@ public:
 
 typedef CMutexLock<CCriticalSection> CCriticalBlock;
 
-#define PASTE(x, y) x ## y
+#define PASTE(x, y) x##y
 #define PASTE2(x, y) PASTE(x, y)
 
 #define LOCK(cs) CCriticalBlock PASTE2(criticalblock, __COUNTER__)(cs, #cs, __FILE__, __LINE__)
@@ -286,4 +289,4 @@ public:
     }
 };
 
-#endif // BITCOIN_SYNC_H
+#endif // GLEECGBC_SYNC_H

@@ -3,7 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/bitcoin-config.h"
+#include "config/gleecbtc-config.h"
 #endif
 
 #include "fs.h"
@@ -15,8 +15,8 @@
 #include "util.h"
 
 #include <QFileDialog>
-#include <QSettings>
 #include <QMessageBox>
+#include <QSettings>
 
 #include <cmath>
 
@@ -43,7 +43,7 @@ class FreespaceChecker : public QObject
     Q_OBJECT
 
 public:
-    FreespaceChecker(Intro *intro);
+    FreespaceChecker(Intro* intro);
 
     enum Status {
         ST_OK,
@@ -54,15 +54,15 @@ public Q_SLOTS:
     void check();
 
 Q_SIGNALS:
-    void reply(int status, const QString &message, quint64 available);
+    void reply(int status, const QString& message, quint64 available);
 
 private:
-    Intro *intro;
+    Intro* intro;
 };
 
 #include "intro.moc"
 
-FreespaceChecker::FreespaceChecker(Intro *_intro)
+FreespaceChecker::FreespaceChecker(Intro* _intro)
 {
     this->intro = _intro;
 }
@@ -78,8 +78,7 @@ void FreespaceChecker::check()
     /* Find first parent that exists, so that fs::space does not fail */
     fs::path parentDir = dataDir;
     fs::path parentDirOld = fs::path();
-    while(parentDir.has_parent_path() && !fs::exists(parentDir))
-    {
+    while (parentDir.has_parent_path() && !fs::exists(parentDir)) {
         parentDir = parentDir.parent_path();
 
         /* Check if we make any progress, break if not to prevent an infinite loop here */
@@ -91,10 +90,8 @@ void FreespaceChecker::check()
 
     try {
         freeBytesAvailable = fs::space(parentDir).available;
-        if(fs::exists(dataDir))
-        {
-            if(fs::is_directory(dataDir))
-            {
+        if (fs::exists(dataDir)) {
+            if (fs::is_directory(dataDir)) {
                 QString separator = "<code>" + QDir::toNativeSeparators("/") + tr("name") + "</code>";
                 replyStatus = ST_OK;
                 replyMessage = tr("Directory already exists. Add %1 if you intend to create a new directory here.").arg(separator);
@@ -103,8 +100,7 @@ void FreespaceChecker::check()
                 replyMessage = tr("Path already exists, and is not a directory.");
             }
         }
-    } catch (const fs::filesystem_error&)
-    {
+    } catch (const fs::filesystem_error&) {
         /* Parent directory does not exist or is not accessible */
         replyStatus = ST_ERROR;
         replyMessage = tr("Cannot create data directory here.");
@@ -113,22 +109,20 @@ void FreespaceChecker::check()
 }
 
 
-Intro::Intro(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::Intro),
-    thread(0),
-    signalled(false)
+Intro::Intro(QWidget* parent) : QDialog(parent),
+                                ui(new Ui::Intro),
+                                thread(0),
+                                signalled(false)
 {
     ui->setupUi(this);
     ui->welcomeLabel->setText(ui->welcomeLabel->text().arg(tr(PACKAGE_NAME)));
     ui->storageLabel->setText(ui->storageLabel->text().arg(tr(PACKAGE_NAME)));
 
     ui->lblExplanation1->setText(ui->lblExplanation1->text()
-        .arg(tr(PACKAGE_NAME))
-        .arg(BLOCK_CHAIN_SIZE)
-        .arg(2009)
-        .arg(tr("Bitcoin"))
-    );
+                                     .arg(tr(PACKAGE_NAME))
+                                     .arg(BLOCK_CHAIN_SIZE)
+                                     .arg(2009)
+                                     .arg(tr("GleecBTC")));
     ui->lblExplanation2->setText(ui->lblExplanation2->text().arg(tr(PACKAGE_NAME)));
 
     uint64_t pruneTarget = std::max<int64_t>(0, gArgs.GetArg("-prune", 0));
@@ -146,10 +140,9 @@ Intro::Intro(QWidget *parent) :
     }
     requiredSpace += CHAIN_STATE_SIZE;
     ui->sizeWarningLabel->setText(
-        tr("%1 will download and store a copy of the Bitcoin block chain.").arg(tr(PACKAGE_NAME)) + " " +
+        tr("%1 will download and store a copy of the GleecBTC block chain.").arg(tr(PACKAGE_NAME)) + " " +
         storageRequiresMsg.arg(requiredSpace) + " " +
-        tr("The wallet will also be stored in this directory.")
-    );
+        tr("The wallet will also be stored in this directory."));
     startThread();
 }
 
@@ -166,11 +159,10 @@ QString Intro::getDataDirectory()
     return ui->dataDirectory->text();
 }
 
-void Intro::setDataDirectory(const QString &dataDir)
+void Intro::setDataDirectory(const QString& dataDir)
 {
     ui->dataDirectory->setText(dataDir);
-    if(dataDir == getDefaultDataDirectory())
-    {
+    if (dataDir == getDefaultDataDirectory()) {
         ui->dataDirDefault->setChecked(true);
         ui->dataDirectory->setEnabled(false);
         ui->ellipsisButton->setEnabled(false);
@@ -191,24 +183,21 @@ bool Intro::pickDataDirectory()
     QSettings settings;
     /* If data directory provided on command line, no need to look at settings
        or show a picking dialog */
-    if(!gArgs.GetArg("-datadir", "").empty())
+    if (!gArgs.GetArg("-datadir", "").empty())
         return true;
     /* 1) Default data directory for operating system */
     QString dataDir = getDefaultDataDirectory();
     /* 2) Allow QSettings to override default dir */
     dataDir = settings.value("strDataDir", dataDir).toString();
 
-    if(!fs::exists(GUIUtil::qstringToBoostPath(dataDir)) || gArgs.GetBoolArg("-choosedatadir", DEFAULT_CHOOSE_DATADIR) || settings.value("fReset", false).toBool() || gArgs.GetBoolArg("-resetguisettings", false))
-    {
+    if (!fs::exists(GUIUtil::qstringToBoostPath(dataDir)) || gArgs.GetBoolArg("-choosedatadir", DEFAULT_CHOOSE_DATADIR) || settings.value("fReset", false).toBool() || gArgs.GetBoolArg("-resetguisettings", false)) {
         /* If current default data directory does not exist, let the user choose one */
         Intro intro;
         intro.setDataDirectory(dataDir);
-        intro.setWindowIcon(QIcon(":icons/bitcoin"));
+        intro.setWindowIcon(QIcon(":icons/gleecbtc"));
 
-        while(true)
-        {
-            if(!intro.exec())
-            {
+        while (true) {
+            if (!intro.exec()) {
                 /* Cancel clicked */
                 return false;
             }
@@ -227,18 +216,17 @@ bool Intro::pickDataDirectory()
         settings.setValue("fReset", false);
     }
     /* Only override -datadir if different from the default, to make it possible to
-     * override -datadir in the bitcoin.conf file in the default data directory
-     * (to be consistent with bitcoind behavior)
+     * override -datadir in the gleecbtc.conf file in the default data directory
+     * (to be consistent with gleecbtcd behavior)
      */
-    if(dataDir != getDefaultDataDirectory())
+    if (dataDir != getDefaultDataDirectory())
         gArgs.SoftSetArg("-datadir", GUIUtil::qstringToBoostPath(dataDir).string()); // use OS locale for path setting
     return true;
 }
 
-void Intro::setStatus(int status, const QString &message, quint64 bytesAvailable)
+void Intro::setStatus(int status, const QString& message, quint64 bytesAvailable)
 {
-    switch(status)
-    {
+    switch (status) {
     case FreespaceChecker::ST_OK:
         ui->errorMessage->setText(message);
         ui->errorMessage->setStyleSheet("");
@@ -249,13 +237,11 @@ void Intro::setStatus(int status, const QString &message, quint64 bytesAvailable
         break;
     }
     /* Indicate number of bytes available */
-    if(status == FreespaceChecker::ST_ERROR)
-    {
+    if (status == FreespaceChecker::ST_ERROR) {
         ui->freeSpace->setText("");
     } else {
-        QString freeString = tr("%n GB of free space available", "", bytesAvailable/GB_BYTES);
-        if(bytesAvailable < requiredSpace * GB_BYTES)
-        {
+        QString freeString = tr("%n GB of free space available", "", bytesAvailable / GB_BYTES);
+        if (bytesAvailable < requiredSpace * GB_BYTES) {
             freeString += " " + tr("(of %n GB needed)", "", requiredSpace);
             ui->freeSpace->setStyleSheet("QLabel { color: #800000 }");
         } else {
@@ -267,7 +253,7 @@ void Intro::setStatus(int status, const QString &message, quint64 bytesAvailable
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(status != FreespaceChecker::ST_ERROR);
 }
 
-void Intro::on_dataDirectory_textChanged(const QString &dataDirStr)
+void Intro::on_dataDirectory_textChanged(const QString& dataDirStr)
 {
     /* Disable OK button until check result comes in */
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
@@ -277,7 +263,7 @@ void Intro::on_dataDirectory_textChanged(const QString &dataDirStr)
 void Intro::on_ellipsisButton_clicked()
 {
     QString dir = QDir::toNativeSeparators(QFileDialog::getExistingDirectory(0, "Choose data directory", ui->dataDirectory->text()));
-    if(!dir.isEmpty())
+    if (!dir.isEmpty())
         ui->dataDirectory->setText(dir);
 }
 
@@ -295,10 +281,10 @@ void Intro::on_dataDirCustom_clicked()
 void Intro::startThread()
 {
     thread = new QThread(this);
-    FreespaceChecker *executor = new FreespaceChecker(this);
+    FreespaceChecker* executor = new FreespaceChecker(this);
     executor->moveToThread(thread);
 
-    connect(executor, SIGNAL(reply(int,QString,quint64)), this, SLOT(setStatus(int,QString,quint64)));
+    connect(executor, SIGNAL(reply(int, QString, quint64)), this, SLOT(setStatus(int, QString, quint64)));
     connect(this, SIGNAL(requestCheck()), executor, SLOT(check()));
     /*  make sure executor object is deleted in its own thread */
     connect(this, SIGNAL(stopThread()), executor, SLOT(deleteLater()));
@@ -307,12 +293,11 @@ void Intro::startThread()
     thread->start();
 }
 
-void Intro::checkPath(const QString &dataDir)
+void Intro::checkPath(const QString& dataDir)
 {
     mutex.lock();
     pathToCheck = dataDir;
-    if(!signalled)
-    {
+    if (!signalled) {
         signalled = true;
         Q_EMIT requestCheck();
     }

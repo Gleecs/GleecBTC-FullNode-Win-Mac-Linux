@@ -7,24 +7,24 @@
 #ifndef STORAGE_LEVELDB_DB_FILENAME_H_
 #define STORAGE_LEVELDB_DB_FILENAME_H_
 
-#include <stdint.h>
-#include <string>
 #include "leveldb/slice.h"
 #include "leveldb/status.h"
 #include "port/port.h"
+#include <stdint.h>
+#include <string>
 
-namespace leveldb {
-
+namespace leveldb
+{
 class Env;
 
 enum FileType {
-  kLogFile,
-  kDBLockFile,
-  kTableFile,
-  kDescriptorFile,
-  kCurrentFile,
-  kTempFile,
-  kInfoLogFile  // Either the current one, or an old one
+    kLogFile,
+    kDBLockFile,
+    kTableFile,
+    kDescriptorFile,
+    kCurrentFile,
+    kTempFile,
+    kInfoLogFile // Either the current one, or an old one
 };
 
 // Return the name of the log file with the specified number
@@ -46,7 +46,7 @@ extern std::string SSTTableFileName(const std::string& dbname, uint64_t number);
 // "dbname" and the specified incarnation number.  The result will be
 // prefixed with "dbname".
 extern std::string DescriptorFileName(const std::string& dbname,
-                                      uint64_t number);
+    uint64_t number);
 
 // Return the name of the current file.  This file contains the name
 // of the current manifest file.  The result will be prefixed with
@@ -71,15 +71,14 @@ extern std::string OldInfoLogFileName(const std::string& dbname);
 // The number encoded in the filename is stored in *number.  If the
 // filename was successfully parsed, returns true.  Else return false.
 extern bool ParseFileName(const std::string& filename,
-                          uint64_t* number,
-                          FileType* type);
+    uint64_t* number,
+    FileType* type);
 
 // Make the CURRENT file point to the descriptor file with the
 // specified number.
-extern Status SetCurrentFile(Env* env, const std::string& dbname,
-                             uint64_t descriptor_number);
+extern Status SetCurrentFile(Env* env, const std::string& dbname, uint64_t descriptor_number);
 
 
-}  // namespace leveldb
+} // namespace leveldb
 
-#endif  // STORAGE_LEVELDB_DB_FILENAME_H_
+#endif // STORAGE_LEVELDB_DB_FILENAME_H_

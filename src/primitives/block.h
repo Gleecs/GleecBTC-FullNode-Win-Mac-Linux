@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_PRIMITIVES_BLOCK_H
-#define BITCOIN_PRIMITIVES_BLOCK_H
+#ifndef GLEECGBC_PRIMITIVES_BLOCK_H
+#define GLEECGBC_PRIMITIVES_BLOCK_H
 
 #include "primitives/transaction.h"
 #include "serialize.h"
@@ -36,7 +36,8 @@ public:
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action) {
+    inline void SerializationOp(Stream& s, Operation ser_action)
+    {
         READWRITE(this->nVersion);
         READWRITE(hashPrevBlock);
         READWRITE(hashMerkleRoot);
@@ -83,7 +84,7 @@ public:
         SetNull();
     }
 
-    CBlock(const CBlockHeader &header)
+    CBlock(const CBlockHeader& header)
     {
         SetNull();
         *((CBlockHeader*)this) = header;
@@ -92,7 +93,8 @@ public:
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action) {
+    inline void SerializationOp(Stream& s, Operation ser_action)
+    {
         READWRITE(*(CBlockHeader*)this);
         READWRITE(vtx);
     }
@@ -107,12 +109,12 @@ public:
     CBlockHeader GetBlockHeader() const
     {
         CBlockHeader block;
-        block.nVersion       = nVersion;
-        block.hashPrevBlock  = hashPrevBlock;
+        block.nVersion = nVersion;
+        block.hashPrevBlock = hashPrevBlock;
         block.hashMerkleRoot = hashMerkleRoot;
-        block.nTime          = nTime;
-        block.nBits          = nBits;
-        block.nNonce         = nNonce;
+        block.nTime = nTime;
+        block.nBits = nBits;
+        block.nNonce = nNonce;
         return block;
     }
 
@@ -123,8 +125,7 @@ public:
  * other node doesn't have the same branch, it can find a recent common trunk.
  * The further back it is, the further before the fork it may be.
  */
-struct CBlockLocator
-{
+struct CBlockLocator {
     std::vector<uint256> vHave;
 
     CBlockLocator() {}
@@ -134,7 +135,8 @@ struct CBlockLocator
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action) {
+    inline void SerializationOp(Stream& s, Operation ser_action)
+    {
         int nVersion = s.GetVersion();
         if (!(s.GetType() & SER_GETHASH))
             READWRITE(nVersion);
@@ -152,4 +154,4 @@ struct CBlockLocator
     }
 };
 
-#endif // BITCOIN_PRIMITIVES_BLOCK_H
+#endif // GLEECGBC_PRIMITIVES_BLOCK_H

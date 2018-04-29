@@ -8,8 +8,8 @@
 #include "key.h"
 #include "keystore.h"
 #include "script/script.h"
-#include "script/standard.h"
 #include "script/sign.h"
+#include "script/standard.h"
 
 
 typedef std::vector<unsigned char> valtype;
@@ -17,8 +17,7 @@ typedef std::vector<unsigned char> valtype;
 unsigned int HaveKeys(const std::vector<valtype>& pubkeys, const CKeyStore& keystore)
 {
     unsigned int nResult = 0;
-    for (const valtype& pubkey : pubkeys)
-    {
+    for (const valtype& pubkey : pubkeys) {
         CKeyID keyID = CPubKey(pubkey).GetID();
         if (keystore.HaveKey(keyID))
             ++nResult;
@@ -38,14 +37,16 @@ isminetype IsMine(const CKeyStore& keystore, const CTxDestination& dest, SigVers
     return IsMine(keystore, dest, isInvalid, sigversion);
 }
 
-isminetype IsMine(const CKeyStore &keystore, const CTxDestination& dest, bool& isInvalid, SigVersion sigversion)
+isminetype IsMine(const CKeyStore& keystore, const CTxDestination& dest, bool& isInvalid, SigVersion sigversion)
 {
     CScript script = GetScriptForDestination(dest);
     return IsMine(keystore, script, isInvalid, sigversion);
 }
 
-isminetype IsMine(const CKeyStore &keystore, const CScript& scriptPubKey, bool& isInvalid, SigVersion sigversion)
+isminetype IsMine(const CKeyStore& keystore, const CScript& scriptPubKey, bool& isInvalid, SigVersion sigversion)
 {
+    isInvalid = false;
+
     std::vector<valtype> vSolutions;
     txnouttype whichType;
     if (!Solver(scriptPubKey, whichType, vSolutions)) {
@@ -55,8 +56,7 @@ isminetype IsMine(const CKeyStore &keystore, const CScript& scriptPubKey, bool& 
     }
 
     CKeyID keyID;
-    switch (whichType)
-    {
+    switch (whichType) {
     case TX_NONSTANDARD:
     case TX_NULL_DATA:
         break;
@@ -69,8 +69,7 @@ isminetype IsMine(const CKeyStore &keystore, const CScript& scriptPubKey, bool& 
         if (keystore.HaveKey(keyID))
             return ISMINE_SPENDABLE;
         break;
-    case TX_WITNESS_V0_KEYHASH:
-    {
+    case TX_WITNESS_V0_KEYHASH: {
         if (!keystore.HaveCScript(CScriptID(CScript() << OP_0 << vSolutions[0]))) {
             // We do not support bare witness outputs unless the P2SH version of it would be
             // acceptable as well. This protects against matching before segwit activates.
@@ -94,8 +93,7 @@ isminetype IsMine(const CKeyStore &keystore, const CScript& scriptPubKey, bool& 
         if (keystore.HaveKey(keyID))
             return ISMINE_SPENDABLE;
         break;
-    case TX_SCRIPTHASH:
-    {
+    case TX_SCRIPTHASH: {
         CScriptID scriptID = CScriptID(uint160(vSolutions[0]));
         CScript subscript;
         if (keystore.GetCScript(scriptID, subscript)) {
@@ -105,8 +103,7 @@ isminetype IsMine(const CKeyStore &keystore, const CScript& scriptPubKey, bool& 
         }
         break;
     }
-    case TX_WITNESS_V0_SCRIPTHASH:
-    {
+    case TX_WITNESS_V0_SCRIPTHASH: {
         if (!keystore.HaveCScript(CScriptID(CScript() << OP_0 << vSolutions[0]))) {
             break;
         }
@@ -122,14 +119,13 @@ isminetype IsMine(const CKeyStore &keystore, const CScript& scriptPubKey, bool& 
         break;
     }
 
-    case TX_MULTISIG:
-    {
+    case TX_MULTISIG: {
         // Only consider transactions "mine" if we own ALL the
         // keys involved. Multi-signature transactions that are
         // partially owned (somebody else has a key that can spend
         // them) enable spend-out-from-under-you attacks, especially
         // in shared-wallet situations.
-        std::vector<valtype> keys(vSolutions.begin()+1, vSolutions.begin()+vSolutions.size()-1);
+        std::vector<valtype> keys(vSolutions.begin() + 1, vSolutions.begin() + vSolutions.size() - 1);
         if (sigversion != SIGVERSION_BASE) {
             for (size_t i = 0; i < keys.size(); i++) {
                 if (keys[i].size() != 33) {

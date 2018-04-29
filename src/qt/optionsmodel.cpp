@@ -3,21 +3,21 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/bitcoin-config.h"
+#include "config/gleecbtc-config.h"
 #endif
 
 #include "optionsmodel.h"
 
-#include "bitcoinunits.h"
+#include "gleecbtcunits.h"
 #include "guiutil.h"
 
 #include "amount.h"
 #include "init.h"
-#include "validation.h" // For DEFAULT_SCRIPTCHECK_THREADS
+#include "intro.h"
 #include "net.h"
 #include "netbase.h"
 #include "txdb.h" // for -dbcache defaults
-#include "intro.h" 
+#include "validation.h" // For DEFAULT_SCRIPTCHECK_THREADS
 
 #ifdef ENABLE_WALLET
 #include "wallet/wallet.h"
@@ -28,13 +28,12 @@
 #include <QSettings>
 #include <QStringList>
 
-OptionsModel::OptionsModel(QObject *parent, bool resetSettings) :
-    QAbstractListModel(parent)
+OptionsModel::OptionsModel(QObject* parent, bool resetSettings) : QAbstractListModel(parent)
 {
     Init(resetSettings);
 }
 
-void OptionsModel::addOverriddenOption(const std::string &option)
+void OptionsModel::addOverriddenOption(const std::string& option)
 {
     strOverriddenByCommandLine += QString::fromStdString(option) + "=" + QString::fromStdString(gArgs.GetArg(option, "")) + " ";
 }
@@ -59,7 +58,7 @@ void OptionsModel::Init(bool resetSettings)
         settings.setValue("fHideTrayIcon", false);
     fHideTrayIcon = settings.value("fHideTrayIcon").toBool();
     Q_EMIT hideTrayIconChanged(fHideTrayIcon);
-    
+
     if (!settings.contains("fMinimizeToTray"))
         settings.setValue("fMinimizeToTray", false);
     fMinimizeToTray = settings.value("fMinimizeToTray").toBool() && !fHideTrayIcon;
@@ -70,7 +69,7 @@ void OptionsModel::Init(bool resetSettings)
 
     // Display
     if (!settings.contains("nDisplayUnit"))
-        settings.setValue("nDisplayUnit", BitcoinUnits::BTC);
+        settings.setValue("nDisplayUnit", GleecBTCUnits::GBC);
     nDisplayUnit = settings.value("nDisplayUnit").toInt();
 
     if (!settings.contains("strThirdPartyTxUrls"))
@@ -103,7 +102,7 @@ void OptionsModel::Init(bool resetSettings)
     if (!settings.contains("strDataDir"))
         settings.setValue("strDataDir", Intro::getDefaultDataDirectory());
 
-    // Wallet
+// Wallet
 #ifdef ENABLE_WALLET
     if (!settings.contains("bSpendZeroConfChange"))
         settings.setValue("bSpendZeroConfChange", true);
@@ -129,7 +128,7 @@ void OptionsModel::Init(bool resetSettings)
     // Only try to set -proxy, if user has enabled fUseProxy
     if (settings.value("fUseProxy").toBool() && !gArgs.SoftSetArg("-proxy", settings.value("addrProxy").toString().toStdString()))
         addOverriddenOption("-proxy");
-    else if(!settings.value("fUseProxy").toBool() && !gArgs.GetArg("-proxy", "").empty())
+    else if (!settings.value("fUseProxy").toBool() && !gArgs.GetArg("-proxy", "").empty())
         addOverriddenOption("-proxy");
 
     if (!settings.contains("fUseSeparateProxyTor"))
@@ -139,7 +138,7 @@ void OptionsModel::Init(bool resetSettings)
     // Only try to set -onion, if user has enabled fUseSeparateProxyTor
     if (settings.value("fUseSeparateProxyTor").toBool() && !gArgs.SoftSetArg("-onion", settings.value("addrSeparateProxyTor").toString().toStdString()))
         addOverriddenOption("-onion");
-    else if(!settings.value("fUseSeparateProxyTor").toBool() && !gArgs.GetArg("-onion", "").empty())
+    else if (!settings.value("fUseSeparateProxyTor").toBool() && !gArgs.GetArg("-onion", "").empty())
         addOverriddenOption("-onion");
 
     // Display
@@ -151,9 +150,31 @@ void OptionsModel::Init(bool resetSettings)
     language = settings.value("language").toString();
 }
 
+/** Helper function to copy contents from one QSettings to another.
+ * By using allKeys this also covers nested settings in a hierarchy.
+ */
+static void CopySettings(QSettings& dst, const QSettings& src)
+{
+    for (const QString& key : src.allKeys()) {
+        dst.setValue(key, src.value(key));
+    }
+}
+
+/** Back up a QSettings to an ini-formatted file. */
+static void BackupSettings(const fs::path& filename, const QSettings& src)
+{
+    qWarning() << "Backing up GUI settings to" << GUIUtil::boostPathToQString(filename);
+    QSettings dst(GUIUtil::boostPathToQString(filename), QSettings::IniFormat);
+    dst.clear();
+    CopySettings(dst, src);
+}
+
 void OptionsModel::Reset()
 {
     QSettings settings;
+
+    // Backup old settings to chain-specific datadir for troubleshooting
+    BackupSettings(GetDataDir(true) / "guisettings.ini.bak", settings);
 
     // Save the strDataDir setting
     QString dataDir = Intro::getDefaultDataDirectory();
@@ -173,19 +194,17 @@ void OptionsModel::Reset()
         GUIUtil::SetStartOnSystemStartup(false);
 }
 
-int OptionsModel::rowCount(const QModelIndex & parent) const
+int OptionsModel::rowCount(const QModelIndex& parent) const
 {
     return OptionIDRowCount;
 }
 
 // read QSettings values and return them
-QVariant OptionsModel::data(const QModelIndex & index, int role) const
+QVariant OptionsModel::data(const QModelIndex& index, int role) const
 {
-    if(role == Qt::EditRole)
-    {
+    if (role == Qt::EditRole) {
         QSettings settings;
-        switch(index.row())
-        {
+        switch (index.row()) {
         case StartAtStartup:
             return GUIUtil::GetStartOnSystemStartup();
         case HideTrayIcon:
@@ -255,21 +274,19 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
 }
 
 // write QSettings values
-bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, int role)
+bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
     bool successful = true; /* set to false on parse error */
-    if(role == Qt::EditRole)
-    {
+    if (role == Qt::EditRole) {
         QSettings settings;
-        switch(index.row())
-        {
+        switch (index.row()) {
         case StartAtStartup:
             successful = GUIUtil::SetStartOnSystemStartup(value.toBool());
             break;
         case HideTrayIcon:
             fHideTrayIcon = value.toBool();
             settings.setValue("fHideTrayIcon", fHideTrayIcon);
-    		Q_EMIT hideTrayIconChanged(fHideTrayIcon);
+            Q_EMIT hideTrayIconChanged(fHideTrayIcon);
             break;
         case MinimizeToTray:
             fMinimizeToTray = value.toBool();
@@ -301,8 +318,7 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
                 settings.setValue("addrProxy", strNewValue);
                 setRestartRequired(true);
             }
-        }
-        break;
+        } break;
         case ProxyPort: {
             // contains current IP at index 0 and current port at index 1
             QStringList strlIpPort = settings.value("addrProxy").toString().split(":", QString::SkipEmptyParts);
@@ -313,8 +329,7 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
                 settings.setValue("addrProxy", strNewValue);
                 setRestartRequired(true);
             }
-        }
-        break;
+        } break;
 
         // separate Tor proxy
         case ProxyUseTor:
@@ -333,8 +348,7 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
                 settings.setValue("addrSeparateProxyTor", strNewValue);
                 setRestartRequired(true);
             }
-        }
-        break;
+        } break;
         case ProxyPortTor: {
             // contains current IP at index 0 and current port at index 1
             QStringList strlIpPort = settings.value("addrSeparateProxyTor").toString().split(":", QString::SkipEmptyParts);
@@ -345,8 +359,7 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
                 settings.setValue("addrSeparateProxyTor", strNewValue);
                 setRestartRequired(true);
             }
-        }
-        break;
+        } break;
 
 #ifdef ENABLE_WALLET
         case SpendZeroConfChange:
@@ -406,10 +419,9 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
 }
 
 /** Updates current unit in memory, settings and emits displayUnitChanged(newUnit) signal */
-void OptionsModel::setDisplayUnit(const QVariant &value)
+void OptionsModel::setDisplayUnit(const QVariant& value)
 {
-    if (!value.isNull())
-    {
+    if (!value.isNull()) {
         QSettings settings;
         nDisplayUnit = value.toInt();
         settings.setValue("nDisplayUnit", nDisplayUnit);
@@ -428,8 +440,7 @@ bool OptionsModel::getProxySettings(QNetworkProxy& proxy) const
         proxy.setPort(curProxy.proxy.GetPort());
 
         return true;
-    }
-    else
+    } else
         proxy.setType(QNetworkProxy::NoProxy);
 
     return false;
@@ -454,10 +465,9 @@ void OptionsModel::checkAndMigrate()
     QSettings settings;
     static const char strSettingsVersionKey[] = "nSettingsVersion";
     int settingsVersion = settings.contains(strSettingsVersionKey) ? settings.value(strSettingsVersionKey).toInt() : 0;
-    if (settingsVersion < CLIENT_VERSION)
-    {
+    if (settingsVersion < CLIENT_VERSION) {
         // -dbcache was bumped from 100 to 300 in 0.13
-        // see https://github.com/bitcoin/bitcoin/pull/8273
+        // see https://github.com/gleecbtc/gleecbtc/pull/8273
         // force people to upgrade to the new value if they are using 100MB
         if (settingsVersion < 130000 && settings.contains("nDatabaseCache") && settings.value("nDatabaseCache").toLongLong() == 100)
             settings.setValue("nDatabaseCache", (qint64)nDefaultDbCache);

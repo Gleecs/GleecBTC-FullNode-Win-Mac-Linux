@@ -4,7 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/bitcoin-config.h"
+#include "config/gleecbtc-config.h"
 #endif
 
 #include "util.h"
@@ -43,10 +43,10 @@
 #else
 
 #ifdef _MSC_VER
-#pragma warning(disable:4786)
-#pragma warning(disable:4804)
-#pragma warning(disable:4805)
-#pragma warning(disable:4717)
+#pragma warning(disable : 4786)
+#pragma warning(disable : 4804)
+#pragma warning(disable : 4805)
+#pragma warning(disable : 4717)
 #endif
 
 #ifdef _WIN32_WINNT
@@ -80,15 +80,15 @@
 #include <boost/algorithm/string/predicate.hpp> // for startswith() and endswith()
 #include <boost/program_options/detail/config_file.hpp>
 #include <boost/thread.hpp>
+#include <openssl/conf.h>
 #include <openssl/crypto.h>
 #include <openssl/rand.h>
-#include <openssl/conf.h>
 
 // Application startup time (used for uptime calculation)
 const int64_t nStartupTime = GetTime();
 
-const char * const BITCOIN_CONF_FILENAME = "bitcoin.conf";
-const char * const BITCOIN_PID_FILENAME = "bitcoind.pid";
+const char* const GLEECGBC_CONF_FILENAME = "gleecbtc.conf";
+const char* const GLEECGBC_PID_FILENAME = "gleecbtcd.pid";
 
 ArgsManager gArgs;
 bool fPrintToConsole = false;
@@ -148,8 +148,7 @@ public:
         // Clear the set of locks now to maintain symmetry with the constructor.
         ppmutexOpenSSL.reset();
     }
-}
-instance_of_cinit;
+} instance_of_cinit;
 
 /**
  * LogPrintf() has been broken a couple of times now
@@ -177,7 +176,7 @@ static FILE* fileout = nullptr;
 static boost::mutex* mutexDebugLog = nullptr;
 static std::list<std::string>* vMsgsBeforeOpenLog;
 
-static int FileWriteStr(const std::string &str, FILE *fp)
+static int FileWriteStr(const std::string& str, FILE* fp)
 {
     return fwrite(str.data(), 1, str.size(), fp);
 }
@@ -211,41 +210,40 @@ void OpenDebugLog()
     vMsgsBeforeOpenLog = nullptr;
 }
 
-struct CLogCategoryDesc
-{
+struct CLogCategoryDesc {
     uint32_t flag;
     std::string category;
 };
 
 const CLogCategoryDesc LogCategories[] =
-{
-    {BCLog::NONE, "0"},
-    {BCLog::NET, "net"},
-    {BCLog::TOR, "tor"},
-    {BCLog::MEMPOOL, "mempool"},
-    {BCLog::HTTP, "http"},
-    {BCLog::BENCH, "bench"},
-    {BCLog::ZMQ, "zmq"},
-    {BCLog::DB, "db"},
-    {BCLog::RPC, "rpc"},
-    {BCLog::ESTIMATEFEE, "estimatefee"},
-    {BCLog::ADDRMAN, "addrman"},
-    {BCLog::SELECTCOINS, "selectcoins"},
-    {BCLog::REINDEX, "reindex"},
-    {BCLog::CMPCTBLOCK, "cmpctblock"},
-    {BCLog::RAND, "rand"},
-    {BCLog::PRUNE, "prune"},
-    {BCLog::PROXY, "proxy"},
-    {BCLog::MEMPOOLREJ, "mempoolrej"},
-    {BCLog::LIBEVENT, "libevent"},
-    {BCLog::COINDB, "coindb"},
-    {BCLog::QT, "qt"},
-    {BCLog::LEVELDB, "leveldb"},
-    {BCLog::ALL, "1"},
-    {BCLog::ALL, "all"},
+    {
+        {BCLog::NONE, "0"},
+        {BCLog::NET, "net"},
+        {BCLog::TOR, "tor"},
+        {BCLog::MEMPOOL, "mempool"},
+        {BCLog::HTTP, "http"},
+        {BCLog::BENCH, "bench"},
+        {BCLog::ZMQ, "zmq"},
+        {BCLog::DB, "db"},
+        {BCLog::RPC, "rpc"},
+        {BCLog::ESTIMATEFEE, "estimatefee"},
+        {BCLog::ADDRMAN, "addrman"},
+        {BCLog::SELECTCOINS, "selectcoins"},
+        {BCLog::REINDEX, "reindex"},
+        {BCLog::CMPCTBLOCK, "cmpctblock"},
+        {BCLog::RAND, "rand"},
+        {BCLog::PRUNE, "prune"},
+        {BCLog::PROXY, "proxy"},
+        {BCLog::MEMPOOLREJ, "mempoolrej"},
+        {BCLog::LIBEVENT, "libevent"},
+        {BCLog::COINDB, "coindb"},
+        {BCLog::QT, "qt"},
+        {BCLog::LEVELDB, "leveldb"},
+        {BCLog::ALL, "1"},
+        {BCLog::ALL, "all"},
 };
 
-bool GetLogCategory(uint32_t *f, const std::string *str)
+bool GetLogCategory(uint32_t* f, const std::string* str)
 {
     if (f && str) {
         if (*str == "") {
@@ -297,7 +295,7 @@ std::vector<CLogCategoryActive> ListActiveLogCategories()
  * suppress printing of the timestamp when multiple calls are made that don't
  * end in a newline. Initialize it to true, and hold it, in the calling context.
  */
-static std::string LogTimestampStr(const std::string &str, std::atomic_bool *fStartedNewLine)
+static std::string LogTimestampStr(const std::string& str, std::atomic_bool* fStartedNewLine)
 {
     std::string strStamped;
 
@@ -306,9 +304,9 @@ static std::string LogTimestampStr(const std::string &str, std::atomic_bool *fSt
 
     if (*fStartedNewLine) {
         int64_t nTimeMicros = GetTimeMicros();
-        strStamped = DateTimeStrFormat("%Y-%m-%d %H:%M:%S", nTimeMicros/1000000);
+        strStamped = DateTimeStrFormat("%Y-%m-%d %H:%M:%S", nTimeMicros / 1000000);
         if (fLogTimeMicros)
-            strStamped += strprintf(".%06d", nTimeMicros%1000000);
+            strStamped += strprintf(".%06d", nTimeMicros % 1000000);
         int64_t mocktime = GetMockTime();
         if (mocktime) {
             strStamped += " (mocktime: " + DateTimeStrFormat("%Y-%m-%d %H:%M:%S", mocktime) + ")";
@@ -317,7 +315,7 @@ static std::string LogTimestampStr(const std::string &str, std::atomic_bool *fSt
     } else
         strStamped = str;
 
-    if (!str.empty() && str[str.size()-1] == '\n')
+    if (!str.empty() && str[str.size() - 1] == '\n')
         *fStartedNewLine = true;
     else
         *fStartedNewLine = false;
@@ -325,21 +323,18 @@ static std::string LogTimestampStr(const std::string &str, std::atomic_bool *fSt
     return strStamped;
 }
 
-int LogPrintStr(const std::string &str)
+int LogPrintStr(const std::string& str)
 {
     int ret = 0; // Returns total number of characters written
     static std::atomic_bool fStartedNewLine(true);
 
     std::string strTimestamped = LogTimestampStr(str, &fStartedNewLine);
 
-    if (fPrintToConsole)
-    {
+    if (fPrintToConsole) {
         // print to console
         ret = fwrite(strTimestamped.data(), 1, strTimestamped.size(), stdout);
         fflush(stdout);
-    }
-    else if (fPrintToDebugLog)
-    {
+    } else if (fPrintToDebugLog) {
         boost::call_once(&DebugPrintInit, debugPrintInitFlag);
         boost::mutex::scoped_lock scoped_lock(*mutexDebugLog);
 
@@ -348,14 +343,12 @@ int LogPrintStr(const std::string &str)
             assert(vMsgsBeforeOpenLog);
             ret = strTimestamped.length();
             vMsgsBeforeOpenLog->push_back(strTimestamped);
-        }
-        else
-        {
+        } else {
             // reopen the log file, if requested
             if (fReopenDebugLog) {
                 fReopenDebugLog = false;
                 fs::path pathDebug = GetDataDir() / "debug.log";
-                if (fsbridge::freopen(pathDebug,"a",fileout) != nullptr)
+                if (fsbridge::freopen(pathDebug, "a", fileout) != nullptr)
                     setbuf(fileout, nullptr); // unbuffered
             }
 
@@ -376,8 +369,7 @@ static bool InterpretBool(const std::string& strValue)
 /** Turn -noX into -X=0 */
 static void InterpretNegativeSetting(std::string& strKey, std::string& strValue)
 {
-    if (strKey.length()>3 && strKey[0]=='-' && strKey[1]=='n' && strKey[2]=='o')
-    {
+    if (strKey.length() > 3 && strKey[0] == '-' && strKey[1] == 'n' && strKey[2] == 'o') {
         strKey = "-" + strKey.substr(3);
         strValue = InterpretBool(strValue) ? "0" : "1";
     }
@@ -389,14 +381,12 @@ void ArgsManager::ParseParameters(int argc, const char* const argv[])
     mapArgs.clear();
     mapMultiArgs.clear();
 
-    for (int i = 1; i < argc; i++)
-    {
+    for (int i = 1; i < argc; i++) {
         std::string str(argv[i]);
         std::string strValue;
         size_t is_index = str.find('=');
-        if (is_index != std::string::npos)
-        {
-            strValue = str.substr(is_index+1);
+        if (is_index != std::string::npos) {
+            strValue = str.substr(is_index + 1);
             str = str.substr(0, is_index);
         }
 #ifdef WIN32
@@ -483,18 +473,19 @@ void ArgsManager::ForceSetArg(const std::string& strArg, const std::string& strV
 }
 
 
-
 static const int screenWidth = 79;
 static const int optIndent = 2;
 static const int msgIndent = 7;
 
-std::string HelpMessageGroup(const std::string &message) {
+std::string HelpMessageGroup(const std::string& message)
+{
     return std::string(message) + std::string("\n\n");
 }
 
-std::string HelpMessageOpt(const std::string &option, const std::string &message) {
-    return std::string(optIndent,' ') + std::string(option) +
-           std::string("\n") + std::string(msgIndent,' ') +
+std::string HelpMessageOpt(const std::string& option, const std::string& message)
+{
+    return std::string(optIndent, ' ') + std::string(option) +
+           std::string("\n") + std::string(msgIndent, ' ') +
            FormatParagraph(message, screenWidth - msgIndent, msgIndent) +
            std::string("\n\n");
 }
@@ -505,7 +496,7 @@ static std::string FormatException(const std::exception* pex, const char* pszThr
     char pszModule[MAX_PATH] = "";
     GetModuleFileNameA(nullptr, pszModule, sizeof(pszModule));
 #else
-    const char* pszModule = "bitcoin";
+    const char* pszModule = "gleecbtc";
 #endif
     if (pex)
         return strprintf(
@@ -524,13 +515,13 @@ void PrintExceptionContinue(const std::exception* pex, const char* pszThread)
 
 fs::path GetDefaultDataDir()
 {
-    // Windows < Vista: C:\Documents and Settings\Username\Application Data\Bitcoin
-    // Windows >= Vista: C:\Users\Username\AppData\Roaming\Bitcoin
-    // Mac: ~/Library/Application Support/Bitcoin
-    // Unix: ~/.bitcoin
+// Windows < Vista: C:\Documents and Settings\Username\Application Data\GleecBTC
+// Windows >= Vista: C:\Users\Username\AppData\Roaming\GleecBTC
+// Mac: ~/Library/Application Support/GleecBTC
+// Unix: ~/.gleecbtc
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "Bitcoin";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "GleecBTC";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -540,10 +531,10 @@ fs::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/Bitcoin";
+    return pathRet / "Library/Application Support/GleecBTC";
 #else
     // Unix
-    return pathRet / ".bitcoin";
+    return pathRet / ".gleecbtc";
 #endif
 #endif
 }
@@ -552,12 +543,11 @@ static fs::path pathCached;
 static fs::path pathCachedNetSpecific;
 static CCriticalSection csPathCached;
 
-const fs::path &GetDataDir(bool fNetSpecific)
+const fs::path& GetDataDir(bool fNetSpecific)
 {
-
     LOCK(csPathCached);
 
-    fs::path &path = fNetSpecific ? pathCachedNetSpecific : pathCached;
+    fs::path& path = fNetSpecific ? pathCachedNetSpecific : pathCached;
 
     // This can be called during exceptions by LogPrintf(), so we cache the
     // value so we don't have to do memory allocations after that.
@@ -602,16 +592,15 @@ void ArgsManager::ReadConfigFile(const std::string& confPath)
 {
     fs::ifstream streamConfig(GetConfigFile(confPath));
     if (!streamConfig.good())
-        return; // No bitcoin.conf file is OK
+        return; // No gleecbtc.conf file is OK
 
     {
         LOCK(cs_args);
         std::set<std::string> setOptions;
         setOptions.insert("*");
 
-        for (boost::program_options::detail::config_file_iterator it(streamConfig, setOptions), end; it != end; ++it)
-        {
-            // Don't overwrite existing settings so command line settings override bitcoin.conf
+        for (boost::program_options::detail::config_file_iterator it(streamConfig, setOptions), end; it != end; ++it) {
+            // Don't overwrite existing settings so command line settings override gleecbtc.conf
             std::string strKey = std::string("-") + it->string_key;
             std::string strValue = it->value[0];
             InterpretNegativeSetting(strKey, strValue);
@@ -627,16 +616,15 @@ void ArgsManager::ReadConfigFile(const std::string& confPath)
 #ifndef WIN32
 fs::path GetPidFile()
 {
-    fs::path pathPidFile(gArgs.GetArg("-pid", BITCOIN_PID_FILENAME));
+    fs::path pathPidFile(gArgs.GetArg("-pid", GLEECGBC_PID_FILENAME));
     if (!pathPidFile.is_complete()) pathPidFile = GetDataDir() / pathPidFile;
     return pathPidFile;
 }
 
-void CreatePidFile(const fs::path &path, pid_t pid)
+void CreatePidFile(const fs::path& path, pid_t pid)
 {
     FILE* file = fsbridge::fopen(path, "w");
-    if (file)
-    {
+    if (file) {
         fprintf(file, "%d\n", pid);
         fclose(file);
     }
@@ -647,7 +635,7 @@ bool RenameOver(fs::path src, fs::path dest)
 {
 #ifdef WIN32
     return MoveFileExA(src.string().c_str(), dest.string().c_str(),
-                       MOVEFILE_REPLACE_EXISTING) != 0;
+               MOVEFILE_REPLACE_EXISTING) != 0;
 #else
     int rc = std::rename(src.string().c_str(), dest.string().c_str());
     return (rc == 0);
@@ -661,8 +649,7 @@ bool RenameOver(fs::path src, fs::path dest)
  */
 bool TryCreateDirectories(const fs::path& p)
 {
-    try
-    {
+    try {
         return fs::create_directories(p);
     } catch (const fs::filesystem_error&) {
         if (!fs::exists(p) || !fs::is_directory(p))
@@ -673,24 +660,25 @@ bool TryCreateDirectories(const fs::path& p)
     return false;
 }
 
-void FileCommit(FILE *file)
+void FileCommit(FILE* file)
 {
     fflush(file); // harmless if redundantly called
 #ifdef WIN32
     HANDLE hFile = (HANDLE)_get_osfhandle(_fileno(file));
     FlushFileBuffers(hFile);
 #else
-    #if defined(__linux__) || defined(__NetBSD__)
+#if defined(__linux__) || defined(__NetBSD__)
     fdatasync(fileno(file));
-    #elif defined(__APPLE__) && defined(F_FULLFSYNC)
+#elif defined(__APPLE__) && defined(F_FULLFSYNC)
     fcntl(fileno(file), F_FULLFSYNC, 0);
-    #else
+#else
     fsync(fileno(file));
-    #endif
+#endif
 #endif
 }
 
-bool TruncateFile(FILE *file, unsigned int length) {
+bool TruncateFile(FILE* file, unsigned int length)
+{
 #if defined(WIN32)
     return _chsize(_fileno(file), length) == 0;
 #else
@@ -702,7 +690,8 @@ bool TruncateFile(FILE *file, unsigned int length) {
  * this function tries to raise the file descriptor limit to the requested number.
  * It returns the actual file descriptor limit (which may be more or less than nMinFD)
  */
-int RaiseFileDescriptorLimit(int nMinFD) {
+int RaiseFileDescriptorLimit(int nMinFD)
+{
 #if defined(WIN32)
     return 2048;
 #else
@@ -725,7 +714,8 @@ int RaiseFileDescriptorLimit(int nMinFD) {
  * this function tries to make a particular range of a file allocated (corresponding to disk space)
  * it is advisory, and the range specified in the arguments will never contain live data
  */
-void AllocateFileRange(FILE *file, unsigned int offset, unsigned int length) {
+void AllocateFileRange(FILE* file, unsigned int offset, unsigned int length)
+{
 #if defined(WIN32)
     // Windows-specific version
     HANDLE hFile = (HANDLE)_get_osfhandle(_fileno(file));
@@ -776,8 +766,7 @@ void ShrinkDebugFile()
     FILE* file = fsbridge::fopen(pathLog, "r");
     // If debug.log file is more than 10% bigger the RECENT_DEBUG_HISTORY_SIZE
     // trim it down by saving only the last RECENT_DEBUG_HISTORY_SIZE bytes
-    if (file && fs::file_size(pathLog) > 11 * (RECENT_DEBUG_HISTORY_SIZE / 10))
-    {
+    if (file && fs::file_size(pathLog) > 11 * (RECENT_DEBUG_HISTORY_SIZE / 10)) {
         // Restart the file with some of the end
         std::vector<char> vch(RECENT_DEBUG_HISTORY_SIZE, 0);
         fseek(file, -((long)vch.size()), SEEK_END);
@@ -785,13 +774,11 @@ void ShrinkDebugFile()
         fclose(file);
 
         file = fsbridge::fopen(pathLog, "w");
-        if (file)
-        {
+        if (file) {
             fwrite(vch.data(), 1, nBytes, file);
             fclose(file);
         }
-    }
-    else if (file != nullptr)
+    } else if (file != nullptr)
         fclose(file);
 }
 
@@ -800,8 +787,7 @@ fs::path GetSpecialFolderPath(int nFolder, bool fCreate)
 {
     char pszPath[MAX_PATH] = "";
 
-    if(SHGetSpecialFolderPathA(nullptr, pszPath, nFolder, fCreate))
-    {
+    if (SHGetSpecialFolderPathA(nullptr, pszPath, nFolder, fCreate)) {
         return fs::path(pszPath);
     }
 
@@ -845,8 +831,8 @@ void SetupEnvironment()
         mallopt(M_ARENA_MAX, 1);
     }
 #endif
-    // On most POSIX systems (e.g. Linux, but not BSD) the environment's locale
-    // may be invalid, in which case the "C" locale is used as fallback.
+// On most POSIX systems (e.g. Linux, but not BSD) the environment's locale
+// may be invalid, in which case the "C" locale is used as fallback.
 #if !defined(WIN32) && !defined(MAC_OSX) && !defined(__FreeBSD__) && !defined(__OpenBSD__)
     try {
         std::locale(""); // Raises a runtime error if current locale is invalid
@@ -867,8 +853,8 @@ bool SetupNetworking()
 #ifdef WIN32
     // Initialize Windows Sockets
     WSADATA wsadata;
-    int ret = WSAStartup(MAKEWORD(2,2), &wsadata);
-    if (ret != NO_ERROR || LOBYTE(wsadata.wVersion ) != 2 || HIBYTE(wsadata.wVersion) != 2)
+    int ret = WSAStartup(MAKEWORD(2, 2), &wsadata);
+    if (ret != NO_ERROR || LOBYTE(wsadata.wVersion) != 2 || HIBYTE(wsadata.wVersion) != 2)
         return false;
 #endif
     return true;
@@ -887,8 +873,8 @@ std::string CopyrightHolders(const std::string& strPrefix)
 {
     std::string strCopyrightHolders = strPrefix + strprintf(_(COPYRIGHT_HOLDERS), _(COPYRIGHT_HOLDERS_SUBSTITUTION));
 
-    // Check for untranslated substitution to make sure Bitcoin Core copyright is not removed by accident
-    if (strprintf(COPYRIGHT_HOLDERS, COPYRIGHT_HOLDERS_SUBSTITUTION).find("Bitcoin Core") == std::string::npos) {
+    // Check for untranslated substitution to make sure GleecBTC Core copyright is not removed by accident
+    if (strprintf(COPYRIGHT_HOLDERS, COPYRIGHT_HOLDERS_SUBSTITUTION).find("GleecBTC Core") == std::string::npos) {
         strCopyrightHolders += "\n" + strPrefix + "The Bitcoin Core developers";
     }
     return strCopyrightHolders;

@@ -3,19 +3,19 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/bitcoin-config.h"
+#include "config/gleecbtc-config.h"
 #endif
 
 #include "utilitydialog.h"
 
 #include "ui_helpmessagedialog.h"
 
-#include "bitcoingui.h"
+#include "gleecbtcgui.h"
 #include "clientmodel.h"
 #include "guiconstants.h"
+#include "guiutil.h"
 #include "intro.h"
 #include "paymentrequestplus.h"
-#include "guiutil.h"
 
 #include "clientversion.h"
 #include "init.h"
@@ -26,29 +26,27 @@
 #include <QCloseEvent>
 #include <QLabel>
 #include <QRegExp>
-#include <QTextTable>
 #include <QTextCursor>
+#include <QTextTable>
 #include <QVBoxLayout>
 
 /** "Help message" or "About" dialog box */
-HelpMessageDialog::HelpMessageDialog(QWidget *parent, bool about) :
-    QDialog(parent),
-    ui(new Ui::HelpMessageDialog)
+HelpMessageDialog::HelpMessageDialog(QWidget* parent, bool about) : QDialog(parent),
+                                                                    ui(new Ui::HelpMessageDialog)
 {
     ui->setupUi(this);
 
     QString version = tr(PACKAGE_NAME) + " " + tr("version") + " " + QString::fromStdString(FormatFullVersion());
-    /* On x86 add a bit specifier to the version so that users can distinguish between
+/* On x86 add a bit specifier to the version so that users can distinguish between
      * 32 and 64 bit builds. On other architectures, 32/64 bit may be more ambiguous.
      */
 #if defined(__x86_64__)
     version += " " + tr("(%1-bit)").arg(64);
-#elif defined(__i386__ )
+#elif defined(__i386__)
     version += " " + tr("(%1-bit)").arg(32);
 #endif
 
-    if (about)
-    {
+    if (about) {
         setWindowTitle(tr("About %1").arg(tr(PACKAGE_NAME)));
 
         /// HTML-format the license message from the core
@@ -70,14 +68,14 @@ HelpMessageDialog::HelpMessageDialog(QWidget *parent, bool about) :
     } else {
         setWindowTitle(tr("Command-line options"));
         QString header = tr("Usage:") + "\n" +
-            "  bitcoin-qt [" + tr("command-line options") + "]                     " + "\n";
+                         "  gleecbtc-qt [" + tr("command-line options") + "]                     " + "\n";
         QTextCursor cursor(ui->helpMessage->document());
         cursor.insertText(version);
         cursor.insertBlock();
         cursor.insertText(header);
         cursor.insertBlock();
 
-        std::string strUsage = HelpMessage(HMM_BITCOIN_QT);
+        std::string strUsage = HelpMessage(HMM_GLEECGBC_QT);
         const bool showDebug = gArgs.GetBoolArg("-help-debug", false);
         strUsage += HelpMessageGroup(tr("UI Options:").toStdString());
         if (showDebug) {
@@ -90,7 +88,7 @@ HelpMessageDialog::HelpMessageDialog(QWidget *parent, bool about) :
         strUsage += HelpMessageOpt("-splash", strprintf(tr("Show splash screen on startup (default: %u)").toStdString(), DEFAULT_SPLASHSCREEN));
         strUsage += HelpMessageOpt("-resetguisettings", tr("Reset all settings changed in the GUI").toStdString());
         if (showDebug) {
-            strUsage += HelpMessageOpt("-uiplatform", strprintf("Select platform to customize UI for (one of windows, macosx, other; default: %s)", BitcoinGUI::DEFAULT_UIPLATFORM));
+            strUsage += HelpMessageOpt("-uiplatform", strprintf("Select platform to customize UI for (one of windows, macosx, other; default: %s)", GleecBTCGUI::DEFAULT_UIPLATFORM));
         }
         QString coreOptions = QString::fromStdString(strUsage);
         text = version + "\n" + header + "\n" + coreOptions;
@@ -106,16 +104,15 @@ HelpMessageDialog::HelpMessageDialog(QWidget *parent, bool about) :
         QTextCharFormat bold;
         bold.setFontWeight(QFont::Bold);
 
-        for (const QString &line : coreOptions.split("\n")) {
-            if (line.startsWith("  -"))
-            {
+        for (const QString& line : coreOptions.split("\n")) {
+            if (line.startsWith("  -")) {
                 cursor.currentTable()->appendRows(1);
                 cursor.movePosition(QTextCursor::PreviousCell);
                 cursor.movePosition(QTextCursor::NextRow);
                 cursor.insertText(line.trimmed());
                 cursor.movePosition(QTextCursor::NextCell);
             } else if (line.startsWith("   ")) {
-                cursor.insertText(line.trimmed()+' ');
+                cursor.insertText(line.trimmed() + ' ');
             } else if (line.size() > 0) {
                 //Title of a group
                 if (cursor.currentTable())
@@ -161,23 +158,22 @@ void HelpMessageDialog::on_okButton_accepted()
 
 
 /** "Shutdown" window */
-ShutdownWindow::ShutdownWindow(QWidget *parent, Qt::WindowFlags f):
-    QWidget(parent, f)
+ShutdownWindow::ShutdownWindow(QWidget* parent, Qt::WindowFlags f) : QWidget(parent, f)
 {
-    QVBoxLayout *layout = new QVBoxLayout();
+    QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(new QLabel(
         tr("%1 is shutting down...").arg(tr(PACKAGE_NAME)) + "<br /><br />" +
         tr("Do not shut down the computer until this window disappears.")));
     setLayout(layout);
 }
 
-QWidget *ShutdownWindow::showShutdownWindow(BitcoinGUI *window)
+QWidget* ShutdownWindow::showShutdownWindow(GleecBTCGUI* window)
 {
     if (!window)
         return nullptr;
 
     // Show a simple window indicating shutdown status
-    QWidget *shutdownWindow = new ShutdownWindow();
+    QWidget* shutdownWindow = new ShutdownWindow();
     shutdownWindow->setWindowTitle(window->windowTitle());
 
     // Center shutdown window at where main window was
@@ -187,7 +183,7 @@ QWidget *ShutdownWindow::showShutdownWindow(BitcoinGUI *window)
     return shutdownWindow;
 }
 
-void ShutdownWindow::closeEvent(QCloseEvent *event)
+void ShutdownWindow::closeEvent(QCloseEvent* event)
 {
     event->ignore();
 }

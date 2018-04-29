@@ -53,9 +53,9 @@
 
 #include <secp256k1.h>
 
-# ifdef __cplusplus
+#ifdef __cplusplus
 extern "C" {
-# endif
+#endif
 
 /** Parse a signature in "lax DER" format
  *
@@ -80,9 +80,8 @@ extern "C" {
 int ecdsa_signature_parse_der_lax(
     const secp256k1_context* ctx,
     secp256k1_ecdsa_signature* sig,
-    const unsigned char *input,
-    size_t inputlen
-) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3);
+    const unsigned char* input,
+    size_t inputlen) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3);
 
 #ifdef __cplusplus
 }

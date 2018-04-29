@@ -2,14 +2,14 @@
 // Copyright (c) 2009-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
-#ifndef BITCOIN_POLICYESTIMATOR_H
-#define BITCOIN_POLICYESTIMATOR_H
+#ifndef GLEECGBC_POLICYESTIMATOR_H
+#define GLEECGBC_POLICYESTIMATOR_H
 
 #include "amount.h"
 #include "feerate.h"
-#include "uint256.h"
 #include "random.h"
 #include "sync.h"
+#include "uint256.h"
 
 #include <map>
 #include <string>
@@ -94,16 +94,15 @@ std::string StringForFeeReason(FeeReason reason);
 
 /* Used to determine type of fee estimation requested */
 enum class FeeEstimateMode {
-    UNSET,        //! Use default settings based on other criteria
-    ECONOMICAL,   //! Force estimateSmartFee to use non-conservative estimates
+    UNSET, //! Use default settings based on other criteria
+    ECONOMICAL, //! Force estimateSmartFee to use non-conservative estimates
     CONSERVATIVE, //! Force estimateSmartFee to use conservative estimates
 };
 
 bool FeeModeFromString(const std::string& mode_string, FeeEstimateMode& fee_estimate_mode);
 
 /* Used to return detailed information about a feerate bucket */
-struct EstimatorBucket
-{
+struct EstimatorBucket {
     double start = -1;
     double end = -1;
     double withinTarget = 0;
@@ -113,16 +112,14 @@ struct EstimatorBucket
 };
 
 /* Used to return detailed information about a fee estimate calculation */
-struct EstimationResult
-{
+struct EstimationResult {
     EstimatorBucket pass;
     EstimatorBucket fail;
     double decay = 0;
     unsigned int scale = 0;
 };
 
-struct FeeCalculation
-{
+struct FeeCalculation {
     EstimationResult est;
     FeeReason reason = FeeReason::NONE;
     int desiredTarget = 0;
@@ -192,7 +189,7 @@ public:
 
     /** Process all the transactions that have been included in a block */
     void processBlock(unsigned int nBlockHeight,
-                      std::vector<const CTxMemPoolEntry*>& entries);
+        std::vector<const CTxMemPoolEntry*>& entries);
 
     /** Process a transaction accepted to the mempool*/
     void processTransaction(const CTxMemPoolEntry& entry, bool validFeeEstimate);
@@ -208,13 +205,13 @@ public:
      *  the closest target where one can be given.  'conservative' estimates are
      *  valid over longer time horizons also.
      */
-    CFeeRate estimateSmartFee(int confTarget, FeeCalculation *feeCalc, bool conservative) const;
+    CFeeRate estimateSmartFee(int confTarget, FeeCalculation* feeCalc, bool conservative) const;
 
     /** Return a specific fee estimate calculation with a given success
      * threshold and time horizon, and optionally return detailed data about
      * calculation
      */
-    CFeeRate estimateRawFee(int confTarget, double successThreshold, FeeEstimateHorizon horizon, EstimationResult *result = nullptr) const;
+    CFeeRate estimateRawFee(int confTarget, double successThreshold, FeeEstimateHorizon horizon, EstimationResult* result = nullptr) const;
 
     /** Write estimation data to a file */
     bool Write(CAutoFile& fileout) const;
@@ -234,8 +231,7 @@ private:
     unsigned int historicalFirst;
     unsigned int historicalBest;
 
-    struct TxStatsInfo
-    {
+    struct TxStatsInfo {
         unsigned int blockHeight;
         unsigned int bucketIndex;
         TxStatsInfo() : blockHeight(0), bucketIndex(0) {}
@@ -252,7 +248,7 @@ private:
     unsigned int trackedTxs;
     unsigned int untrackedTxs;
 
-    std::vector<double> buckets;              // The upper-bound of the range for the bucket (inclusive)
+    std::vector<double> buckets; // The upper-bound of the range for the bucket (inclusive)
     std::map<double, unsigned int> bucketMap; // Map of bucket upper-bound to index into all vectors by bucket
 
     mutable CCriticalSection cs_feeEstimator;
@@ -261,9 +257,9 @@ private:
     bool processBlockTx(unsigned int nBlockHeight, const CTxMemPoolEntry* entry);
 
     /** Helper for estimateSmartFee */
-    double estimateCombinedFee(unsigned int confTarget, double successThreshold, bool checkShorterHorizon, EstimationResult *result) const;
+    double estimateCombinedFee(unsigned int confTarget, double successThreshold, bool checkShorterHorizon, EstimationResult* result) const;
     /** Helper for estimateSmartFee */
-    double estimateConservativeFee(unsigned int doubleTarget, EstimationResult *result) const;
+    double estimateConservativeFee(unsigned int doubleTarget, EstimationResult* result) const;
     /** Number of blocks of data recorded while fee estimates have been running */
     unsigned int BlockSpan() const;
     /** Number of blocks of recorded fee estimate data represented in saved data file */
@@ -294,4 +290,4 @@ private:
     FastRandomContext insecure_rand;
 };
 
-#endif /*BITCOIN_POLICYESTIMATOR_H */
+#endif /*GLEECGBC_POLICYESTIMATOR_H */

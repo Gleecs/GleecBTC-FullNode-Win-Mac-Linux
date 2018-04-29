@@ -12,11 +12,11 @@
 #include "utiltime.h"
 #include "version.h"
 
-#include <stdint.h>
 #include <fstream>
+#include <stdint.h>
 
 /**
- * JSON-RPC protocol.  Bitcoin speaks version 1.0 for maximum compatibility,
+ * JSON-RPC protocol.  GleecBTC speaks version 1.0 for maximum compatibility,
  * but uses JSON-RPC 1.1/2.0 standards for parts of the 1.0 standard that were
  * unspecified (HTTP errors and contents of 'error').
  * 
@@ -66,32 +66,43 @@ static const std::string COOKIEAUTH_USER = "__cookie__";
 /** Default name for auth cookie file */
 static const std::string COOKIEAUTH_FILE = ".cookie";
 
-fs::path GetAuthCookieFile()
+/** Get name of RPC authentication cookie file */
+static fs::path GetAuthCookieFile(bool temp = false)
 {
-    fs::path path(gArgs.GetArg("-rpccookiefile", COOKIEAUTH_FILE));
+    std::string arg = gArgs.GetArg("-rpccookiefile", COOKIEAUTH_FILE);
+    if (temp) {
+        arg += ".tmp";
+    }
+    fs::path path(arg);
     if (!path.is_complete()) path = GetDataDir() / path;
     return path;
 }
 
-bool GenerateAuthCookie(std::string *cookie_out)
+bool GenerateAuthCookie(std::string* cookie_out)
 {
     const size_t COOKIE_SIZE = 32;
     unsigned char rand_pwd[COOKIE_SIZE];
     GetRandBytes(rand_pwd, COOKIE_SIZE);
-    std::string cookie = COOKIEAUTH_USER + ":" + HexStr(rand_pwd, rand_pwd+COOKIE_SIZE);
+    std::string cookie = COOKIEAUTH_USER + ":" + HexStr(rand_pwd, rand_pwd + COOKIE_SIZE);
 
     /** the umask determines what permissions are used to create this file -
      * these are set to 077 in init.cpp unless overridden with -sysperms.
      */
     std::ofstream file;
-    fs::path filepath = GetAuthCookieFile();
-    file.open(filepath.string().c_str());
+    fs::path filepath_tmp = GetAuthCookieFile(true);
+    file.open(filepath_tmp.string().c_str());
     if (!file.is_open()) {
-        LogPrintf("Unable to open cookie authentication file %s for writing\n", filepath.string());
+        LogPrintf("Unable to open cookie authentication file %s for writing\n", filepath_tmp.string());
         return false;
     }
     file << cookie;
     file.close();
+
+    fs::path filepath = GetAuthCookieFile(false);
+    if (!RenameOver(filepath_tmp, filepath)) {
+        LogPrintf("Unable to rename cookie authentication file %s to %s\n", filepath_tmp.string(), filepath.string());
+        return false;
+    }
     LogPrintf("Generated RPC authentication cookie %s\n", filepath.string());
 
     if (cookie_out)
@@ -99,7 +110,7 @@ bool GenerateAuthCookie(std::string *cookie_out)
     return true;
 }
 
-bool GetAuthCookie(std::string *cookie_out)
+bool GetAuthCookie(std::string* cookie_out)
 {
     std::ifstream file;
     std::string cookie;
@@ -123,4 +134,3 @@ void DeleteAuthCookie()
         LogPrintf("%s: Unable to remove random auth cookie file: %s\n", __func__, e.what());
     }
 }
-

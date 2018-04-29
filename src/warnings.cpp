@@ -3,10 +3,10 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "sync.h"
-#include "clientversion.h"
-#include "util.h"
 #include "warnings.h"
+#include "clientversion.h"
+#include "sync.h"
+#include "util.h"
 
 CCriticalSection cs_warnings;
 std::string strMiscWarning;
@@ -55,19 +55,15 @@ std::string GetWarnings(const std::string& strFor)
         strStatusBar = strRPC = strGUI = "testsafemode enabled";
 
     // Misc warnings like out of disk space and clock is wrong
-    if (strMiscWarning != "")
-    {
+    if (strMiscWarning != "") {
         strStatusBar = strMiscWarning;
         strGUI += (strGUI.empty() ? "" : uiAlertSeperator) + strMiscWarning;
     }
 
-    if (fLargeWorkForkFound)
-    {
+    if (fLargeWorkForkFound) {
         strStatusBar = strRPC = "Warning: The network does not appear to fully agree! Some miners appear to be experiencing issues.";
         strGUI += (strGUI.empty() ? "" : uiAlertSeperator) + _("Warning: The network does not appear to fully agree! Some miners appear to be experiencing issues.");
-    }
-    else if (fLargeWorkInvalidChainFound)
-    {
+    } else if (fLargeWorkInvalidChainFound) {
         strStatusBar = strRPC = "Warning: We do not appear to fully agree with our peers! You may need to upgrade, or other nodes may need to upgrade.";
         strGUI += (strGUI.empty() ? "" : uiAlertSeperator) + _("Warning: We do not appear to fully agree with our peers! You may need to upgrade, or other nodes may need to upgrade.");
     }

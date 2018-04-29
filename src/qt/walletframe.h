@@ -2,13 +2,13 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_WALLETFRAME_H
-#define BITCOIN_QT_WALLETFRAME_H
+#ifndef GLEECGBC_QT_WALLETFRAME_H
+#define GLEECGBC_QT_WALLETFRAME_H
 
 #include <QFrame>
 #include <QMap>
 
-class BitcoinGUI;
+class GleecBTCGUI;
 class ClientModel;
 class PlatformStyle;
 class SendCoinsRecipient;
@@ -21,9 +21,9 @@ QT_END_NAMESPACE
 
 /**
  * A container for embedding all wallet-related
- * controls into BitcoinGUI. The purpose of this class is to allow future
+ * controls into GleecBTCGUI. The purpose of this class is to allow future
  * refinements of the wallet controls with minimal need for further
- * modifications to BitcoinGUI, thus greatly simplifying merges while
+ * modifications to GleecBTCGUI, thus greatly simplifying merges while
  * reducing the risk of breaking top-level stuff.
  */
 class WalletFrame : public QFrame
@@ -31,14 +31,14 @@ class WalletFrame : public QFrame
     Q_OBJECT
 
 public:
-    explicit WalletFrame(const PlatformStyle *platformStyle, BitcoinGUI *_gui = 0);
+    explicit WalletFrame(const PlatformStyle* platformStyle, GleecBTCGUI* _gui = 0);
     ~WalletFrame();
 
-    void setClientModel(ClientModel *clientModel);
+    void setClientModel(ClientModel* clientModel);
 
-    bool addWallet(const QString& name, WalletModel *walletModel);
+    bool addWallet(const QString& name, WalletModel* walletModel);
     bool setCurrentWallet(const QString& name);
-    bool removeWallet(const QString &name);
+    bool removeWallet(const QString& name);
     void removeAllWallets();
 
     bool handlePaymentRequest(const SendCoinsRecipient& recipient);
@@ -50,16 +50,16 @@ Q_SIGNALS:
     void requestedSyncWarningInfo();
 
 private:
-    QStackedWidget *walletStack;
-    BitcoinGUI *gui;
-    ClientModel *clientModel;
+    QStackedWidget* walletStack;
+    GleecBTCGUI* gui;
+    ClientModel* clientModel;
     QMap<QString, WalletView*> mapWalletViews;
 
     bool bOutOfSync;
 
-    const PlatformStyle *platformStyle;
+    const PlatformStyle* platformStyle;
 
-    WalletView *currentWalletView();
+    WalletView* currentWalletView();
 
 public Q_SLOTS:
     /** Switch to overview (home) page */
@@ -93,4 +93,4 @@ public Q_SLOTS:
     void outOfSyncWarningClicked();
 };
 
-#endif // BITCOIN_QT_WALLETFRAME_H
+#endif // GLEECGBC_QT_WALLETFRAME_H

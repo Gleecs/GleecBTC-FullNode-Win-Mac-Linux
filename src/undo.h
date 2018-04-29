@@ -3,10 +3,10 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_UNDO_H
-#define BITCOIN_UNDO_H
+#ifndef GLEECGBC_UNDO_H
+#define GLEECGBC_UNDO_H
 
-#include "compressor.h" 
+#include "compressor.h"
 #include "consensus/consensus.h"
 #include "primitives/transaction.h"
 #include "serialize.h"
@@ -23,8 +23,9 @@ class TxInUndoSerializer
     const Coin* txout;
 
 public:
-    template<typename Stream>
-    void Serialize(Stream &s) const {
+    template <typename Stream>
+    void Serialize(Stream& s) const
+    {
         ::Serialize(s, VARINT(txout->nHeight * 2 + (txout->fCoinBase ? 1 : 0)));
         if (txout->nHeight > 0) {
             // Required to maintain compatibility with older undo format.
@@ -41,8 +42,9 @@ class TxInUndoDeserializer
     Coin* txout;
 
 public:
-    template<typename Stream>
-    void Unserialize(Stream &s) {
+    template <typename Stream>
+    void Unserialize(Stream& s)
+    {
         unsigned int nCode = 0;
         ::Unserialize(s, VARINT(nCode));
         txout->nHeight = nCode / 2;
@@ -71,7 +73,8 @@ public:
     std::vector<Coin> vprevout;
 
     template <typename Stream>
-    void Serialize(Stream& s) const {
+    void Serialize(Stream& s) const
+    {
         // TODO: avoid reimplementing vector serializer
         uint64_t count = vprevout.size();
         ::Serialize(s, COMPACTSIZE(REF(count)));
@@ -81,7 +84,8 @@ public:
     }
 
     template <typename Stream>
-    void Unserialize(Stream& s) {
+    void Unserialize(Stream& s)
+    {
         // TODO: avoid reimplementing vector deserializer
         uint64_t count = 0;
         ::Unserialize(s, COMPACTSIZE(count));
@@ -104,9 +108,10 @@ public:
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action) {
+    inline void SerializationOp(Stream& s, Operation ser_action)
+    {
         READWRITE(vtxundo);
     }
 };
 
-#endif // BITCOIN_UNDO_H
+#endif // GLEECGBC_UNDO_H

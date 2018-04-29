@@ -8,12 +8,14 @@
 
 #include <string>
 
+
+
 /**
  * Name of client reported in the 'version' message. Report the same name
- * for both bitcoind and bitcoin-core, to make it harder for attackers to
+ * for both gleecbtcd and gleecbtc-core, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
-const std::string CLIENT_NAME("Satoshi");
+const std::string CLIENT_NAME("GleecGBC");
 
 /**
  * Client version number
@@ -83,18 +85,17 @@ std::string FormatFullVersion()
 }
 
 /** 
- * Format the subversion field according to BIP 14 spec (https://github.com/bitcoin/bips/blob/master/bip-0014.mediawiki) 
+ * Format the subversion field according to BIP 14 spec (https://github.com/gleecbtc/bips/blob/master/bip-0014.mediawiki) 
  */
 std::string FormatSubVersion(const std::string& name, int nClientVersion, const std::vector<std::string>& comments)
 {
     std::ostringstream ss;
     ss << "/";
     ss << name << ":" << FormatVersion(nClientVersion);
-    if (!comments.empty())
-    {
+    if (!comments.empty()) {
         std::vector<std::string>::const_iterator it(comments.begin());
         ss << "(" << *it;
-        for(++it; it != comments.end(); ++it)
+        for (++it; it != comments.end(); ++it)
             ss << "; " << *it;
         ss << ")";
     }

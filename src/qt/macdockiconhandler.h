@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_MACDOCKICONHANDLER_H
-#define BITCOIN_QT_MACDOCKICONHANDLER_H
+#ifndef GLEECGBC_QT_MACDOCKICONHANDLER_H
+#define GLEECGBC_QT_MACDOCKICONHANDLER_H
 
 #include <QMainWindow>
 #include <QObject>
@@ -23,10 +23,10 @@ class MacDockIconHandler : public QObject
 public:
     ~MacDockIconHandler();
 
-    QMenu *dockMenu();
-    void setIcon(const QIcon &icon);
-    void setMainWindow(QMainWindow *window);
-    static MacDockIconHandler *instance();
+    QMenu* dockMenu();
+    void setIcon(const QIcon& icon);
+    void setMainWindow(QMainWindow* window);
+    static MacDockIconHandler* instance();
     static void cleanup();
     void handleDockIconClickEvent();
 
@@ -36,9 +36,9 @@ Q_SIGNALS:
 private:
     MacDockIconHandler();
 
-    QWidget *m_dummyWidget;
-    QMenu *m_dockMenu;
-    QMainWindow *mainWindow;
+    QWidget* m_dummyWidget;
+    QMenu* m_dockMenu;
+    QMainWindow* mainWindow;
 };
 
-#endif // BITCOIN_QT_MACDOCKICONHANDLER_H
+#endif // GLEECGBC_QT_MACDOCKICONHANDLER_H

@@ -3,17 +3,16 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_CONSENSUS_PARAMS_H
-#define BITCOIN_CONSENSUS_PARAMS_H
+#ifndef GLEECGBC_CONSENSUS_PARAMS_H
+#define GLEECGBC_CONSENSUS_PARAMS_H
 
 #include "uint256.h"
 #include <map>
 #include <string>
 
-namespace Consensus {
-
-enum DeploymentPos
+namespace Consensus
 {
+enum DeploymentPos {
     DEPLOYMENT_TESTDUMMY,
     DEPLOYMENT_CSV, // Deployment of BIP68, BIP112, and BIP113.
     DEPLOYMENT_SEGWIT, // Deployment of BIP141, BIP143, and BIP147.
@@ -66,4 +65,4 @@ struct Params {
 };
 } // namespace Consensus
 
-#endif // BITCOIN_CONSENSUS_PARAMS_H
+#endif // GLEECGBC_CONSENSUS_PARAMS_H

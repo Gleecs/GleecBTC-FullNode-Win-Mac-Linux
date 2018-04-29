@@ -8,13 +8,13 @@
 #ifndef STORAGE_LEVELDB_UTIL_LOGGING_H_
 #define STORAGE_LEVELDB_UTIL_LOGGING_H_
 
-#include <stdio.h>
-#include <stdint.h>
-#include <string>
 #include "port/port.h"
+#include <stdint.h>
+#include <stdio.h>
+#include <string>
 
-namespace leveldb {
-
+namespace leveldb
+{
 class Slice;
 class WritableFile;
 
@@ -38,6 +38,6 @@ extern std::string EscapeString(const Slice& value);
 // unspecified state.
 extern bool ConsumeDecimalNumber(Slice* in, uint64_t* val);
 
-}  // namespace leveldb
+} // namespace leveldb
 
-#endif  // STORAGE_LEVELDB_UTIL_LOGGING_H_
+#endif // STORAGE_LEVELDB_UTIL_LOGGING_H_

@@ -20,12 +20,12 @@
 #include <QFileOpenEvent>
 #include <QTemporaryFile>
 
-X509 *parse_b64der_cert(const char* cert_data)
+X509* parse_b64der_cert(const char* cert_data)
 {
     std::vector<unsigned char> data = DecodeBase64(cert_data);
     assert(data.size() > 0);
     const unsigned char* dptr = &data[0];
-    X509 *cert = d2i_X509(nullptr, &dptr, data.size());
+    X509* cert = d2i_X509(nullptr, &dptr, data.size());
     assert(cert);
     return cert;
 }
@@ -188,14 +188,14 @@ void PaymentServerTests::paymentServerTests()
     // compares 50001 <= BIP70_MAX_PAYMENTREQUEST_SIZE == false
     QCOMPARE(PaymentServer::verifySize(tempFile.size()), false);
 
-    // Payment request with amount overflow (amount is set to 21000001 BTC):
+    // Payment request with amount overflow (amount is set to 21000001 GBC):
     data = DecodeBase64(paymentrequest5_cert2_BASE64);
     byteArray = QByteArray((const char*)&data[0], data.size());
     r.paymentRequest.parse(byteArray);
     // Ensure the request is initialized
     QVERIFY(r.paymentRequest.IsInitialized());
     // Extract address and amount from the request
-    QList<std::pair<CScript, CAmount> > sendingTos = r.paymentRequest.getPayTo();
+    QList<std::pair<CScript, CAmount>> sendingTos = r.paymentRequest.getPayTo();
     for (const std::pair<CScript, CAmount>& sendingTo : sendingTos) {
         CTxDestination dest;
         if (ExtractDestination(sendingTo.first, dest))

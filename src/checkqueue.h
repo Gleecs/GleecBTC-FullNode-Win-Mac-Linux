@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_CHECKQUEUE_H
-#define BITCOIN_CHECKQUEUE_H
+#ifndef GLEECGBC_CHECKQUEUE_H
+#define GLEECGBC_CHECKQUEUE_H
 
 #include "sync.h"
 
@@ -163,7 +163,6 @@ public:
     ~CCheckQueue()
     {
     }
-
 };
 
 /** 
@@ -174,14 +173,14 @@ template <typename T>
 class CCheckQueueControl
 {
 private:
-    CCheckQueue<T> * const pqueue;
+    CCheckQueue<T>* const pqueue;
     bool fDone;
 
 public:
     CCheckQueueControl() = delete;
     CCheckQueueControl(const CCheckQueueControl&) = delete;
     CCheckQueueControl& operator=(const CCheckQueueControl&) = delete;
-    explicit CCheckQueueControl(CCheckQueue<T> * const pqueueIn) : pqueue(pqueueIn), fDone(false)
+    explicit CCheckQueueControl(CCheckQueue<T>* const pqueueIn) : pqueue(pqueueIn), fDone(false)
     {
         // passed queue is supposed to be unused, or nullptr
         if (pqueue != nullptr) {
@@ -214,4 +213,4 @@ public:
     }
 };
 
-#endif // BITCOIN_CHECKQUEUE_H
+#endif // GLEECGBC_CHECKQUEUE_H

@@ -2,18 +2,18 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "consensus/validation.h"
-#include "wallet/coincontrol.h"
 #include "wallet/feebumper.h"
-#include "wallet/wallet.h"
+#include "consensus/validation.h"
+#include "net.h"
 #include "policy/fees.h"
 #include "policy/policy.h"
 #include "policy/rbf.h"
-#include "validation.h" //for mempool access
 #include "txmempool.h"
-#include "utilmoneystr.h"
 #include "util.h"
-#include "net.h"
+#include "utilmoneystr.h"
+#include "validation.h" //for mempool access
+#include "wallet/coincontrol.h"
+#include "wallet/wallet.h"
 
 // Calculate the size of the transaction assuming all signatures are max size
 // Use DummySignatureCreator, which inserts 72 byte signatures everywhere.
@@ -22,7 +22,7 @@
 // calculation, but we should be able to refactor after priority is removed).
 // NOTE: this requires that all inputs must be in mapWallet (eg the tx should
 // be IsAllFromMe).
-int64_t CalculateMaximumSignedTxSize(const CTransaction &tx, const CWallet *pWallet)
+int64_t CalculateMaximumSignedTxSize(const CTransaction& tx, const CWallet* pWallet)
 {
     CMutableTransaction txNew(tx);
     std::vector<CInputCoin> vCoins;
@@ -42,7 +42,8 @@ int64_t CalculateMaximumSignedTxSize(const CTransaction &tx, const CWallet *pWal
     return GetVirtualTransactionSize(txNew);
 }
 
-bool CFeeBumper::preconditionChecks(const CWallet *pWallet, const CWalletTx& wtx) {
+bool CFeeBumper::preconditionChecks(const CWallet* pWallet, const CWalletTx& wtx)
+{
     if (pWallet->HasWalletSpend(wtx.GetHash())) {
         vErrors.push_back("Transaction has descendants in the wallet");
         currentResult = BumpFeeResult::INVALID_PARAMETER;
@@ -67,11 +68,10 @@ bool CFeeBumper::preconditionChecks(const CWallet *pWallet, const CWalletTx& wtx
     return true;
 }
 
-CFeeBumper::CFeeBumper(const CWallet *pWallet, const uint256 txidIn, const CCoinControl& coin_control, CAmount totalFee)
-    :
-    txid(std::move(txidIn)),
-    nOldFee(0),
-    nNewFee(0)
+CFeeBumper::CFeeBumper(const CWallet* pWallet, const uint256 txidIn, const CCoinControl& coin_control, CAmount totalFee)
+    : txid(std::move(txidIn)),
+      nOldFee(0),
+      nNewFee(0)
 {
     vErrors.clear();
     bumpedTxid.SetNull();
@@ -152,14 +152,14 @@ CFeeBumper::CFeeBumper(const CWallet *pWallet, const uint256 txidIn, const CCoin
         CAmount minTotalFee = nOldFeeRate.GetFee(maxNewTxSize) + ::incrementalRelayFee.GetFee(maxNewTxSize);
         if (totalFee < minTotalFee) {
             vErrors.push_back(strprintf("Insufficient totalFee, must be at least %s (oldFee %s + incrementalFee %s)",
-                                                                FormatMoney(minTotalFee), FormatMoney(nOldFeeRate.GetFee(maxNewTxSize)), FormatMoney(::incrementalRelayFee.GetFee(maxNewTxSize))));
+                FormatMoney(minTotalFee), FormatMoney(nOldFeeRate.GetFee(maxNewTxSize)), FormatMoney(::incrementalRelayFee.GetFee(maxNewTxSize))));
             currentResult = BumpFeeResult::INVALID_PARAMETER;
             return;
         }
         CAmount requiredFee = CWallet::GetRequiredFee(maxNewTxSize);
         if (totalFee < requiredFee) {
             vErrors.push_back(strprintf("Insufficient totalFee (cannot be less than required fee %s)",
-                                                                FormatMoney(requiredFee)));
+                FormatMoney(requiredFee)));
             currentResult = BumpFeeResult::INVALID_PARAMETER;
             return;
         }
@@ -181,12 +181,12 @@ CFeeBumper::CFeeBumper(const CWallet *pWallet, const uint256 txidIn, const CCoin
     }
 
     // Check that in all cases the new fee doesn't violate maxTxFee
-     if (nNewFee > maxTxFee) {
-         vErrors.push_back(strprintf("Specified or calculated fee %s is too high (cannot be higher than maxTxFee %s)",
-                               FormatMoney(nNewFee), FormatMoney(maxTxFee)));
-         currentResult = BumpFeeResult::WALLET_ERROR;
-         return;
-     }
+    if (nNewFee > maxTxFee) {
+        vErrors.push_back(strprintf("Specified or calculated fee %s is too high (cannot be higher than maxTxFee %s)",
+            FormatMoney(nNewFee), FormatMoney(maxTxFee)));
+        currentResult = BumpFeeResult::WALLET_ERROR;
+        return;
+    }
 
     // check that fee rate is higher than mempool's minimum fee
     // (no point in bumping fee if we know that the new tx won't be accepted to the mempool)
@@ -204,7 +204,7 @@ CFeeBumper::CFeeBumper(const CWallet *pWallet, const uint256 txidIn, const CCoin
     // If the output is not large enough to pay the fee, fail.
     CAmount nDelta = nNewFee - nOldFee;
     assert(nDelta > 0);
-    mtx =  *wtx.tx;
+    mtx = *wtx.tx;
     CTxOut* poutput = &(mtx.vout[nOutput]);
     if (poutput->nValue < nDelta) {
         vErrors.push_back("Change output is too small to bump the fee");
@@ -230,12 +230,12 @@ CFeeBumper::CFeeBumper(const CWallet *pWallet, const uint256 txidIn, const CCoin
     currentResult = BumpFeeResult::OK;
 }
 
-bool CFeeBumper::signTransaction(CWallet *pWallet)
+bool CFeeBumper::signTransaction(CWallet* pWallet)
 {
-     return pWallet->SignTransaction(mtx);
+    return pWallet->SignTransaction(mtx);
 }
 
-bool CFeeBumper::commit(CWallet *pWallet)
+bool CFeeBumper::commit(CWallet* pWallet)
 {
     AssertLockHeld(pWallet->cs_wallet);
     if (!vErrors.empty() || currentResult != BumpFeeResult::OK) {
@@ -286,4 +286,3 @@ bool CFeeBumper::commit(CWallet *pWallet)
     }
     return true;
 }
-

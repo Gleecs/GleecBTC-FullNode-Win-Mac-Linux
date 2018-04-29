@@ -2,16 +2,16 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_CHAINPARAMSBASE_H
-#define BITCOIN_CHAINPARAMSBASE_H
+#ifndef GLEECGBC_CHAINPARAMSBASE_H
+#define GLEECGBC_CHAINPARAMSBASE_H
 
 #include <memory>
 #include <string>
 #include <vector>
 
 /**
- * CBaseChainParams defines the base parameters (shared between bitcoin-cli and bitcoind)
- * of a given instance of the Bitcoin system.
+ * CBaseChainParams defines the base parameters (shared between gleecbtc-cli and gleecbtcd)
+ * of a given instance of the GleecBTC system.
  */
 class CBaseChainParams
 {
@@ -42,7 +42,7 @@ std::unique_ptr<CBaseChainParams> CreateBaseChainParams(const std::string& chain
  * Append the help messages for the chainparams options to the
  * parameter string.
  */
-void AppendParamsHelpMessages(std::string& strUsage, bool debugHelp=true);
+void AppendParamsHelpMessages(std::string& strUsage, bool debugHelp = true);
 
 /**
  * Return the currently selected parameters. This won't change after app
@@ -59,4 +59,4 @@ void SelectBaseParams(const std::string& chain);
  */
 std::string ChainNameFromCommandLine();
 
-#endif // BITCOIN_CHAINPARAMSBASE_H
+#endif // GLEECGBC_CHAINPARAMSBASE_H

@@ -13,8 +13,7 @@
 class JSONUTF8StringFilter
 {
 public:
-    JSONUTF8StringFilter(std::string &s):
-        str(s), is_valid(true), codepoint(0), state(0), surpair(0)
+    JSONUTF8StringFilter(std::string& s) : str(s), is_valid(true), codepoint(0), state(0), surpair(0)
     {
     }
     // Write single 8-bit char (may be part of UTF-8 sequence)
@@ -58,7 +57,7 @@ public:
         } else if (codepoint >= 0xDC00 && codepoint < 0xE000) { // Second half of surrogate pair
             if (surpair) { // Open surrogate pair, expect second half
                 // Compute code point from UTF-16 surrogate pair
-                append_codepoint(0x10000 | ((surpair - 0xD800)<<10) | (codepoint - 0xDC00));
+                append_codepoint(0x10000 | ((surpair - 0xD800) << 10) | (codepoint - 0xDC00));
                 surpair = 0;
             } else // Second half doesn't follow a first half - fail
                 is_valid = false;
@@ -77,8 +76,9 @@ public:
             is_valid = false;
         return is_valid;
     }
+
 private:
-    std::string &str;
+    std::string& str;
     bool is_valid;
     // Current UTF-8 decoding state
     unsigned int codepoint;

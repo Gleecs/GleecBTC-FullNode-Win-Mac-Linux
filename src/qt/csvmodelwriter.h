@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_CSVMODELWRITER_H
-#define BITCOIN_QT_CSVMODELWRITER_H
+#ifndef GLEECGBC_QT_CSVMODELWRITER_H
+#define GLEECGBC_QT_CSVMODELWRITER_H
 
 #include <QList>
 #include <QObject>
@@ -20,10 +20,10 @@ class CSVModelWriter : public QObject
     Q_OBJECT
 
 public:
-    explicit CSVModelWriter(const QString &filename, QObject *parent = 0);
+    explicit CSVModelWriter(const QString& filename, QObject* parent = 0);
 
-    void setModel(const QAbstractItemModel *model);
-    void addColumn(const QString &title, int column, int role=Qt::EditRole);
+    void setModel(const QAbstractItemModel* model);
+    void addColumn(const QString& title, int column, int role = Qt::EditRole);
 
     /** Perform export of the model to CSV.
         @returns true on success, false otherwise
@@ -32,10 +32,9 @@ public:
 
 private:
     QString filename;
-    const QAbstractItemModel *model;
+    const QAbstractItemModel* model;
 
-    struct Column
-    {
+    struct Column {
         QString title;
         int column;
         int role;
@@ -43,4 +42,4 @@ private:
     QList<Column> columns;
 };
 
-#endif // BITCOIN_QT_CSVMODELWRITER_H
+#endif // GLEECGBC_QT_CSVMODELWRITER_H

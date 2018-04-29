@@ -3,14 +3,14 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_CONSENSUS_VALIDATION_H
-#define BITCOIN_CONSENSUS_VALIDATION_H
+#ifndef GLEECGBC_CONSENSUS_VALIDATION_H
+#define GLEECGBC_CONSENSUS_VALIDATION_H
 
-#include <string>
-#include "version.h"
 #include "consensus/consensus.h"
-#include "primitives/transaction.h"
 #include "primitives/block.h"
+#include "primitives/transaction.h"
+#include "version.h"
+#include <string>
 
 /** "reject" message codes */
 static const unsigned char REJECT_MALFORMED = 0x01;
@@ -23,24 +23,24 @@ static const unsigned char REJECT_INSUFFICIENTFEE = 0x42;
 static const unsigned char REJECT_CHECKPOINT = 0x43;
 
 /** Capture information about block/transaction validation */
-class CValidationState {
+class CValidationState
+{
 private:
     enum mode_state {
-        MODE_VALID,   //!< everything ok
+        MODE_VALID, //!< everything ok
         MODE_INVALID, //!< network rule violation (DoS value may be set)
-        MODE_ERROR,   //!< run-time error
+        MODE_ERROR, //!< run-time error
     } mode;
     int nDoS;
     std::string strRejectReason;
     unsigned int chRejectCode;
     bool corruptionPossible;
     std::string strDebugMessage;
+
 public:
     CValidationState() : mode(MODE_VALID), nDoS(0), chRejectCode(0), corruptionPossible(false) {}
-    bool DoS(int level, bool ret = false,
-             unsigned int chRejectCodeIn=0, const std::string &strRejectReasonIn="",
-             bool corruptionIn=false,
-             const std::string &strDebugMessageIn="") {
+    bool DoS(int level, bool ret = false, unsigned int chRejectCodeIn = 0, const std::string& strRejectReasonIn = "", bool corruptionIn = false, const std::string& strDebugMessageIn = "")
+    {
         chRejectCode = chRejectCodeIn;
         strRejectReason = strRejectReasonIn;
         corruptionPossible = corruptionIn;
@@ -52,36 +52,45 @@ public:
         return ret;
     }
     bool Invalid(bool ret = false,
-                 unsigned int _chRejectCode=0, const std::string &_strRejectReason="",
-                 const std::string &_strDebugMessage="") {
+        unsigned int _chRejectCode = 0,
+        const std::string& _strRejectReason = "",
+        const std::string& _strDebugMessage = "")
+    {
         return DoS(0, ret, _chRejectCode, _strRejectReason, false, _strDebugMessage);
     }
-    bool Error(const std::string& strRejectReasonIn) {
+    bool Error(const std::string& strRejectReasonIn)
+    {
         if (mode == MODE_VALID)
             strRejectReason = strRejectReasonIn;
         mode = MODE_ERROR;
         return false;
     }
-    bool IsValid() const {
+    bool IsValid() const
+    {
         return mode == MODE_VALID;
     }
-    bool IsInvalid() const {
+    bool IsInvalid() const
+    {
         return mode == MODE_INVALID;
     }
-    bool IsError() const {
+    bool IsError() const
+    {
         return mode == MODE_ERROR;
     }
-    bool IsInvalid(int &nDoSOut) const {
+    bool IsInvalid(int& nDoSOut) const
+    {
         if (IsInvalid()) {
             nDoSOut = nDoS;
             return true;
         }
         return false;
     }
-    bool CorruptionPossible() const {
+    bool CorruptionPossible() const
+    {
         return corruptionPossible;
     }
-    void SetCorruptionPossible() {
+    void SetCorruptionPossible()
+    {
         corruptionPossible = true;
     }
     unsigned int GetRejectCode() const { return chRejectCode; }
@@ -91,7 +100,7 @@ public:
 
 static inline int64_t GetTransactionWeight(const CTransaction& tx)
 {
-    return ::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) * (WITNESS_SCALE_FACTOR -1) + ::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION);
+    return ::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) * (WITNESS_SCALE_FACTOR - 1) + ::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION);
 }
 
 static inline int64_t GetBlockWeight(const CBlock& block)
@@ -103,4 +112,4 @@ static inline int64_t GetBlockWeight(const CBlock& block)
     return ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) * (WITNESS_SCALE_FACTOR - 1) + ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION);
 }
 
-#endif // BITCOIN_CONSENSUS_VALIDATION_H
+#endif // GLEECGBC_CONSENSUS_VALIDATION_H

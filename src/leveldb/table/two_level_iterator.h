@@ -7,8 +7,8 @@
 
 #include "leveldb/iterator.h"
 
-namespace leveldb {
-
+namespace leveldb
+{
 struct ReadOptions;
 
 // Return a new two level iterator.  A two-level iterator contains an
@@ -29,6 +29,6 @@ extern Iterator* NewTwoLevelIterator(
     void* arg,
     const ReadOptions& options);
 
-}  // namespace leveldb
+} // namespace leveldb
 
-#endif  // STORAGE_LEVELDB_TABLE_TWO_LEVEL_ITERATOR_H_
+#endif // STORAGE_LEVELDB_TABLE_TWO_LEVEL_ITERATOR_H_
