@@ -3,10 +3,10 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "chainparams.h"
-#include "validation.h"
 #include "net.h"
+#include "validation.h"
 
-#include "test/test_bitcoin.h"
+#include "test/test_gleecbtc.h"
 
 #include <boost/signals2/signal.hpp>
 #include <boost/test/unit_test.hpp>
@@ -63,7 +63,7 @@ bool ReturnTrue() { return true; }
 
 BOOST_AUTO_TEST_CASE(test_combiner_all)
 {
-    boost::signals2::signal<bool (), CombinerAll> Test;
+    boost::signals2::signal<bool(), CombinerAll> Test;
     BOOST_CHECK(Test());
     Test.connect(&ReturnFalse);
     BOOST_CHECK(!Test());

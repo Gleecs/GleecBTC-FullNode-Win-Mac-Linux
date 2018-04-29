@@ -2,7 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#define BOOST_TEST_MODULE Bitcoin Test Suite
+#define BOOST_TEST_MODULE GleecBTC Test Suite
 
 #include "net.h"
 
@@ -12,15 +12,15 @@ std::unique_ptr<CConnman> g_connman;
 
 void Shutdown(void* parg)
 {
-  exit(EXIT_SUCCESS);
+    exit(EXIT_SUCCESS);
 }
 
 void StartShutdown()
 {
-  exit(EXIT_SUCCESS);
+    exit(EXIT_SUCCESS);
 }
 
 bool ShutdownRequested()
 {
-  return false;
+    return false;
 }

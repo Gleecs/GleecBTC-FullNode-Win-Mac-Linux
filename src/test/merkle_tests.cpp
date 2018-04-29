@@ -3,7 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "consensus/merkle.h"
-#include "test/test_bitcoin.h"
+#include "test/test_gleecbtc.h"
 
 #include <boost/test/unit_test.hpp>
 
@@ -18,17 +18,15 @@ static uint256 BlockBuildMerkleTree(const CBlock& block, bool* fMutated, std::ve
         vMerkleTree.push_back((*it)->GetHash());
     int j = 0;
     bool mutated = false;
-    for (int nSize = block.vtx.size(); nSize > 1; nSize = (nSize + 1) / 2)
-    {
-        for (int i = 0; i < nSize; i += 2)
-        {
-            int i2 = std::min(i+1, nSize-1);
-            if (i2 == i + 1 && i2 + 1 == nSize && vMerkleTree[j+i] == vMerkleTree[j+i2]) {
+    for (int nSize = block.vtx.size(); nSize > 1; nSize = (nSize + 1) / 2) {
+        for (int i = 0; i < nSize; i += 2) {
+            int i2 = std::min(i + 1, nSize - 1);
+            if (i2 == i + 1 && i2 + 1 == nSize && vMerkleTree[j + i] == vMerkleTree[j + i2]) {
                 // Two identical hashes at the end of the list at a particular level.
                 mutated = true;
             }
-            vMerkleTree.push_back(Hash(vMerkleTree[j+i].begin(), vMerkleTree[j+i].end(),
-                                       vMerkleTree[j+i2].begin(), vMerkleTree[j+i2].end()));
+            vMerkleTree.push_back(Hash(vMerkleTree[j + i].begin(), vMerkleTree[j + i].end(),
+                vMerkleTree[j + i2].begin(), vMerkleTree[j + i2].end()));
         }
         j += nSize;
     }
@@ -43,17 +41,17 @@ static std::vector<uint256> BlockGetMerkleBranch(const CBlock& block, const std:
 {
     std::vector<uint256> vMerkleBranch;
     int j = 0;
-    for (int nSize = block.vtx.size(); nSize > 1; nSize = (nSize + 1) / 2)
-    {
-        int i = std::min(nIndex^1, nSize-1);
-        vMerkleBranch.push_back(vMerkleTree[j+i]);
+    for (int nSize = block.vtx.size(); nSize > 1; nSize = (nSize + 1) / 2) {
+        int i = std::min(nIndex ^ 1, nSize - 1);
+        vMerkleBranch.push_back(vMerkleTree[j + i]);
         nIndex >>= 1;
         j += nSize;
     }
     return vMerkleBranch;
 }
 
-static inline int ctz(uint32_t i) {
+static inline int ctz(uint32_t i)
+{
     if (i == 0) return 0;
     int j = 0;
     while (!(i & 1)) {

@@ -2,13 +2,13 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "policy/policy.h"
 #include "policy/fees.h"
+#include "policy/policy.h"
 #include "txmempool.h"
 #include "uint256.h"
 #include "util.h"
 
-#include "test/test_bitcoin.h"
+#include "test/test_gleecbtc.h"
 
 #include <boost/test/unit_test.hpp>
 
@@ -25,7 +25,7 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
 
     // Populate vectors of increasing fees
     for (int j = 0; j < 10; j++) {
-        feeV.push_back(basefee * (j+1));
+        feeV.push_back(basefee * (j + 1));
     }
 
     // Store the hashes of transactions that have been
@@ -42,7 +42,7 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
     tx.vin.resize(1);
     tx.vin[0].scriptSig = garbage;
     tx.vout.resize(1);
-    tx.vout[0].nValue=0LL;
+    tx.vout[0].nValue = 0LL;
     CFeeRate baseRate(basefee, GetVirtualTransactionSize(tx));
 
     // Create a fake block
@@ -55,22 +55,22 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
     while (blocknum < 200) {
         for (int j = 0; j < 10; j++) { // For each fee
             for (int k = 0; k < 4; k++) { // add 4 fee txs
-                tx.vin[0].prevout.n = 10000*blocknum+100*j+k; // make transaction unique
+                tx.vin[0].prevout.n = 10000 * blocknum + 100 * j + k; // make transaction unique
                 uint256 hash = tx.GetHash();
                 mpool.addUnchecked(hash, entry.Fee(feeV[j]).Time(GetTime()).Height(blocknum).FromTx(tx));
                 txHashes[j].push_back(hash);
             }
         }
         //Create blocks where higher fee txs are included more often
-        for (int h = 0; h <= blocknum%10; h++) {
+        for (int h = 0; h <= blocknum % 10; h++) {
             // 10/10 blocks add highest fee transactions
             // 9/10 blocks add 2nd highest and so on until ...
             // 1/10 blocks add lowest fee transactions
-            while (txHashes[9-h].size()) {
-                CTransactionRef ptx = mpool.get(txHashes[9-h].back());
+            while (txHashes[9 - h].size()) {
+                CTransactionRef ptx = mpool.get(txHashes[9 - h].back());
                 if (ptx)
                     block.push_back(ptx);
-                txHashes[9-h].pop_back();
+                txHashes[9 - h].pop_back();
             }
         }
         mpool.removeForBlock(block, ++blocknum);
@@ -81,8 +81,8 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
             // So estimateFee(1) should fail and estimateFee(2) should return somewhere around
             // 9*baserate.  estimateFee(2) %'s are 100,100,90 = average 97%
             BOOST_CHECK(feeEst.estimateFee(1) == CFeeRate(0));
-            BOOST_CHECK(feeEst.estimateFee(2).GetFeePerK() < 9*baseRate.GetFeePerK() + deltaFee);
-            BOOST_CHECK(feeEst.estimateFee(2).GetFeePerK() > 9*baseRate.GetFeePerK() - deltaFee);
+            BOOST_CHECK(feeEst.estimateFee(2).GetFeePerK() < 9 * baseRate.GetFeePerK() + deltaFee);
+            BOOST_CHECK(feeEst.estimateFee(2).GetFeePerK() > 9 * baseRate.GetFeePerK() - deltaFee);
         }
     }
 
@@ -93,15 +93,15 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
     // so estimateFee(1) would return 10*baseRate but is hardcoded to return failure
     // Second highest feerate has 100% chance of being included by 2 blocks,
     // so estimateFee(2) should return 9*baseRate etc...
-    for (int i = 1; i < 10;i++) {
+    for (int i = 1; i < 10; i++) {
         origFeeEst.push_back(feeEst.estimateFee(i).GetFeePerK());
         if (i > 2) { // Fee estimates should be monotonically decreasing
-            BOOST_CHECK(origFeeEst[i-1] <= origFeeEst[i-2]);
+            BOOST_CHECK(origFeeEst[i - 1] <= origFeeEst[i - 2]);
         }
-        int mult = 11-i;
+        int mult = 11 - i;
         if (i % 2 == 0) { //At scale 2, test logic is only correct for even targets
-            BOOST_CHECK(origFeeEst[i-1] < mult*baseRate.GetFeePerK() + deltaFee);
-            BOOST_CHECK(origFeeEst[i-1] > mult*baseRate.GetFeePerK() - deltaFee);
+            BOOST_CHECK(origFeeEst[i - 1] < mult * baseRate.GetFeePerK() + deltaFee);
+            BOOST_CHECK(origFeeEst[i - 1] > mult * baseRate.GetFeePerK() - deltaFee);
         }
     }
     // Fill out rest of the original estimates
@@ -115,9 +115,9 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
         mpool.removeForBlock(block, ++blocknum);
 
     BOOST_CHECK(feeEst.estimateFee(1) == CFeeRate(0));
-    for (int i = 2; i < 10;i++) {
-        BOOST_CHECK(feeEst.estimateFee(i).GetFeePerK() < origFeeEst[i-1] + deltaFee);
-        BOOST_CHECK(feeEst.estimateFee(i).GetFeePerK() > origFeeEst[i-1] - deltaFee);
+    for (int i = 2; i < 10; i++) {
+        BOOST_CHECK(feeEst.estimateFee(i).GetFeePerK() < origFeeEst[i - 1] + deltaFee);
+        BOOST_CHECK(feeEst.estimateFee(i).GetFeePerK() > origFeeEst[i - 1] - deltaFee);
     }
 
 
@@ -126,7 +126,7 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
     while (blocknum < 265) {
         for (int j = 0; j < 10; j++) { // For each fee multiple
             for (int k = 0; k < 4; k++) { // add 4 fee txs
-                tx.vin[0].prevout.n = 10000*blocknum+100*j+k;
+                tx.vin[0].prevout.n = 10000 * blocknum + 100 * j + k;
                 uint256 hash = tx.GetHash();
                 mpool.addUnchecked(hash, entry.Fee(feeV[j]).Time(GetTime()).Height(blocknum).FromTx(tx));
                 txHashes[j].push_back(hash);
@@ -135,14 +135,14 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
         mpool.removeForBlock(block, ++blocknum);
     }
 
-    for (int i = 1; i < 10;i++) {
-        BOOST_CHECK(feeEst.estimateFee(i) == CFeeRate(0) || feeEst.estimateFee(i).GetFeePerK() > origFeeEst[i-1] - deltaFee);
+    for (int i = 1; i < 10; i++) {
+        BOOST_CHECK(feeEst.estimateFee(i) == CFeeRate(0) || feeEst.estimateFee(i).GetFeePerK() > origFeeEst[i - 1] - deltaFee);
     }
 
     // Mine all those transactions
     // Estimates should still not be below original
     for (int j = 0; j < 10; j++) {
-        while(txHashes[j].size()) {
+        while (txHashes[j].size()) {
             CTransactionRef ptx = mpool.get(txHashes[j].back());
             if (ptx)
                 block.push_back(ptx);
@@ -152,8 +152,8 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
     mpool.removeForBlock(block, 266);
     block.clear();
     BOOST_CHECK(feeEst.estimateFee(1) == CFeeRate(0));
-    for (int i = 2; i < 10;i++) {
-        BOOST_CHECK(feeEst.estimateFee(i) == CFeeRate(0) || feeEst.estimateFee(i).GetFeePerK() > origFeeEst[i-1] - deltaFee);
+    for (int i = 2; i < 10; i++) {
+        BOOST_CHECK(feeEst.estimateFee(i) == CFeeRate(0) || feeEst.estimateFee(i).GetFeePerK() > origFeeEst[i - 1] - deltaFee);
     }
 
     // Mine 400 more blocks where everything is mined every block
@@ -161,13 +161,12 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
     while (blocknum < 665) {
         for (int j = 0; j < 10; j++) { // For each fee multiple
             for (int k = 0; k < 4; k++) { // add 4 fee txs
-                tx.vin[0].prevout.n = 10000*blocknum+100*j+k;
+                tx.vin[0].prevout.n = 10000 * blocknum + 100 * j + k;
                 uint256 hash = tx.GetHash();
                 mpool.addUnchecked(hash, entry.Fee(feeV[j]).Time(GetTime()).Height(blocknum).FromTx(tx));
                 CTransactionRef ptx = mpool.get(hash);
                 if (ptx)
                     block.push_back(ptx);
-
             }
         }
         mpool.removeForBlock(block, ++blocknum);
@@ -175,7 +174,7 @@ BOOST_AUTO_TEST_CASE(BlockPolicyEstimates)
     }
     BOOST_CHECK(feeEst.estimateFee(1) == CFeeRate(0));
     for (int i = 2; i < 9; i++) { // At 9, the original estimate was already at the bottom (b/c scale = 2)
-        BOOST_CHECK(feeEst.estimateFee(i).GetFeePerK() < origFeeEst[i-1] - deltaFee);
+        BOOST_CHECK(feeEst.estimateFee(i).GetFeePerK() < origFeeEst[i - 1] - deltaFee);
     }
 }
 

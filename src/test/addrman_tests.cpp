@@ -2,9 +2,9 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #include "addrman.h"
-#include "test/test_bitcoin.h"
-#include <string>
+#include "test/test_gleecbtc.h"
 #include <boost/test/unit_test.hpp>
+#include <string>
 
 #include "hash.h"
 #include "netbase.h"
@@ -501,7 +501,8 @@ BOOST_AUTO_TEST_CASE(caddrinfo_get_new_bucket)
     for (int j = 0; j < 4 * 255; j++) {
         CAddrInfo infoj = CAddrInfo(CAddress(
                                         ResolveService(
-                                            boost::to_string(250 + (j / 255)) + "." + boost::to_string(j % 256) + ".1.1"), NODE_NONE),
+                                            boost::to_string(250 + (j / 255)) + "." + boost::to_string(j % 256) + ".1.1"),
+                                        NODE_NONE),
             ResolveIP("251.4.1.1"));
         int bucket = infoj.GetNewBucket(nKey1);
         buckets.insert(bucket);

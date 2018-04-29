@@ -4,12 +4,12 @@
 
 #include "consensus/tx_verify.h"
 #include "consensus/validation.h"
-#include "pubkey.h"
 #include "key.h"
+#include "pubkey.h"
 #include "script/script.h"
 #include "script/standard.h"
+#include "test/test_gleecbtc.h"
 #include "uint256.h"
-#include "test/test_bitcoin.h"
 
 #include <vector>
 
@@ -45,8 +45,7 @@ BOOST_AUTO_TEST_CASE(GetSigOpCount)
     BOOST_CHECK_EQUAL(p2sh.GetSigOpCount(scriptSig), 3U);
 
     std::vector<CPubKey> keys;
-    for (int i = 0; i < 3; i++)
-    {
+    for (int i = 0; i < 3; i++) {
         CKey k;
         k.MakeNewKey(true);
         keys.push_back(k.GetPubKey());

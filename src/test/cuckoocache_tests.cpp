@@ -1,11 +1,11 @@
 // Copyright (c) 2012-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
-#include <boost/test/unit_test.hpp>
 #include "cuckoocache.h"
-#include "script/sigcache.h"
-#include "test/test_bitcoin.h"
 #include "random.h"
+#include "script/sigcache.h"
+#include "test/test_gleecbtc.h"
+#include <boost/test/unit_test.hpp>
 #include <thread>
 
 /** Test Suite for CuckooCache
@@ -34,7 +34,6 @@ void insecure_GetRandHash(uint256& t)
     for (uint8_t j = 0; j < 8; ++j)
         *(ptr++) = local_rand_ctx.rand32();
 }
-
 
 
 /* Test that no values not inserted into the cache are read out of it.
@@ -234,9 +233,9 @@ void test_cache_erase_parallel(size_t megabytes)
         */
         threads.emplace_back([&, x] {
             boost::shared_lock<boost::shared_mutex> l(mtx);
-            size_t ntodo = (n_insert/4)/3;
-            size_t start = ntodo*x;
-            size_t end = ntodo*(x+1);
+            size_t ntodo = (n_insert / 4) / 3;
+            size_t start = ntodo * x;
+            size_t end = ntodo * (x + 1);
             for (uint32_t i = start; i < end; ++i)
                 set.contains(hashes[i], true);
         });

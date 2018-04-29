@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_TEST_TEST_BITCOIN_H
-#define BITCOIN_TEST_TEST_BITCOIN_H
+#ifndef GLEECGBC_TEST_TEST_GLEECGBC_H
+#define GLEECGBC_TEST_TEST_GLEECGBC_H
 
 #include "chainparamsbase.h"
 #include "fs.h"
@@ -49,8 +49,8 @@ struct BasicTestingSetup {
  * Included are data directory, coins database, script check threads setup.
  */
 class CConnman;
-struct TestingSetup: public BasicTestingSetup {
-    CCoinsViewDB *pcoinsdbview;
+struct TestingSetup : public BasicTestingSetup {
+    CCoinsViewDB* pcoinsdbview;
     fs::path pathTemp;
     boost::thread_group threadGroup;
     CConnman* connman;
@@ -74,7 +74,7 @@ struct TestChain100Setup : public TestingSetup {
     // Create a new block with just given transactions, coinbase paying to
     // scriptPubKey, and try to add it to the current chain.
     CBlock CreateAndProcessBlock(const std::vector<CMutableTransaction>& txns,
-                                 const CScript& scriptPubKey);
+        const CScript& scriptPubKey);
 
     ~TestChain100Setup();
 
@@ -84,8 +84,7 @@ struct TestChain100Setup : public TestingSetup {
 
 class CTxMemPoolEntry;
 
-struct TestMemPoolEntryHelper
-{
+struct TestMemPoolEntryHelper {
     // Default values
     CAmount nFee;
     int64_t nTime;
@@ -94,18 +93,37 @@ struct TestMemPoolEntryHelper
     unsigned int sigOpCost;
     LockPoints lp;
 
-    TestMemPoolEntryHelper() :
-        nFee(0), nTime(0), nHeight(1),
-        spendsCoinbase(false), sigOpCost(4) { }
-    
-    CTxMemPoolEntry FromTx(const CMutableTransaction &tx);
-    CTxMemPoolEntry FromTx(const CTransaction &tx);
+    TestMemPoolEntryHelper() : nFee(0), nTime(0), nHeight(1),
+                               spendsCoinbase(false), sigOpCost(4) {}
+
+    CTxMemPoolEntry FromTx(const CMutableTransaction& tx);
+    CTxMemPoolEntry FromTx(const CTransaction& tx);
 
     // Change the default value
-    TestMemPoolEntryHelper &Fee(CAmount _fee) { nFee = _fee; return *this; }
-    TestMemPoolEntryHelper &Time(int64_t _time) { nTime = _time; return *this; }
-    TestMemPoolEntryHelper &Height(unsigned int _height) { nHeight = _height; return *this; }
-    TestMemPoolEntryHelper &SpendsCoinbase(bool _flag) { spendsCoinbase = _flag; return *this; }
-    TestMemPoolEntryHelper &SigOpsCost(unsigned int _sigopsCost) { sigOpCost = _sigopsCost; return *this; }
+    TestMemPoolEntryHelper& Fee(CAmount _fee)
+    {
+        nFee = _fee;
+        return *this;
+    }
+    TestMemPoolEntryHelper& Time(int64_t _time)
+    {
+        nTime = _time;
+        return *this;
+    }
+    TestMemPoolEntryHelper& Height(unsigned int _height)
+    {
+        nHeight = _height;
+        return *this;
+    }
+    TestMemPoolEntryHelper& SpendsCoinbase(bool _flag)
+    {
+        spendsCoinbase = _flag;
+        return *this;
+    }
+    TestMemPoolEntryHelper& SigOpsCost(unsigned int _sigopsCost)
+    {
+        sigOpCost = _sigopsCost;
+        return *this;
+    }
 };
 #endif

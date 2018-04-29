@@ -3,7 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "netbase.h"
-#include "test/test_bitcoin.h"
+#include "test/test_gleecbtc.h"
 #include "utilstrencodings.h"
 
 #include <string>
@@ -35,18 +35,16 @@ static CNetAddr CreateInternal(const char* host)
 
 BOOST_AUTO_TEST_CASE(netbase_networks)
 {
-    BOOST_CHECK(ResolveIP("127.0.0.1").GetNetwork()                              == NET_UNROUTABLE);
-    BOOST_CHECK(ResolveIP("::1").GetNetwork()                                    == NET_UNROUTABLE);
-    BOOST_CHECK(ResolveIP("8.8.8.8").GetNetwork()                                == NET_IPV4);
-    BOOST_CHECK(ResolveIP("2001::8888").GetNetwork()                             == NET_IPV6);
+    BOOST_CHECK(ResolveIP("127.0.0.1").GetNetwork() == NET_UNROUTABLE);
+    BOOST_CHECK(ResolveIP("::1").GetNetwork() == NET_UNROUTABLE);
+    BOOST_CHECK(ResolveIP("8.8.8.8").GetNetwork() == NET_IPV4);
+    BOOST_CHECK(ResolveIP("2001::8888").GetNetwork() == NET_IPV6);
     BOOST_CHECK(ResolveIP("FD87:D87E:EB43:edb1:8e4:3588:e546:35ca").GetNetwork() == NET_TOR);
-    BOOST_CHECK(CreateInternal("foo.com").GetNetwork()                           == NET_INTERNAL);
-
+    BOOST_CHECK(CreateInternal("foo.com").GetNetwork() == NET_INTERNAL);
 }
 
 BOOST_AUTO_TEST_CASE(netbase_properties)
 {
-
     BOOST_CHECK(ResolveIP("127.0.0.1").IsIPv4());
     BOOST_CHECK(ResolveIP("::FFFF:192.168.1.1").IsIPv4());
     BOOST_CHECK(ResolveIP("::1").IsIPv6());
@@ -69,7 +67,6 @@ BOOST_AUTO_TEST_CASE(netbase_properties)
     BOOST_CHECK(ResolveIP("127.0.0.1").IsValid());
     BOOST_CHECK(CreateInternal("FD6B:88C0:8724:edb1:8e4:3588:e546:35ca").IsInternal());
     BOOST_CHECK(CreateInternal("bar.com").IsInternal());
-
 }
 
 bool static TestSplitHost(std::string test, std::string host, int port)
@@ -82,10 +79,10 @@ bool static TestSplitHost(std::string test, std::string host, int port)
 
 BOOST_AUTO_TEST_CASE(netbase_splithost)
 {
-    BOOST_CHECK(TestSplitHost("www.bitcoin.org", "www.bitcoin.org", -1));
-    BOOST_CHECK(TestSplitHost("[www.bitcoin.org]", "www.bitcoin.org", -1));
-    BOOST_CHECK(TestSplitHost("www.bitcoin.org:80", "www.bitcoin.org", 80));
-    BOOST_CHECK(TestSplitHost("[www.bitcoin.org]:80", "www.bitcoin.org", 80));
+    BOOST_CHECK(TestSplitHost("www.gleecbtc.org", "www.gleecbtc.org", -1));
+    BOOST_CHECK(TestSplitHost("[www.gleecbtc.org]", "www.gleecbtc.org", -1));
+    BOOST_CHECK(TestSplitHost("www.gleecbtc.org:80", "www.gleecbtc.org", 80));
+    BOOST_CHECK(TestSplitHost("[www.gleecbtc.org]:80", "www.gleecbtc.org", 80));
     BOOST_CHECK(TestSplitHost("127.0.0.1", "127.0.0.1", -1));
     BOOST_CHECK(TestSplitHost("127.0.0.1:8333", "127.0.0.1", 8333));
     BOOST_CHECK(TestSplitHost("[127.0.0.1]", "127.0.0.1", -1));
@@ -123,7 +120,6 @@ BOOST_AUTO_TEST_CASE(netbase_lookupnumeric)
 
 BOOST_AUTO_TEST_CASE(onioncat_test)
 {
-
     // values from https://web.archive.org/web/20121122003543/http://www.cypherpunk.at/onioncat/wiki/OnionCat
     CNetAddr addr1(ResolveIP("5wyqrzbvrdsumnok.onion"));
     CNetAddr addr2(ResolveIP("FD87:D87E:EB43:edb1:8e4:3588:e546:35ca"));
@@ -131,12 +127,10 @@ BOOST_AUTO_TEST_CASE(onioncat_test)
     BOOST_CHECK(addr1.IsTor());
     BOOST_CHECK(addr1.ToStringIP() == "5wyqrzbvrdsumnok.onion");
     BOOST_CHECK(addr1.IsRoutable());
-
 }
 
 BOOST_AUTO_TEST_CASE(subnet_test)
 {
-
     BOOST_CHECK(ResolveSubNet("1.2.3.0/24") == ResolveSubNet("1.2.3.0/255.255.255.0"));
     BOOST_CHECK(ResolveSubNet("1.2.3.0/24") != ResolveSubNet("1.2.4.0/255.255.255.0"));
     BOOST_CHECK(ResolveSubNet("1.2.3.0/24").Match(ResolveIP("1.2.3.4")));
@@ -278,12 +272,10 @@ BOOST_AUTO_TEST_CASE(subnet_test)
     BOOST_CHECK_EQUAL(subnet.ToString(), "1.2.0.0/255.255.232.0");
     subnet = ResolveSubNet("1:2:3:4:5:6:7:8/ffff:ffff:ffff:fffe:ffff:ffff:ffff:ff0f");
     BOOST_CHECK_EQUAL(subnet.ToString(), "1:2:3:4:5:6:7:8/ffff:ffff:ffff:fffe:ffff:ffff:ffff:ff0f");
-
 }
 
 BOOST_AUTO_TEST_CASE(netbase_getgroup)
 {
-
     BOOST_CHECK(ResolveIP("127.0.0.1").GetGroup() == std::vector<unsigned char>({0})); // Local -> !Routable()
     BOOST_CHECK(ResolveIP("257.0.0.1").GetGroup() == std::vector<unsigned char>({0})); // !Valid -> !Routable()
     BOOST_CHECK(ResolveIP("10.0.0.1").GetGroup() == std::vector<unsigned char>({0})); // RFC1918 -> !Routable()
