@@ -1274,6 +1274,21 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         }
         if (!vRecv.empty())
             vRecv >> fRelay;
+        uint256 from_fhash;
+        if (!vRecv.empty())
+            vRecv >> from_fhash;
+        pfrom->fhash = from_fhash;
+        if (fork_conforksus.active) {
+            if (pfrom->fhash != FORK_HASH_UINT256) {
+                LogPrintf("peer from consensus-invalid fork %s, banning\n", pfrom->fhash.ToString().c_str());
+                {
+                    LOCK(cs_main);
+                    Misbehaving(pfrom->GetId(), 100);
+                }
+                pfrom->fDisconnect = true;
+                return true;
+            }
+        }
         // Disconnect if we connected to ourself
         if (pfrom->fInbound && !connman.CheckIncomingNonce(nNonce)) {
             LogPrintf("connected to self at %s, disconnecting\n", pfrom->addr.ToString());
@@ -1895,7 +1910,11 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
                 connman.PushMessage(pfrom, msgMaker.Make(NetMsgType::REJECT, strCommand, (unsigned char)state.GetRejectCode(),
                                                state.GetRejectReason().substr(0, MAX_REJECT_MESSAGE_LENGTH), inv.hash));
             if (nDoS > 0) {
-                Misbehaving(pfrom->GetId(), nDoS);
+                // to avoid banning same-fork peers who haven't upgraded to the new consensus rules yet (due to them
+                // activating just now), we let them stay as long as we are currently on the fork height
+                if (FORK_BLOCK != chainActive.Tip()->nHeight || pfrom->fhash != FORK_HASH_UINT256) {
+                    Misbehaving(pfrom->GetId(), nDoS);
+                }
             }
         }
     }

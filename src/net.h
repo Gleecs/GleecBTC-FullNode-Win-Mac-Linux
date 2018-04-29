@@ -172,6 +172,7 @@ public:
     bool CheckIncomingNonce(uint64_t nonce);
 
     bool ForNode(NodeId id, std::function<bool(CNode* pnode)> func);
+    void InitiatedConsensusChange();
 
     void PushMessage(CNode* pnode, CSerializedNetMsg&& msg);
 
@@ -294,6 +295,7 @@ public:
     void WakeMessageHandler();
 
 private:
+    bool bound;
     struct ListenSocket {
         SOCKET socket;
         bool whitelisted;
@@ -576,6 +578,7 @@ class CNode
     friend class CConnman;
 
 public:
+    uint256 fhash; // fork hash of this node
     // socket
     std::atomic<ServiceFlags> nServices;
     ServiceFlags nServicesExpected;

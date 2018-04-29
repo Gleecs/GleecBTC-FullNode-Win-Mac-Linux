@@ -1633,7 +1633,10 @@ void CConnman::ThreadOpenConnections()
             return;
 
         // Add seed nodes if DNS seeds are all down (an infrastructure attack?).
-        if (addrman.size() == 0 && (GetTime() - nStart > 60)) {
+        // We do not add seed nodes if we have forked - if you have made seed
+        // nodes for your fork, you will need to update chainparams and remove
+        // this check.
+        if (!fork_conforksus.active && addrman.size() == 0 && (GetTime() - nStart > 60)) {
             static bool done = false;
             if (!done) {
                 LogPrintf("Adding fixed seed nodes as DNS doesn't seem to be available.\n");
@@ -1940,6 +1943,7 @@ void CConnman::ThreadMessageHandler()
 
 bool CConnman::BindListenPort(const CService& addrBind, std::string& strError, bool fWhitelisted)
 {
+    bound = true;
     strError = "";
     int nOne = 1;
 
@@ -2098,6 +2102,7 @@ void CConnman::SetNetworkActive(bool active)
 
 CConnman::CConnman(uint64_t nSeed0In, uint64_t nSeed1In) : nSeed0(nSeed0In), nSeed1(nSeed1In)
 {
+    bound = false;
     fNetworkActive = true;
     setBannedIsDirty = false;
     fAddressesInitialized = false;
@@ -2148,6 +2153,25 @@ bool CConnman::InitBinds(const std::vector<CService>& binds, const std::vector<C
         fBound |= Bind(CService(inaddr_any, GetListenPort()), !fBound ? BF_REPORT_ERROR : BF_NONE);
     }
     return fBound;
+}
+
+void CConnman::InitiatedConsensusChange()
+{
+    if (!bound) return;
+    // rebind ports
+    for (auto& ls : vhListenSocket) {
+        CloseSocket(ls.socket);
+    }
+    vhListenSocket.clear();
+    {
+        struct in_addr inaddr_any;
+        inaddr_any.s_addr = INADDR_ANY;
+        Bind(CService(in6addr_any, GetListenPort()), BF_NONE);
+        Bind(CService(inaddr_any, GetListenPort()), BF_NONE);
+    }
+    // clear addresses
+    addrman.Clear();
+    DumpData();
 }
 
 bool CConnman::Start(CScheduler& scheduler, const Options& connOptions)

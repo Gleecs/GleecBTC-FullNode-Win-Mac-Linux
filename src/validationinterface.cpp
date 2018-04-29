@@ -6,6 +6,7 @@
 #include "validationinterface.h"
 
 #include "init.h"
+#include "primitives/block.h"
 #include "scheduler.h"
 #include "sync.h"
 #include "util.h"

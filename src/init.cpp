@@ -890,6 +890,15 @@ bool AppInitParameterInteraction()
 
     // also see: InitParameterInteraction()
 
+    // if disabling fork, we need to set that flag immediately
+    if (gArgs.GetBoolArg("-disablefork", false)) {
+        printf("NOTE: disabling fork; this node will run on the gleecbtc network\n");
+        FORK_ALLOWED = false;
+        FORK_BLOCK = 0x7fffffff;
+        FORK_HASH = "0000000000000000000000000000000000000000000000000000000000000000";
+        FORK_HASH_UINT256 = uint256();
+    }
+
     // if using block pruning, then disallow txindex
     if (gArgs.GetArg("-prune", 0)) {
         if (gArgs.GetBoolArg("-txindex", DEFAULT_TXINDEX))
@@ -1471,6 +1480,13 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
                         break;
                     }
                     assert(chainActive.Tip() != nullptr);
+                }
+
+                // we have chain tip! apply conforksus modifier if appropriate
+                conforksus_init(chainActive.Tip() ? chainActive.Tip()->nHeight : 0, Params().NetworkIDString() == "regtest");
+                if (fork_conforksus.active) {
+                    // change port from default
+                    chainparams.UpdateForkPorts();
                 }
 
                 if (!fReset) {

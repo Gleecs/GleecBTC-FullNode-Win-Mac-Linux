@@ -3,25 +3,50 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_CONSENSUS_CONSENSUS_H
-#define BITCOIN_CONSENSUS_CONSENSUS_H
+#ifndef GLEECGBC_CONSENSUS_CONSENSUS_H
+#define GLEECGBC_CONSENSUS_CONSENSUS_H
 
-#include <stdlib.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <string>
+
+#include "uint256.h"
+
+// To deal dynamically with the fork, we introduce a new structure called a
+// conforksus (consensus | fork), with two instances: the base and fork
+// version. The former uses GleecBTC parameters, but if this fork is a fork
+// of a fork, it should use the first fork values (no effort went into
+// forking of a fork into a secondary fork, e.g. via nested list conforksus
+// objects).
+
+
+
+
+
+
+
 
 /** The maximum allowed size for a serialized block, in bytes (only for buffer size limits) */
-static const unsigned int MAX_BLOCK_SERIALIZED_SIZE = 4000000;
+extern unsigned int MAX_BLOCK_SERIALIZED_SIZE;
 /** The maximum allowed weight for a block, see BIP 141 (network rule) */
-static const unsigned int MAX_BLOCK_WEIGHT = 4000000;
+extern unsigned int MAX_BLOCK_WEIGHT;
 /** The maximum allowed number of signature check operations in a block (network rule) */
-static const int64_t MAX_BLOCK_SIGOPS_COST = 80000;
+extern int64_t MAX_BLOCK_SIGOPS_COST;
 /** Coinbase transaction outputs can only be spent after this number of new blocks (network rule) */
-static const int COINBASE_MATURITY = 100;
+extern int COINBASE_MATURITY;
+/** Fork block number */
+extern int FORK_BLOCK;
+/** Whether fork should occur or not (-disablefork sets to false) */
+extern bool FORK_ALLOWED;
 
-static const int WITNESS_SCALE_FACTOR = 4;
+/** Fork hash */
+extern std::string FORK_HASH;
+extern uint256 FORK_HASH_UINT256;
 
-static const size_t MIN_TRANSACTION_WEIGHT = WITNESS_SCALE_FACTOR * 60; // 60 is the lower bound for the size of a valid serialized CTransaction
-static const size_t MIN_SERIALIZABLE_TRANSACTION_WEIGHT = WITNESS_SCALE_FACTOR * 10; // 10 is the lower bound for the size of a serialized CTransaction
+extern const int WITNESS_SCALE_FACTOR;
+
+extern const size_t MIN_TRANSACTION_WEIGHT; // 60 is the lower bound for the size of a valid serialized CTransaction
+extern const size_t MIN_SERIALIZABLE_TRANSACTION_WEIGHT; // 10 is the lower bound for the size of a serialized CTransaction
 
 /** Flags for nSequence and nLockTime locks */
 enum {
@@ -32,4 +57,37 @@ enum {
     LOCKTIME_MEDIAN_TIME_PAST = (1 << 1),
 };
 
-#endif // BITCOIN_CONSENSUS_CONSENSUS_H
+extern struct Conforksus base_conforksus;
+
+struct Conforksus {
+    unsigned int C_MAX_BLOCK_SERIALIZED_SIZE;
+    unsigned int C_MAX_BLOCK_WEIGHT;
+    int C_COINBASE_MATURITY;
+    bool active;
+    Conforksus(unsigned int mbss, unsigned int mbw, int cm)
+        : C_MAX_BLOCK_SERIALIZED_SIZE(mbss), C_MAX_BLOCK_WEIGHT(mbw), C_COINBASE_MATURITY(cm), active(false)
+    {
+    }
+
+    void enable()
+    {
+        active = true;
+        MAX_BLOCK_SERIALIZED_SIZE = C_MAX_BLOCK_SERIALIZED_SIZE;
+        MAX_BLOCK_WEIGHT = C_MAX_BLOCK_WEIGHT;
+        COINBASE_MATURITY = C_COINBASE_MATURITY;
+    }
+
+    void elbane()
+    {
+        active = false;
+        base_conforksus.enable();
+    }
+};
+
+extern Conforksus fork_conforksus, base_conforksus;
+
+void conforksus_init(int current_height, bool is_regtest);
+void conforksus_block_tip_changed(int height);
+void conforksus_will_validate_at_height(int height);
+
+#endif // GLEECGBC_CONSENSUS_CONSENSUS_H

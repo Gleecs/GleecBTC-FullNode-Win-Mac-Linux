@@ -94,29 +94,54 @@ CScript COINBASE_FLAGS;
 
 const std::string strMessageMagic = "GleecBTC Signed Message:\n";
 
+#include "net.h" // CConnman
+void conforksus_block_tip_changed(int height)
+{
+    if (!fork_conforksus.active && height >= FORK_BLOCK) {
+        // HARD FORK BLOCK REACHED !!!!oneoneone
+        printf("*** FORKING ***\n");
+        fork_conforksus.enable();
+        mempool.clear();
+        Params().UpdateForkPorts();
+        extern std::unique_ptr<CConnman> g_connman;
+        g_connman->InitiatedConsensusChange();
+    } else if (fork_conforksus.active && height < FORK_BLOCK) {
+        // enoenoeno!!!! DEHCAER KCOLB KROF DRAH
+        printf("*** UN-FORKING ***\n");
+        fork_conforksus.elbane();
+        mempool.clear();
+    }
+}
+
+void conforksus_will_validate_at_height(int height)
+{
+    conforksus_block_tip_changed(height - (height > 0));
+}
+
+
 // Internal stuff
-namespace {
-
-    struct CBlockIndexWorkComparator
+namespace
+{
+struct CBlockIndexWorkComparator {
+    bool operator()(const CBlockIndex* pa, const CBlockIndex* pb) const
     {
-        bool operator()(const CBlockIndex *pa, const CBlockIndex *pb) const {
-            // First sort by most total work, ...
-            if (pa->nChainWork > pb->nChainWork) return false;
-            if (pa->nChainWork < pb->nChainWork) return true;
+        // First sort by most total work, ...
+        if (pa->nChainWork > pb->nChainWork) return false;
+        if (pa->nChainWork < pb->nChainWork) return true;
 
-            // ... then by earliest time received, ...
-            if (pa->nSequenceId < pb->nSequenceId) return false;
-            if (pa->nSequenceId > pb->nSequenceId) return true;
+        // ... then by earliest time received, ...
+        if (pa->nSequenceId < pb->nSequenceId) return false;
+        if (pa->nSequenceId > pb->nSequenceId) return true;
 
-            // Use pointer address as tie breaker (should only happen with blocks
-            // loaded from disk, as those all have id 0).
-            if (pa < pb) return false;
-            if (pa > pb) return true;
+        // Use pointer address as tie breaker (should only happen with blocks
+        // loaded from disk, as those all have id 0).
+        if (pa < pb) return false;
+        if (pa > pb) return true;
 
-            // Identical blocks.
-            return false;
-        }
-    };
+        // Identical blocks.
+        return false;
+    }
+};
 
 CBlockIndex* pindexBestInvalid;
 
@@ -1014,10 +1039,12 @@ bool IsInitialBlockDownload()
         return true;
     if (chainActive.Tip() == nullptr)
         return true;
-    if (chainActive.Tip()->nChainWork < UintToArith256(chainParams.GetConsensus().nMinimumChainWork))
-        return true;
-    if (chainActive.Tip()->GetBlockTime() < (GetTime() - nMaxTipAge))
-        return true;
+    if (!fork_conforksus.active) {
+        if (chainActive.Tip()->nChainWork < UintToArith256(chainParams.GetConsensus().nMinimumChainWork))
+            return true;
+        if (chainActive.Tip()->GetBlockTime() < (GetTime() - nMaxTipAge))
+            return true;
+    }
     LogPrintf("Leaving InitialBlockDownload (latching to false)\n");
     latchToFalse.store(true, std::memory_order_relaxed);
     return false;
@@ -2004,6 +2031,7 @@ void static UpdateTip(CBlockIndex* pindexNew, const CChainParams& chainParams)
         LogPrintf(" warning='%s'", boost::algorithm::join(warningMessages, ", "));
     LogPrintf("\n");
 
+    conforksus_block_tip_changed(pindexNew->nHeight);
 }
 
 /** Disconnect chainActive's tip.
@@ -2878,6 +2906,11 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
     assert(pindexPrev != nullptr);
     const int nHeight = pindexPrev->nHeight + 1;
 
+    // Skip all checks if
+    // (1) the header is beyond our fork point, and
+    // (2) we have not yet forked.
+    if (!fork_conforksus.active && nHeight > FORK_BLOCK) return true;
+
     // Check proof of work
     const Consensus::Params& consensusParams = params.GetConsensus();
     if (block.nBits != GetNextWorkRequired(pindexPrev, &block, consensusParams))
@@ -2932,9 +2965,14 @@ static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, c
     }
 
     // Enforce rule that the coinbase starts with serialized block height
-    if (nHeight >= consensusParams.BIP34Height)
-    {
-        CScript expect = CScript() << nHeight;
+    if (nHeight >= consensusParams.BIP34Height) {
+
+        CScript expect = CScript();
+        if (fork_conforksus.active) {
+            expect << std::vector<unsigned char>(FORK_HASH_UINT256.begin(), FORK_HASH_UINT256.end());
+        }
+        expect << nHeight;
+
         if (block.vtx[0]->vin[0].scriptSig.size() < expect.size() ||
             !std::equal(expect.begin(), expect.end(), block.vtx[0]->vin[0].scriptSig.begin())) {
             return state.DoS(100, false, REJECT_INVALID, "bad-cb-height", false, "block height mismatch in coinbase");
@@ -3557,8 +3595,10 @@ bool CVerifyDB::VerifyDB(const CChainParams& chainparams, CCoinsView* coinsview,
     CValidationState state;
     int reportDone = 0;
     LogPrintf("[0%%]...");
-    for (CBlockIndex* pindex = chainActive.Tip(); pindex && pindex->pprev; pindex = pindex->pprev)
-    {
+    for (CBlockIndex* pindex = chainActive.Tip(); pindex && pindex->pprev; pindex = pindex->pprev) {
+        // We check the block based on rules for previous height
+        conforksus_will_validate_at_height(pindex->nHeight);
+
         boost::this_thread::interruption_point();
         int percentageDone = std::max(1, std::min(99, (int)(((double)(chainActive.Height() - pindex->nHeight)) / (double)nCheckDepth * (nCheckLevel >= 4 ? 50 : 100))));
         if (reportDone < percentageDone / 10) {
@@ -3620,6 +3660,7 @@ bool CVerifyDB::VerifyDB(const CChainParams& chainparams, CCoinsView* coinsview,
             uiInterface.ShowProgress(_("Verifying blocks..."), std::max(1, std::min(99, 100 - (int)(((double)(chainActive.Height() - pindex->nHeight)) / (double)nCheckDepth * 50))));
             pindex = chainActive.Next(pindex);
             CBlock block;
+            conforksus_will_validate_at_height(pindex->nHeight);
             if (!ReadBlockFromDisk(block, pindex, chainparams.GetConsensus()))
                 return error("VerifyDB(): *** ReadBlockFromDisk failed at %d, hash=%s", pindex->nHeight, pindex->GetBlockHash().ToString());
             if (!ConnectBlock(block, state, pindex, coins, chainparams))
@@ -3629,6 +3670,7 @@ bool CVerifyDB::VerifyDB(const CChainParams& chainparams, CCoinsView* coinsview,
 
     LogPrintf("[DONE].\n");
     LogPrintf("No coin database inconsistencies in last %i blocks (%i transactions)\n", chainActive.Height() - pindexState->nHeight, nGoodTransactions);
+    conforksus_block_tip_changed(chainActive.Tip()->nHeight);
 
     return true;
 }

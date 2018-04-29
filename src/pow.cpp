@@ -7,6 +7,7 @@
 
 #include "arith_uint256.h"
 #include "chain.h"
+#include "consensus/consensus.h"
 #include "primitives/block.h"
 #include "uint256.h"
 
@@ -14,6 +15,15 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 {
     assert(pindexLast != nullptr);
     unsigned int nProofOfWorkLimit = UintToArith256(params.powLimit).GetCompact();
+
+    // Difficulty changes to 1 on fork block, so that nBits of block
+    // [fork height] + 1 is minimum difficulty. We keep returning this for
+    // one full difficulty adjustment interval, and then let the system handle
+    // the difficulty adjustments as normal.
+    if (pindexLast->nHeight >= FORK_BLOCK &&
+        pindexLast->nHeight <= FORK_BLOCK + params.DifficultyAdjustmentInterval()) {
+        return nProofOfWorkLimit;
+    }
 
     // Only change once per difficulty adjustment interval
     if ((pindexLast->nHeight + 1) % params.DifficultyAdjustmentInterval() != 0) {
@@ -68,7 +78,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
     return bnNew.GetCompact();
 }
 
-bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params)
+bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params, uint256* best)
 {
     bool fNegative;
     bool fOverflow;
@@ -81,8 +91,13 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
         return false;
 
     // Check proof of work matches claimed amount
-    if (UintToArith256(hash) > bnTarget)
+    if (UintToArith256(hash) > bnTarget) {
+        if (best && (*best == uint256() || UintToArith256(*best) > UintToArith256(hash))) {
+            *best = hash;
+            printf("- new best:\n\t%s\nvs\t%s\n", hash.ToString().c_str(), ArithToUint256(bnTarget).ToString().c_str());
+        }
         return false;
+    }
 
     return true;
 }

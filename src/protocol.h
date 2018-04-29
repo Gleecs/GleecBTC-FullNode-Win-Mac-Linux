@@ -14,6 +14,7 @@
 #include "serialize.h"
 #include "uint256.h"
 #include "version.h"
+#include "consensus/consensus.h"
 
 #include <stdint.h>
 #include <string>
