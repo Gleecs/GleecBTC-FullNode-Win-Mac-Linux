@@ -64,7 +64,7 @@ void CChainParams::UpdateForkPorts()
 {
     if (nDefaultPostForkPort && nDefaultPostForkPort != nDefaultPort && fork_conforksus.active) {
         nDefaultPort = nDefaultPostForkPort;
-        vSeeds.clear();
+      //  vSeeds.clear();
        // LogPrintf("CLEAR2.\n");
       //  vFixedSeeds.clear();
     }
