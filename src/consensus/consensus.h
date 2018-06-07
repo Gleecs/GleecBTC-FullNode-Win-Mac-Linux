@@ -64,6 +64,7 @@ struct Conforksus {
     unsigned int C_MAX_BLOCK_WEIGHT;
     int C_COINBASE_MATURITY;
     bool active;
+    bool signWithForkHash;
     Conforksus(unsigned int mbss, unsigned int mbw, int cm)
         : C_MAX_BLOCK_SERIALIZED_SIZE(mbss), C_MAX_BLOCK_WEIGHT(mbw), C_COINBASE_MATURITY(cm), active(false)
     {

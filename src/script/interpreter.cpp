@@ -101,7 +101,7 @@ bool static IsCompressedPubKey(const valtype& vchPubKey)
  * Where R and S are not negative (their first byte has its highest bit not set), and not
  * excessively padded (do not start with a 0 byte, unless an otherwise negative number follows,
  * in which case a single 0 byte is necessary and even required).
- * 
+ *
  * See https://gleecbtctalk.org/index.php?topic=8392.msg127623#msg127623
  *
  * This function is consensus-critical since BIP66.
@@ -1098,7 +1098,7 @@ public:
     {
 
         // Serialize fork hash, if desired
-        if (fork_conforksus.active) {
+        if (fork_conforksus.active && fork_conforksus.signWithForkHash) {
             ::Serialize(s, FORK_HASH_UINT256);
         }
  \
@@ -1182,7 +1182,7 @@ uint256 SignatureHash(const CScript& scriptCode, const CTransaction& txTo, unsig
         CHashWriter ss(SER_GETHASH, 0);
 
         // Serialize fork hash, if desired
-        if (fork_conforksus.active) {
+        if (fork_conforksus.active && fork_conforksus.signWithForkHash) {
             ss << FORK_HASH_UINT256;
         }
  \

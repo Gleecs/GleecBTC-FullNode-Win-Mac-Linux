@@ -2778,26 +2778,37 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
 {
     // These are checks that are independent of context.
 
+    LogPrintf("%s: CheckBlock\n", __func__ );
+
     if (block.fChecked)
         return true;
 
     // Check that the header is valid (particularly PoW).  This is mostly
     // redundant with the call in AcceptBlockHeader.
-    if (!CheckBlockHeader(block, state, consensusParams, fCheckPOW))
+    if (!CheckBlockHeader(block, state, consensusParams, fCheckPOW)) {
+        LogPrintf("%s: CheckBlockHeader not passed\n", __func__ );
         return false;
+    }
+
 
     // Check the merkle root.
     if (fCheckMerkleRoot) {
         bool mutated;
         uint256 hashMerkleRoot2 = BlockMerkleRoot(block, &mutated);
-        if (block.hashMerkleRoot != hashMerkleRoot2)
+        if (block.hashMerkleRoot != hashMerkleRoot2) {
+            LogPrintf("%s: bad-txnmrklroot hashMerkleRoot mismatch\n", __func__ );
             return state.DoS(100, false, REJECT_INVALID, "bad-txnmrklroot", true, "hashMerkleRoot mismatch");
+        }
+
 
         // Check for merkle tree malleability (CVE-2012-2459): repeating sequences
         // of transactions in a block without affecting the merkle root of a block,
         // while still invalidating it.
-        if (mutated)
+        if (mutated) {
+            LogPrintf("%s: bad-txns-duplicate duplicate transaction\n", __func__ );
             return state.DoS(100, false, REJECT_INVALID, "bad-txns-duplicate", true, "duplicate transaction");
+        }
+
     }
 
     // All potential-corruption validation must be done before we do any
@@ -2807,28 +2818,43 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     // checks that use witness data may be performed here.
 
     // Size limits
-    if (block.vtx.empty() || block.vtx.size() * WITNESS_SCALE_FACTOR > MAX_BLOCK_WEIGHT || ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) * WITNESS_SCALE_FACTOR > MAX_BLOCK_WEIGHT)
+    if (block.vtx.empty() || block.vtx.size() * WITNESS_SCALE_FACTOR > MAX_BLOCK_WEIGHT || ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) * WITNESS_SCALE_FACTOR > MAX_BLOCK_WEIGHT) {
+        LogPrintf("%s: bad-blk-length size limits failed\n", __func__ );
         return state.DoS(100, false, REJECT_INVALID, "bad-blk-length", false, "size limits failed");
+    }
+
 
     // First transaction must be coinbase, the rest must not be
-    if (block.vtx.empty() || !block.vtx[0]->IsCoinBase())
+    if (block.vtx.empty() || !block.vtx[0]->IsCoinBase()) {
+        LogPrintf("%s: bad-cb-missing first tx is not coinbase\n", __func__ );
         return state.DoS(100, false, REJECT_INVALID, "bad-cb-missing", false, "first tx is not coinbase");
+    }
+
     for (unsigned int i = 1; i < block.vtx.size(); i++)
-        if (block.vtx[i]->IsCoinBase())
+        if (block.vtx[i]->IsCoinBase()) {
+            LogPrintf("%s: bad-cb-multiple more than one coinbase\n", __func__ );
             return state.DoS(100, false, REJECT_INVALID, "bad-cb-multiple", false, "more than one coinbase");
+        }
+
 
     // Check transactions
     for (const auto& tx : block.vtx)
-        if (!CheckTransaction(*tx, state, false))
+        if (!CheckTransaction(*tx, state, false)) {
+            LogPrintf("Transaction check failed (tx hash %s) %s", tx->GetHash().ToString(), state.GetDebugMessage());
             return state.Invalid(false, state.GetRejectCode(), state.GetRejectReason(),
                 strprintf("Transaction check failed (tx hash %s) %s", tx->GetHash().ToString(), state.GetDebugMessage()));
+        }
+
 
     unsigned int nSigOps = 0;
     for (const auto& tx : block.vtx) {
         nSigOps += GetLegacySigOpCount(*tx);
     }
-    if (nSigOps * WITNESS_SCALE_FACTOR > MAX_BLOCK_SIGOPS_COST)
+    if (nSigOps * WITNESS_SCALE_FACTOR > MAX_BLOCK_SIGOPS_COST) {
+        LogPrintf("%s: bad-blk-sigops out-of-bounds SigOpCount\n", __func__ );
         return state.DoS(100, false, REJECT_INVALID, "bad-blk-sigops", false, "out-of-bounds SigOpCount");
+    }
+
 
     if (fCheckPOW && fCheckMerkleRoot)
         block.fChecked = true;
@@ -2909,9 +2935,7 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
     // Skip all checks if
     // (1) the header is beyond our fork point, and
     // (2) we have not yet forked.
-    LogPrintf("ContextualCheckBlockHeader: we have not yet forked %s\n", fork_conforksus.active ? "NO - forkus active" : "YES - not active" );
-    LogPrintf("ContextualCheckBlockHeader: nHeight -  %d\n", nHeight );
-    LogPrintf("ContextualCheckBlockHeader: FORK_BLOCK -  %d\n", FORK_BLOCK );
+    LogPrintf("%s: height - %d\n", __func__, nHeight );
     if (!fork_conforksus.active && nHeight > FORK_BLOCK) return true;
     if (nHeight < 50000) {
       return true;
@@ -2954,6 +2978,17 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
 static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev)
 {
     const int nHeight = pindexPrev == nullptr ? 0 : pindexPrev->nHeight + 1;
+    LogPrintf("%s: ContextualCheckBlock. Height - %d\n", __func__, nHeight );
+
+    if (nHeight > 218473) {
+        fork_conforksus.signWithForkHash = false;
+    } else {
+        fork_conforksus.signWithForkHash = true;
+    }
+
+    if (nHeight < 200000) {
+       return true;
+    }
 
     // Start enforcing BIP113 (Median Time Past) using versionbits logic.
     int nLockTimeFlags = 0;
@@ -2966,6 +3001,7 @@ static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, c
     // Check that all transactions are finalized
     for (const auto& tx : block.vtx) {
         if (!IsFinalTx(*tx, nHeight, nLockTimeCutoff)) {
+            LogPrintf("%s: bad-txns-nonfinal non-final transaction. Height - %d\n", __func__, nHeight );
             return state.DoS(10, false, REJECT_INVALID, "bad-txns-nonfinal", false, "non-final transaction");
         }
     }
@@ -2981,7 +3017,14 @@ static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, c
 
         if (block.vtx[0]->vin[0].scriptSig.size() < expect.size() ||
             !std::equal(expect.begin(), expect.end(), block.vtx[0]->vin[0].scriptSig.begin())) {
-            return state.DoS(100, false, REJECT_INVALID, "bad-cb-height", false, "block height mismatch in coinbase");
+              LogPrintf("%s: first check not passed. Height - %d\n", __func__, nHeight );
+              expect = CScript();
+              expect << nHeight;
+              if (block.vtx[0]->vin[0].scriptSig.size() < expect.size() ||
+                  !std::equal(expect.begin(), expect.end(), block.vtx[0]->vin[0].scriptSig.begin())) {
+                    LogPrintf("%s: bad-cb-height block height mismatch in coinbase. Height - %d\n", __func__, nHeight );
+                    return state.DoS(100, false, REJECT_INVALID, "bad-cb-height", false, "block height mismatch in coinbase");
+                  }
         }
     }
 
@@ -3003,10 +3046,12 @@ static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, c
             // already does not permit it, it is impossible to trigger in the
             // witness tree.
             if (block.vtx[0]->vin[0].scriptWitness.stack.size() != 1 || block.vtx[0]->vin[0].scriptWitness.stack[0].size() != 32) {
+                LogPrintf("%s: bad-witness-nonce-size invalid witness nonce size. Height - %d\n", __func__, nHeight );
                 return state.DoS(100, false, REJECT_INVALID, "bad-witness-nonce-size", true, strprintf("%s : invalid witness nonce size", __func__));
             }
             CHash256().Write(hashWitness.begin(), 32).Write(&block.vtx[0]->vin[0].scriptWitness.stack[0][0], 32).Finalize(hashWitness.begin());
             if (memcmp(hashWitness.begin(), &block.vtx[0]->vout[commitpos].scriptPubKey[6], 32)) {
+                LogPrintf("%s: bad-witness-merkle-match witness merkle commitment mismatch. Height - %d\n", __func__, nHeight );
                 return state.DoS(100, false, REJECT_INVALID, "bad-witness-merkle-match", true, strprintf("%s : witness merkle commitment mismatch", __func__));
             }
             fHaveWitness = true;
@@ -3017,6 +3062,7 @@ static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, c
     if (!fHaveWitness) {
         for (const auto& tx : block.vtx) {
             if (tx->HasWitness()) {
+                LogPrintf("%s: unexpected-witness unexpected witness data found. Height - %d\n", __func__, nHeight );
                 return state.DoS(100, false, REJECT_INVALID, "unexpected-witness", true, strprintf("%s : unexpected witness data found", __func__));
             }
         }
@@ -3029,6 +3075,7 @@ static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, c
     // the block hash, so we couldn't mark the block as permanently
     // failed).
     if (GetBlockWeight(block) > MAX_BLOCK_WEIGHT) {
+        LogPrintf("%s: bad-blk-weight weight limit failed. Height - %d\n", __func__, nHeight );
         return state.DoS(100, false, REJECT_INVALID, "bad-blk-weight", false, strprintf("%s : weight limit failed", __func__));
     }
 
@@ -3217,6 +3264,7 @@ bool TestBlockValidity(CValidationState& state, const CChainParams& chainparams,
     CBlockIndex indexDummy(block);
     indexDummy.pprev = pindexPrev;
     indexDummy.nHeight = pindexPrev->nHeight + 1;
+    LogPrintf("%s: TestBlockValidity - %d\n", __func__ );
 
     // NOTE: CheckBlockHeader is called by CheckBlock
     if (!ContextualCheckBlockHeader(block, state, chainparams, pindexPrev, GetAdjustedTime()))
@@ -3228,7 +3276,7 @@ bool TestBlockValidity(CValidationState& state, const CChainParams& chainparams,
     if (!ConnectBlock(block, state, &indexDummy, viewNew, chainparams, true))
         return false;
     assert(state.IsValid());
-
+    LogPrintf("%s: TestBlockValidity - passed\n", __func__);
     return true;
 }
 
