@@ -38,11 +38,11 @@ QString GleecBTCUnits::name(int unit)
 {
     switch (unit) {
     case GBC:
-        return QString("GBC");
+        return QString("Gleec");
     case mGBC:
-        return QString("mGBC");
+        return QString("mGleec");
     case uGBC:
-        return QString::fromUtf8("μGBC");
+        return QString::fromUtf8("μGleec");
     default:
         return QString("???");
     }
