@@ -98,6 +98,12 @@
     </message>
     </context>
 <context>
+    <name>CreateWalletActivity</name>
+    </context>
+<context>
+    <name>CreateWalletDialog</name>
+    </context>
+<context>
     <name>EditAddressDialog</name>
     </context>
 <context>
@@ -132,10 +138,17 @@
     <name>OpenURIDialog</name>
     </context>
 <context>
+    <name>OpenWalletActivity</name>
+    </context>
+<context>
     <name>OptionsDialog</name>
     <message>
         <source>Options</source>
         <translation>هەڵبژاردنەکان</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>هەڵە</translation>
     </message>
     </context>
 <context>
@@ -150,6 +163,10 @@
     </context>
 <context>
     <name>PeerTableModel</name>
+    <message>
+        <source>Sent</source>
+        <translation>نێدرا</translation>
+    </message>
     </context>
 <context>
     <name>QObject</name>
@@ -157,9 +174,6 @@
         <source>Amount</source>
         <translation>سەرجەم</translation>
     </message>
-    </context>
-<context>
-    <name>QObject::QObject</name>
     </context>
 <context>
     <name>QRImageWidget</name>
@@ -197,10 +211,6 @@
     <message>
         <source>&amp;Open</source>
         <translation>&amp;کردنەوە</translation>
-    </message>
-    <message>
-        <source>&amp;Clear</source>
-        <translation>&amp;پاککردنەوە</translation>
     </message>
     <message>
         <source>Totals</source>
@@ -294,10 +304,6 @@
         <source>Fee:</source>
         <translation>تێچوون:</translation>
     </message>
-    <message>
-        <source>fast</source>
-        <translation>خێرا</translation>
-    </message>
     </context>
 <context>
     <name>SendCoinsEntry</name>
@@ -318,9 +324,6 @@
     </context>
 <context>
     <name>SignVerifyMessageDialog</name>
-    </context>
-<context>
-    <name>SplashScreen</name>
     </context>
 <context>
     <name>TrafficGraphWidget</name>
@@ -361,6 +364,9 @@
     <name>UnitDisplayStatusBarControl</name>
     </context>
 <context>
+    <name>WalletController</name>
+    </context>
+<context>
     <name>WalletFrame</name>
     </context>
 <context>
@@ -375,21 +381,5 @@
     </context>
 <context>
     <name>gleecbtc-core</name>
-    <message>
-        <source>Options:</source>
-        <translation>هەڵبژاردنەکان:</translation>
-    </message>
-    <message>
-        <source>Information</source>
-        <translation>زانیاری</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation>ئاگاداری</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation>هەڵە</translation>
-    </message>
-</context>
+    </context>
 </TS>

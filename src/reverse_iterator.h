@@ -1,11 +1,11 @@
 // Taken from https://gist.github.com/arvidsson/7231973
 
-#ifndef GLEECGBC_REVERSE_ITERATOR_H
-#define GLEECGBC_REVERSE_ITERATOR_H
+#ifndef GLEECBTC_REVERSE_ITERATOR_H
+#define GLEECBTC_REVERSE_ITERATOR_H
 
 /**
  * Template used for reverse iteration in C++11 range-based for loops.
- * 
+ *
  *   std::vector<int> v = {1, 2, 3, 4, 5};
  *   for (auto x : reverse_iterate(v))
  *       std::cout << x << " ";
@@ -14,10 +14,10 @@
 template <typename T>
 class reverse_range
 {
-    T& m_x;
+    T &m_x;
 
 public:
-    reverse_range(T& x) : m_x(x) {}
+    explicit reverse_range(T &x) : m_x(x) {}
 
     auto begin() const -> decltype(this->m_x.rbegin())
     {
@@ -31,9 +31,9 @@ public:
 };
 
 template <typename T>
-reverse_range<T> reverse_iterate(T& x)
+reverse_range<T> reverse_iterate(T &x)
 {
     return reverse_range<T>(x);
 }
 
-#endif // GLEECGBC_REVERSE_ITERATOR_H
+#endif // GLEECBTC_REVERSE_ITERATOR_H

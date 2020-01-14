@@ -1,9 +1,11 @@
-// Copyright (c) 2017-2017 The Bitcoin Core developers
+// Copyright (c) 2017-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_CONSENSUS_TX_VERIFY_H
-#define GLEECGBC_CONSENSUS_TX_VERIFY_H
+#ifndef GLEECBTC_CONSENSUS_TX_VERIFY_H
+#define GLEECBTC_CONSENSUS_TX_VERIFY_H
+
+#include <amount.h>
 
 #include <stdint.h>
 #include <vector>
@@ -15,17 +17,14 @@ class CValidationState;
 
 /** Transaction validation functions */
 
-/** Context-independent validity checks */
-bool CheckTransaction(const CTransaction& tx, CValidationState& state, bool fCheckDuplicateInputs = true);
-
-namespace Consensus
-{
+namespace Consensus {
 /**
  * Check whether all inputs of this transaction are valid (no double spends and amounts)
  * This does not modify the UTXO set. This does not check scripts and sigs.
+ * @param[out] txfee Set to the transaction fee if successful.
  * Preconditions: tx.IsCoinBase() is false.
  */
-bool CheckTxInputs(const CTransaction& tx, CValidationState& state, const CCoinsViewCache& inputs, int nSpendHeight);
+bool CheckTxInputs(const CTransaction& tx, CValidationState& state, const CCoinsViewCache& inputs, int nSpendHeight, CAmount& txfee);
 } // namespace Consensus
 
 /** Auxiliary functions for transaction validation (ideally should not be exposed) */
@@ -39,7 +38,7 @@ unsigned int GetLegacySigOpCount(const CTransaction& tx);
 
 /**
  * Count ECDSA signature operations in pay-to-script-hash inputs.
- * 
+ *
  * @param[in] mapInputs Map of previous transactions that have outputs we're spending
  * @return maximum number of sigops required to validate this transaction's inputs
  * @see CTransaction::FetchInputs
@@ -59,7 +58,7 @@ int64_t GetTransactionSigOpCost(const CTransaction& tx, const CCoinsViewCache& i
  * Check if transaction is final and can be included in a block with the
  * specified height and time. Consensus critical.
  */
-bool IsFinalTx(const CTransaction& tx, int nBlockHeight, int64_t nBlockTime);
+bool IsFinalTx(const CTransaction &tx, int nBlockHeight, int64_t nBlockTime);
 
 /**
  * Calculates the block height and previous block's median time past at
@@ -67,13 +66,13 @@ bool IsFinalTx(const CTransaction& tx, int nBlockHeight, int64_t nBlockTime);
  * Also removes from the vector of input heights any entries which did not
  * correspond to sequence locked inputs as they do not affect the calculation.
  */
-std::pair<int, int64_t> CalculateSequenceLocks(const CTransaction& tx, int flags, std::vector<int>* prevHeights, const CBlockIndex& block);
+std::pair<int, int64_t> CalculateSequenceLocks(const CTransaction &tx, int flags, std::vector<int>* prevHeights, const CBlockIndex& block);
 
 bool EvaluateSequenceLocks(const CBlockIndex& block, std::pair<int, int64_t> lockPair);
 /**
  * Check if transaction is final per BIP 68 sequence numbers and can be included in a block.
  * Consensus critical. Takes as input a list of heights at which tx's inputs (in order) confirmed.
  */
-bool SequenceLocks(const CTransaction& tx, int flags, std::vector<int>* prevHeights, const CBlockIndex& block);
+bool SequenceLocks(const CTransaction &tx, int flags, std::vector<int>* prevHeights, const CBlockIndex& block);
 
-#endif // GLEECGBC_CONSENSUS_TX_VERIFY_H
+#endif // GLEECBTC_CONSENSUS_TX_VERIFY_H

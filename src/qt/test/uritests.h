@@ -1,9 +1,9 @@
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2015 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_QT_TEST_URITESTS_H
-#define GLEECGBC_QT_TEST_URITESTS_H
+#ifndef GLEECBTC_QT_TEST_URITESTS_H
+#define GLEECBTC_QT_TEST_URITESTS_H
 
 #include <QObject>
 #include <QTest>
@@ -16,4 +16,4 @@ private Q_SLOTS:
     void uriTests();
 };
 
-#endif // GLEECGBC_QT_TEST_URITESTS_H
+#endif // GLEECBTC_QT_TEST_URITESTS_H

@@ -1,18 +1,17 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2015 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_QT_SIGNVERIFYMESSAGEDIALOG_H
-#define GLEECGBC_QT_SIGNVERIFYMESSAGEDIALOG_H
+#ifndef GLEECBTC_QT_SIGNVERIFYMESSAGEDIALOG_H
+#define GLEECBTC_QT_SIGNVERIFYMESSAGEDIALOG_H
 
 #include <QDialog>
 
 class PlatformStyle;
 class WalletModel;
 
-namespace Ui
-{
-class SignVerifyMessageDialog;
+namespace Ui {
+    class SignVerifyMessageDialog;
 }
 
 class SignVerifyMessageDialog : public QDialog
@@ -20,23 +19,23 @@ class SignVerifyMessageDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit SignVerifyMessageDialog(const PlatformStyle* platformStyle, QWidget* parent);
+    explicit SignVerifyMessageDialog(const PlatformStyle *platformStyle, QWidget *parent);
     ~SignVerifyMessageDialog();
 
-    void setModel(WalletModel* model);
-    void setAddress_SM(const QString& address);
-    void setAddress_VM(const QString& address);
+    void setModel(WalletModel *model);
+    void setAddress_SM(const QString &address);
+    void setAddress_VM(const QString &address);
 
     void showTab_SM(bool fShow);
     void showTab_VM(bool fShow);
 
 protected:
-    bool eventFilter(QObject* object, QEvent* event);
+    bool eventFilter(QObject *object, QEvent *event);
 
 private:
-    Ui::SignVerifyMessageDialog* ui;
-    WalletModel* model;
-    const PlatformStyle* platformStyle;
+    Ui::SignVerifyMessageDialog *ui;
+    WalletModel *model;
+    const PlatformStyle *platformStyle;
 
 private Q_SLOTS:
     /* sign message */
@@ -51,4 +50,4 @@ private Q_SLOTS:
     void on_clearButton_VM_clicked();
 };
 
-#endif // GLEECGBC_QT_SIGNVERIFYMESSAGEDIALOG_H
+#endif // GLEECBTC_QT_SIGNVERIFYMESSAGEDIALOG_H

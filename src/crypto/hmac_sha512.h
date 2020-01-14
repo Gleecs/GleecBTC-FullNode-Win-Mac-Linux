@@ -1,11 +1,11 @@
-// Copyright (c) 2014 The Bitcoin Core developers
+// Copyright (c) 2014-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_CRYPTO_HMAC_SHA512_H
-#define GLEECGBC_CRYPTO_HMAC_SHA512_H
+#ifndef GLEECBTC_CRYPTO_HMAC_SHA512_H
+#define GLEECBTC_CRYPTO_HMAC_SHA512_H
 
-#include "crypto/sha512.h"
+#include <crypto/sha512.h>
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -29,4 +29,4 @@ public:
     void Finalize(unsigned char hash[OUTPUT_SIZE]);
 };
 
-#endif // GLEECGBC_CRYPTO_HMAC_SHA512_H
+#endif // GLEECBTC_CRYPTO_HMAC_SHA512_H

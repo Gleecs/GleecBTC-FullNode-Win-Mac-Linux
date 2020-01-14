@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2014 The Bitcoin Core developers
+// Copyright (c) 2011-2014 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_QT_GLEECGBCADDRESSVALIDATOR_H
-#define GLEECGBC_QT_GLEECGBCADDRESSVALIDATOR_H
+#ifndef GLEECBTC_QT_GLEECBTCADDRESSVALIDATOR_H
+#define GLEECBTC_QT_GLEECBTCADDRESSVALIDATOR_H
 
 #include <QValidator>
 
@@ -15,9 +15,9 @@ class GleecBTCAddressEntryValidator : public QValidator
     Q_OBJECT
 
 public:
-    explicit GleecBTCAddressEntryValidator(QObject* parent);
+    explicit GleecBTCAddressEntryValidator(QObject *parent);
 
-    State validate(QString& input, int& pos) const;
+    State validate(QString &input, int &pos) const;
 };
 
 /** GleecBTC address widget validator, checks for a valid gleecbtc address.
@@ -27,9 +27,9 @@ class GleecBTCAddressCheckValidator : public QValidator
     Q_OBJECT
 
 public:
-    explicit GleecBTCAddressCheckValidator(QObject* parent);
+    explicit GleecBTCAddressCheckValidator(QObject *parent);
 
-    State validate(QString& input, int& pos) const;
+    State validate(QString &input, int &pos) const;
 };
 
-#endif // GLEECGBC_QT_GLEECGBCADDRESSVALIDATOR_H
+#endif // GLEECBTC_QT_GLEECBTCADDRESSVALIDATOR_H

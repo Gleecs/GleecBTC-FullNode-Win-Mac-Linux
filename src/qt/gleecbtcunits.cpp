@@ -1,92 +1,96 @@
-// Copyright (c) 2011-2016 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "gleecbtcunits.h"
-
-#include "primitives/transaction.h"
+#include <qt/gleecbtcunits.h>
 
 #include <QStringList>
 
-GleecBTCUnits::GleecBTCUnits(QObject* parent) : QAbstractListModel(parent),
-                                              unitlist(availableUnits())
+GleecBTCUnits::GleecBTCUnits(QObject *parent):
+        QAbstractListModel(parent),
+        unitlist(availableUnits())
 {
 }
 
 QList<GleecBTCUnits::Unit> GleecBTCUnits::availableUnits()
 {
     QList<GleecBTCUnits::Unit> unitlist;
-    unitlist.append(GBC);
-    unitlist.append(mGBC);
-    unitlist.append(uGBC);
+    unitlist.append(GLEEC);
+    unitlist.append(mGLEEC);
+    unitlist.append(uGLEEC);
+    unitlist.append(SAT);
     return unitlist;
 }
 
 bool GleecBTCUnits::valid(int unit)
 {
-    switch (unit) {
-    case GBC:
-    case mGBC:
-    case uGBC:
+    switch(unit)
+    {
+    case GLEEC:
+    case mGLEEC:
+    case uGLEEC:
+    case SAT:
         return true;
     default:
         return false;
     }
 }
 
-QString GleecBTCUnits::name(int unit)
+QString GleecBTCUnits::longName(int unit)
 {
-    switch (unit) {
-    case GBC:
-        return QString("Gleec");
-    case mGBC:
-        return QString("mGleec");
-    case uGBC:
-        return QString::fromUtf8("μGleec");
-    default:
-        return QString("???");
+    switch(unit)
+    {
+    case GLEEC: return QString("GLEEC");
+    case mGLEEC: return QString("mGLEEC");
+    case uGLEEC: return QString::fromUtf8("µGLEEC (bits)");
+    case SAT: return QString("Satoshi (sat)");
+    default: return QString("???");
+    }
+}
+
+QString GleecBTCUnits::shortName(int unit)
+{
+    switch(unit)
+    {
+    case uGLEEC: return QString::fromUtf8("bits");
+    case SAT: return QString("sat");
+    default: return longName(unit);
     }
 }
 
 QString GleecBTCUnits::description(int unit)
 {
-    switch (unit) {
-    case GBC:
-        return QString("GleecBTCs");
-    case mGBC:
-        return QString("Milli-GleecBTCs (1 / 1" THIN_SP_UTF8 "000)");
-    case uGBC:
-        return QString("Micro-GleecBTCs (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-    default:
-        return QString("???");
+    switch(unit)
+    {
+    case GLEEC: return QString("GleecBTCs");
+    case mGLEEC: return QString("Milli-GleecBTCs (1 / 1" THIN_SP_UTF8 "000)");
+    case uGLEEC: return QString("Micro-GleecBTCs (bits) (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+    case SAT: return QString("Satoshi (sat) (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+    default: return QString("???");
     }
 }
 
 qint64 GleecBTCUnits::factor(int unit)
 {
-    switch (unit) {
-    case GBC:
-        return 100000000;
-    case mGBC:
-        return 100000;
-    case uGBC:
-        return 100;
-    default:
-        return 100000000;
+    switch(unit)
+    {
+    case GLEEC: return 100000000;
+    case mGLEEC: return 100000;
+    case uGLEEC: return 100;
+    case SAT: return 1;
+    default: return 100000000;
     }
 }
 
 int GleecBTCUnits::decimals(int unit)
 {
-    switch (unit) {
-    case GBC:
-        return 8;
-    case mGBC:
-        return 5;
-    case uGBC:
-        return 2;
-    default:
-        return 0;
+    switch(unit)
+    {
+    case GLEEC: return 8;
+    case mGLEEC: return 5;
+    case uGLEEC: return 2;
+    case SAT: return 0;
+    default: return 0;
     }
 }
 
@@ -94,16 +98,14 @@ QString GleecBTCUnits::format(int unit, const CAmount& nIn, bool fPlus, Separato
 {
     // Note: not using straight sprintf here because we do NOT want
     // localized number formatting.
-    if (!valid(unit))
+    if(!valid(unit))
         return QString(); // Refuse to format invalid unit
     qint64 n = (qint64)nIn;
     qint64 coin = factor(unit);
     int num_decimals = decimals(unit);
     qint64 n_abs = (n > 0 ? n : -n);
     qint64 quotient = n_abs / coin;
-    qint64 remainder = n_abs % coin;
     QString quotient_str = QString::number(quotient);
-    QString remainder_str = QString::number(remainder).rightJustified(num_decimals, '0');
 
     // Use SI-style thin space separators as these are locale independent and can't be
     // confused with the decimal marker.
@@ -117,7 +119,14 @@ QString GleecBTCUnits::format(int unit, const CAmount& nIn, bool fPlus, Separato
         quotient_str.insert(0, '-');
     else if (fPlus && n > 0)
         quotient_str.insert(0, '+');
-    return quotient_str + QString(".") + remainder_str;
+
+    if (num_decimals > 0) {
+        qint64 remainder = n_abs % coin;
+        QString remainder_str = QString::number(remainder).rightJustified(num_decimals, '0');
+        return quotient_str + QString(".") + remainder_str;
+    } else {
+        return quotient_str;
+    }
 }
 
 
@@ -131,7 +140,7 @@ QString GleecBTCUnits::format(int unit, const CAmount& nIn, bool fPlus, Separato
 
 QString GleecBTCUnits::formatWithUnit(int unit, const CAmount& amount, bool plussign, SeparatorStyle separators)
 {
-    return format(unit, amount, plussign, separators) + QString(" ") + name(unit);
+    return format(unit, amount, plussign, separators) + QString(" ") + shortName(unit);
 }
 
 QString GleecBTCUnits::formatHtmlWithUnit(int unit, const CAmount& amount, bool plussign, SeparatorStyle separators)
@@ -142,35 +151,40 @@ QString GleecBTCUnits::formatHtmlWithUnit(int unit, const CAmount& amount, bool 
 }
 
 
-bool GleecBTCUnits::parse(int unit, const QString& value, CAmount* val_out)
+bool GleecBTCUnits::parse(int unit, const QString &value, CAmount *val_out)
 {
-    if (!valid(unit) || value.isEmpty())
+    if(!valid(unit) || value.isEmpty())
         return false; // Refuse to parse invalid unit or empty string
     int num_decimals = decimals(unit);
 
     // Ignore spaces and thin spaces when parsing
     QStringList parts = removeSpaces(value).split(".");
 
-    if (parts.size() > 2) {
+    if(parts.size() > 2)
+    {
         return false; // More than one dot
     }
     QString whole = parts[0];
     QString decimals;
 
-    if (parts.size() > 1) {
+    if(parts.size() > 1)
+    {
         decimals = parts[1];
     }
-    if (decimals.size() > num_decimals) {
+    if(decimals.size() > num_decimals)
+    {
         return false; // Exceeds max precision
     }
     bool ok = false;
     QString str = whole + decimals.leftJustified(num_decimals, '0');
 
-    if (str.size() > 18) {
+    if(str.size() > 18)
+    {
         return false; // Longer numbers will exceed 63 bits
     }
     CAmount retvalue(str.toLongLong(&ok));
-    if (val_out) {
+    if(val_out)
+    {
         *val_out = retvalue;
     }
     return ok;
@@ -179,27 +193,30 @@ bool GleecBTCUnits::parse(int unit, const QString& value, CAmount* val_out)
 QString GleecBTCUnits::getAmountColumnTitle(int unit)
 {
     QString amountTitle = QObject::tr("Amount");
-    if (GleecBTCUnits::valid(unit)) {
-        amountTitle += " (" + GleecBTCUnits::name(unit) + ")";
+    if (GleecBTCUnits::valid(unit))
+    {
+        amountTitle += " ("+GleecBTCUnits::shortName(unit) + ")";
     }
     return amountTitle;
 }
 
-int GleecBTCUnits::rowCount(const QModelIndex& parent) const
+int GleecBTCUnits::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
     return unitlist.size();
 }
 
-QVariant GleecBTCUnits::data(const QModelIndex& index, int role) const
+QVariant GleecBTCUnits::data(const QModelIndex &index, int role) const
 {
     int row = index.row();
-    if (row >= 0 && row < unitlist.size()) {
+    if(row >= 0 && row < unitlist.size())
+    {
         Unit unit = unitlist.at(row);
-        switch (role) {
+        switch(role)
+        {
         case Qt::EditRole:
         case Qt::DisplayRole:
-            return QVariant(name(unit));
+            return QVariant(longName(unit));
         case Qt::ToolTipRole:
             return QVariant(description(unit));
         case UnitRole:

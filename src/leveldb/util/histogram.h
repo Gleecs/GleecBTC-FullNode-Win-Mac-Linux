@@ -7,37 +7,36 @@
 
 #include <string>
 
-namespace leveldb
-{
-class Histogram
-{
-public:
-    Histogram() {}
-    ~Histogram() {}
+namespace leveldb {
 
-    void Clear();
-    void Add(double value);
-    void Merge(const Histogram& other);
+class Histogram {
+ public:
+  Histogram() { }
+  ~Histogram() { }
 
-    std::string ToString() const;
+  void Clear();
+  void Add(double value);
+  void Merge(const Histogram& other);
 
-private:
-    double min_;
-    double max_;
-    double num_;
-    double sum_;
-    double sum_squares_;
+  std::string ToString() const;
 
-    enum { kNumBuckets = 154 };
-    static const double kBucketLimit[kNumBuckets];
-    double buckets_[kNumBuckets];
+ private:
+  double min_;
+  double max_;
+  double num_;
+  double sum_;
+  double sum_squares_;
 
-    double Median() const;
-    double Percentile(double p) const;
-    double Average() const;
-    double StandardDeviation() const;
+  enum { kNumBuckets = 154 };
+  static const double kBucketLimit[kNumBuckets];
+  double buckets_[kNumBuckets];
+
+  double Median() const;
+  double Percentile(double p) const;
+  double Average() const;
+  double StandardDeviation() const;
 };
 
-} // namespace leveldb
+}  // namespace leveldb
 
-#endif // STORAGE_LEVELDB_UTIL_HISTOGRAM_H_
+#endif  // STORAGE_LEVELDB_UTIL_HISTOGRAM_H_

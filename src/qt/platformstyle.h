@@ -1,9 +1,9 @@
-// Copyright (c) 2015 The Bitcoin Core developers
+// Copyright (c) 2015 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_QT_PLATFORMSTYLE_H
-#define GLEECGBC_QT_PLATFORMSTYLE_H
+#ifndef GLEECBTC_QT_PLATFORMSTYLE_H
+#define GLEECBTC_QT_PLATFORMSTYLE_H
 
 #include <QIcon>
 #include <QPixmap>
@@ -14,9 +14,9 @@ class PlatformStyle
 {
 public:
     /** Get style associated with provided platform name, or 0 if not known */
-    static const PlatformStyle* instantiate(const QString& platformId);
+    static const PlatformStyle *instantiate(const QString &platformId);
 
-    const QString& getName() const { return name; }
+    const QString &getName() const { return name; }
 
     bool getImagesOnButtons() const { return imagesOnButtons; }
     bool getUseExtraSpacing() const { return useExtraSpacing; }
@@ -33,14 +33,11 @@ public:
     /** Colorize an icon (given object) with the icon color */
     QIcon SingleColorIcon(const QIcon& icon) const;
 
-    /** Colorize an icon (given filename) with the text color */
-    QIcon TextColorIcon(const QString& filename) const;
-
     /** Colorize an icon (given object) with the text color */
     QIcon TextColorIcon(const QIcon& icon) const;
 
 private:
-    PlatformStyle(const QString& name, bool imagesOnButtons, bool colorizeIcons, bool useExtraSpacing);
+    PlatformStyle(const QString &name, bool imagesOnButtons, bool colorizeIcons, bool useExtraSpacing);
 
     QString name;
     bool imagesOnButtons;
@@ -51,4 +48,5 @@ private:
     /* ... more to come later */
 };
 
-#endif // GLEECGBC_QT_PLATFORMSTYLE_H
+#endif // GLEECBTC_QT_PLATFORMSTYLE_H
+

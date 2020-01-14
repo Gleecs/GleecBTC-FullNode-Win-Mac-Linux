@@ -1,15 +1,16 @@
-// Copyright (c) 2016 The Bitcoin Core developers
+// Copyright (c) 2016-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_SUPPORT_LOCKEDPOOL_H
-#define GLEECGBC_SUPPORT_LOCKEDPOOL_H
+#ifndef GLEECBTC_SUPPORT_LOCKEDPOOL_H
+#define GLEECBTC_SUPPORT_LOCKEDPOOL_H
 
+#include <stdint.h>
 #include <list>
 #include <map>
-#include <memory>
 #include <mutex>
-#include <stdint.h>
+#include <memory>
+#include <unordered_map>
 
 /**
  * OS-dependent allocation and deallocation of locked/pinned memory pages.
@@ -21,13 +22,13 @@ public:
     virtual ~LockedPageAllocator() {}
     /** Allocate and lock memory pages.
      * If len is not a multiple of the system page size, it is rounded up.
-     * Returns 0 in case of allocation failure.
+     * Returns nullptr in case of allocation failure.
      *
      * If locking the memory pages could not be accomplished it will still
      * return the memory, however the lockingSuccess flag will be false.
      * lockingSuccess is undefined if the allocation fails.
      */
-    virtual void* AllocateLocked(size_t len, bool* lockingSuccess) = 0;
+    virtual void* AllocateLocked(size_t len, bool *lockingSuccess) = 0;
 
     /** Unlock and free memory pages.
      * Clear the memory before unlocking.
@@ -47,11 +48,15 @@ public:
 class Arena
 {
 public:
-    Arena(void* base, size_t size, size_t alignment);
+    Arena(void *base, size_t size, size_t alignment);
     virtual ~Arena();
 
+    Arena(const Arena& other) = delete; // non construction-copyable
+    Arena& operator=(const Arena&) = delete; // non copyable
+
     /** Memory statistics. */
-    struct Stats {
+    struct Stats
+    {
         size_t used;
         size_t free;
         size_t total;
@@ -69,7 +74,7 @@ public:
      * Freeing the zero pointer has no effect.
      * Raises std::runtime_error in case of error.
      */
-    void free(void* ptr);
+    void free(void *ptr);
 
     /** Get arena usage statistics */
     Stats stats() const;
@@ -82,17 +87,21 @@ public:
      * This returns base <= ptr < (base+size) so only use it for (inclusive)
      * chunk starting addresses.
      */
-    bool addressInArena(void* ptr) const { return ptr >= base && ptr < end; }
-
+    bool addressInArena(void *ptr) const { return ptr >= base && ptr < end; }
 private:
-    Arena(const Arena& other) = delete; // non construction-copyable
-    Arena& operator=(const Arena&) = delete; // non copyable
+    typedef std::multimap<size_t, char*> SizeToChunkSortedMap;
+    /** Map to enable O(log(n)) best-fit allocation, as it's sorted by size */
+    SizeToChunkSortedMap size_to_free_chunk;
 
-    /** Map of chunk address to chunk information. This class makes use of the
-     * sorted order to merge previous and next chunks during deallocation.
-     */
-    std::map<char*, size_t> chunks_free;
-    std::map<char*, size_t> chunks_used;
+    typedef std::unordered_map<char*, SizeToChunkSortedMap::const_iterator> ChunkToSizeMap;
+    /** Map from begin of free chunk to its node in size_to_free_chunk */
+    ChunkToSizeMap chunks_free;
+    /** Map from end of free chunk to its node in size_to_free_chunk */
+    ChunkToSizeMap chunks_free_end;
+
+    /** Map from begin of used chunk to its size */
+    std::unordered_map<char*, size_t> chunks_used;
+
     /** Base address of arena */
     char* base;
     /** End address of arena */
@@ -122,7 +131,7 @@ public:
      * allocation and deallocation overhead. Setting it too high allocates
      * more locked memory from the OS than strictly necessary.
      */
-    static const size_t ARENA_SIZE = 256 * 1024;
+    static const size_t ARENA_SIZE = 256*1024;
     /** Chunk alignment. Another compromise. Setting this too high will waste
      * memory, setting it too low will facilitate fragmentation.
      */
@@ -133,7 +142,8 @@ public:
     typedef bool (*LockingFailed_Callback)();
 
     /** Memory statistics. */
-    struct Stats {
+    struct Stats
+    {
         size_t used;
         size_t free;
         size_t total;
@@ -149,8 +159,11 @@ public:
      * If this callback is provided and returns false, the allocation fails (hard fail), if
      * it returns true the allocation proceeds, but it could warn.
      */
-    LockedPool(std::unique_ptr<LockedPageAllocator> allocator, LockingFailed_Callback lf_cb_in = 0);
+    explicit LockedPool(std::unique_ptr<LockedPageAllocator> allocator, LockingFailed_Callback lf_cb_in = nullptr);
     ~LockedPool();
+
+    LockedPool(const LockedPool& other) = delete; // non construction-copyable
+    LockedPool& operator=(const LockedPool&) = delete; // non copyable
 
     /** Allocate size bytes from this arena.
      * Returns pointer on success, or 0 if memory is full or
@@ -162,28 +175,23 @@ public:
      * Freeing the zero pointer has no effect.
      * Raises std::runtime_error in case of error.
      */
-    void free(void* ptr);
+    void free(void *ptr);
 
     /** Get pool usage statistics */
     Stats stats() const;
-
 private:
-    LockedPool(const LockedPool& other) = delete; // non construction-copyable
-    LockedPool& operator=(const LockedPool&) = delete; // non copyable
-
     std::unique_ptr<LockedPageAllocator> allocator;
 
     /** Create an arena from locked pages */
-    class LockedPageArena : public Arena
+    class LockedPageArena: public Arena
     {
     public:
-        LockedPageArena(LockedPageAllocator* alloc_in, void* base_in, size_t size, size_t align);
+        LockedPageArena(LockedPageAllocator *alloc_in, void *base_in, size_t size, size_t align);
         ~LockedPageArena();
-
     private:
-        void* base;
+        void *base;
         size_t size;
-        LockedPageAllocator* allocator;
+        LockedPageAllocator *allocator;
     };
 
     bool new_arena(size_t size, size_t align);
@@ -218,7 +226,7 @@ public:
     }
 
 private:
-    LockedPoolManager(std::unique_ptr<LockedPageAllocator> allocator);
+    explicit LockedPoolManager(std::unique_ptr<LockedPageAllocator> allocator);
 
     /** Create a new LockedPoolManager specialized to the OS */
     static void CreateInstance();
@@ -229,4 +237,4 @@ private:
     static std::once_flag init_flag;
 };
 
-#endif // GLEECGBC_SUPPORT_LOCKEDPOOL_H
+#endif // GLEECBTC_SUPPORT_LOCKEDPOOL_H

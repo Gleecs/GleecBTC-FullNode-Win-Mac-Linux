@@ -1,4 +1,4 @@
-# Copyright (c) 2013-2016 The Bitcoin Core developers
+# Copyright (c) 2013-2016 The GleecBTC Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,18 +9,19 @@ SUBDIRS += doc/man
 endif
 .PHONY: deploy FORCE
 
-GZIP_ENV="-9n"
 export PYTHONPATH
 
-if BUILD_GLEECGBC_LIBS
+if BUILD_GLEECBTC_LIBS
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libgleecbtcconsensus.pc
 endif
 
-GLEECGBCD_BIN=$(top_builddir)/src/$(GLEECGBC_DAEMON_NAME)$(EXEEXT)
-GLEECGBC_QT_BIN=$(top_builddir)/src/qt/$(GLEECGBC_GUI_NAME)$(EXEEXT)
-GLEECGBC_CLI_BIN=$(top_builddir)/src/$(GLEECGBC_CLI_NAME)$(EXEEXT)
-GLEECGBC_WIN_INSTALLER=$(PACKAGE)-$(PACKAGE_VERSION)-win$(WINDOWS_BITS)-setup$(EXEEXT)
+GLEECBTCD_BIN=$(top_builddir)/src/$(GLEECBTC_DAEMON_NAME)$(EXEEXT)
+GLEECBTC_QT_BIN=$(top_builddir)/src/qt/$(GLEECBTC_GUI_NAME)$(EXEEXT)
+GLEECBTC_CLI_BIN=$(top_builddir)/src/$(GLEECBTC_CLI_NAME)$(EXEEXT)
+GLEECBTC_TX_BIN=$(top_builddir)/src/$(GLEECBTC_TX_NAME)$(EXEEXT)
+GLEECBTC_WALLET_BIN=$(top_builddir)/src/$(GLEECBTC_WALLET_TOOL_NAME)$(EXEEXT)
+GLEECBTC_WIN_INSTALLER=$(PACKAGE)-$(PACKAGE_VERSION)-win$(WINDOWS_BITS)-setup$(EXEEXT)
 
 empty :=
 space := $(empty) $(empty)
@@ -42,8 +43,12 @@ DIST_DOCS = $(wildcard doc/*.md) $(wildcard doc/release-notes/*.md)
 DIST_CONTRIB = $(top_srcdir)/contrib/gleecbtc-cli.bash-completion \
 	       $(top_srcdir)/contrib/gleecbtc-tx.bash-completion \
 	       $(top_srcdir)/contrib/gleecbtcd.bash-completion \
+	       $(top_srcdir)/contrib/debian/copyright \
 	       $(top_srcdir)/contrib/init \
-	       $(top_srcdir)/contrib/rpm
+	       $(top_srcdir)/contrib/install_db4.sh
+DIST_SHARE = \
+  $(top_srcdir)/share/genbuild.sh \
+  $(top_srcdir)/share/rpcauth
 
 BIN_CHECKS=$(top_srcdir)/contrib/devtools/symbol-check.py \
            $(top_srcdir)/contrib/devtools/security-check.py
@@ -67,11 +72,13 @@ COVERAGE_INFO = baseline.info \
 dist-hook:
 	-$(GIT) archive --format=tar HEAD -- src/clientversion.cpp | $(AMTAR) -C $(top_distdir) -xf -
 
-$(GLEECGBC_WIN_INSTALLER): all-recursive
+$(GLEECBTC_WIN_INSTALLER): all-recursive
 	$(MKDIR_P) $(top_builddir)/release
-	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM) $(GLEECGBCD_BIN) $(top_builddir)/release
-	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM) $(GLEECGBC_QT_BIN) $(top_builddir)/release
-	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM) $(GLEECGBC_CLI_BIN) $(top_builddir)/release
+	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM) $(GLEECBTCD_BIN) $(top_builddir)/release
+	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM) $(GLEECBTC_QT_BIN) $(top_builddir)/release
+	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM) $(GLEECBTC_CLI_BIN) $(top_builddir)/release
+	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM) $(GLEECBTC_TX_BIN) $(top_builddir)/release
+	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM) $(GLEECBTC_WALLET_BIN) $(top_builddir)/release
 	@test -f $(MAKENSIS) && $(MAKENSIS) -V2 $(top_builddir)/share/setup.nsi || \
 	  echo error: could not build $@
 	@echo built $@
@@ -92,9 +99,9 @@ $(OSX_APP)/Contents/Resources/gleecbtc.icns: $(OSX_INSTALLER_ICONS)
 	$(MKDIR_P) $(@D)
 	$(INSTALL_DATA) $< $@
 
-$(OSX_APP)/Contents/MacOS/GleecBTC-Qt: $(GLEECGBC_QT_BIN)
+$(OSX_APP)/Contents/MacOS/GleecBTC-Qt: all-recursive
 	$(MKDIR_P) $(@D)
-	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM)  $< $@
+	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM)  $(GLEECBTC_QT_BIN) $@
 
 $(OSX_APP)/Contents/Resources/Base.lproj/InfoPlist.strings:
 	$(MKDIR_P) $(@D)
@@ -109,7 +116,7 @@ osx_volname:
 
 if BUILD_DARWIN
 $(OSX_DMG): $(OSX_APP_BUILT) $(OSX_PACKAGING) $(OSX_BACKGROUND_IMAGE)
-	$(PYTHON) $(OSX_DEPLOY_SCRIPT) $(OSX_APP) -add-qt-tr $(OSX_QT_TRANSLATIONS) -translations-dir=$(QT_TRANSLATION_DIR) -dmg -fancy $(OSX_FANCY_PLIST) -verbose 2 -volname $(OSX_VOLNAME) -add-resources contrib/macdeploy/libs/libboost_system-mt.dylib
+	$(PYTHON) $(OSX_DEPLOY_SCRIPT) $(OSX_APP) -add-qt-tr $(OSX_QT_TRANSLATIONS) -translations-dir=$(QT_TRANSLATION_DIR) -dmg -fancy $(OSX_FANCY_PLIST) -verbose 2 -volname $(OSX_VOLNAME)
 
 $(OSX_BACKGROUND_IMAGE).png: contrib/macdeploy/$(OSX_BACKGROUND_SVG)
 	sed 's/PACKAGE_NAME/$(PACKAGE_NAME)/' < "$<" | $(RSVG_CONVERT) -f png -d 36 -p 36 -o $@
@@ -153,20 +160,26 @@ appbundle: $(OSX_APP_BUILT)
 deploy: $(OSX_DMG)
 endif
 if TARGET_WINDOWS
-deploy: $(GLEECGBC_WIN_INSTALLER)
+deploy: $(GLEECBTC_WIN_INSTALLER)
 endif
 
-$(GLEECGBC_QT_BIN): FORCE
+$(GLEECBTC_QT_BIN): FORCE
 	$(MAKE) -C src qt/$(@F)
 
-$(GLEECGBCD_BIN): FORCE
+$(GLEECBTCD_BIN): FORCE
 	$(MAKE) -C src $(@F)
 
-$(GLEECGBC_CLI_BIN): FORCE
+$(GLEECBTC_CLI_BIN): FORCE
+	$(MAKE) -C src $(@F)
+
+$(GLEECBTC_TX_BIN): FORCE
+	$(MAKE) -C src $(@F)
+
+$(GLEECBTC_WALLET_BIN): FORCE
 	$(MAKE) -C src $(@F)
 
 if USE_LCOV
-LCOV_FILTER_PATTERN=-p "/usr/include/" -p "src/leveldb/" -p "src/bench/" -p "src/univalue" -p "src/crypto/ctaes" -p "src/secp256k1"
+LCOV_FILTER_PATTERN=-p "/usr/include/" -p "/usr/lib/" -p "src/leveldb/" -p "src/bench/" -p "src/univalue" -p "src/crypto/ctaes" -p "src/secp256k1"
 
 baseline.info:
 	$(LCOV) -c -i -d $(abs_builddir)/src -o $@
@@ -185,7 +198,7 @@ test_gleecbtc_filtered.info: test_gleecbtc.info
 	$(LCOV) -a $@ $(LCOV_OPTS) -o $@
 
 functional_test.info: test_gleecbtc_filtered.info
-	-@TIMEOUT=15 test/functional/test_runner.py $(EXTENDED_FUNCTIONAL_TESTS)
+	@TIMEOUT=15 test/functional/test_runner.py $(EXTENDED_FUNCTIONAL_TESTS)
 	$(LCOV) -c $(LCOV_OPTS) -d $(abs_builddir)/src --t functional-tests -o $@
 	$(LCOV) -z $(LCOV_OPTS) -d $(abs_builddir)/src
 
@@ -213,7 +226,11 @@ endif
 
 dist_noinst_SCRIPTS = autogen.sh
 
-EXTRA_DIST = $(top_srcdir)/share/genbuild.sh test/functional/test_runner.py test/functional $(DIST_CONTRIB) $(DIST_DOCS) $(WINDOWS_PACKAGING) $(OSX_PACKAGING) $(BIN_CHECKS)
+EXTRA_DIST = $(DIST_SHARE) $(DIST_CONTRIB) $(DIST_DOCS) $(WINDOWS_PACKAGING) $(OSX_PACKAGING) $(BIN_CHECKS)
+
+EXTRA_DIST += \
+    test/functional \
+    test/fuzz
 
 EXTRA_DIST += \
     test/util/gleecbtc-util-test.py \
@@ -266,14 +283,32 @@ EXTRA_DIST += \
     test/util/data/txcreatescript4.json \
     test/util/data/txcreatesignv1.hex \
     test/util/data/txcreatesignv1.json \
-    test/util/data/txcreatesignv2.hex
+    test/util/data/txcreatesignv2.hex \
+    test/util/rpcauth-test.py
 
-CLEANFILES = $(OSX_DMG) $(GLEECGBC_WIN_INSTALLER)
+CLEANFILES = $(OSX_DMG) $(GLEECBTC_WIN_INSTALLER)
 
 .INTERMEDIATE: $(COVERAGE_INFO)
 
 DISTCHECK_CONFIGURE_FLAGS = --enable-man
 
-clean-local:
+doc/doxygen/.stamp: doc/Doxyfile FORCE
+	$(MKDIR_P) $(@D)
+	$(DOXYGEN) $^
+	$(AM_V_at) touch $@
+
+if HAVE_DOXYGEN
+docs: doc/doxygen/.stamp
+else
+docs:
+	@echo "error: doxygen not found"
+endif
+
+clean-docs:
+	rm -rf doc/doxygen
+
+clean-local: clean-docs
 	rm -rf coverage_percent.txt test_gleecbtc.coverage/ total.coverage/ test/tmp/ cache/ $(OSX_APP)
-	rm -rf test/functional/__pycache__
+	rm -rf test/functional/__pycache__ test/functional/test_framework/__pycache__ test/cache share/rpcauth/__pycache__
+	rm -rf osx_volname dist/ dpi36.background.tiff dpi72.background.tiff
+

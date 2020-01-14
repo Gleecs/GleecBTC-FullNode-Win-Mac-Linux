@@ -1,4 +1,4 @@
-// Copyright (c) 2009-2014 The Bitcoin Core developers
+// Copyright (c) 2009-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,7 +13,7 @@ namespace
 //   matches the original.
 bool sanity_test_widen(char testchar)
 {
-    const std::ctype<char>& test(std::use_facet<std::ctype<char>>(std::locale()));
+    const std::ctype<char>& test(std::use_facet<std::ctype<char> >(std::locale()));
     return test.narrow(test.widen(testchar), 'b') == testchar;
 }
 

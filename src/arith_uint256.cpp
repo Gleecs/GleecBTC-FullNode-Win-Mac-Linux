@@ -1,13 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2016 The Bitcoin Core developers
+// Copyright (c) 2009-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "arith_uint256.h"
+#include <arith_uint256.h>
 
-#include "crypto/common.h"
-#include "uint256.h"
-#include "utilstrencodings.h"
+#include <uint256.h>
+#include <crypto/common.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -15,7 +14,7 @@
 template <unsigned int BITS>
 base_uint<BITS>::base_uint(const std::string& str)
 {
-    static_assert(BITS / 32 > 0 && BITS % 32 == 0, "Template parameter BITS must be a positive multiple of 32.");
+    static_assert(BITS/32 > 0 && BITS%32 == 0, "Template parameter BITS must be a positive multiple of 32.");
 
     SetHex(str);
 }
@@ -69,25 +68,25 @@ base_uint<BITS>& base_uint<BITS>::operator*=(uint32_t b32)
 template <unsigned int BITS>
 base_uint<BITS>& base_uint<BITS>::operator*=(const base_uint& b)
 {
-    base_uint<BITS> a = *this;
-    *this = 0;
+    base_uint<BITS> a;
     for (int j = 0; j < WIDTH; j++) {
         uint64_t carry = 0;
         for (int i = 0; i + j < WIDTH; i++) {
-            uint64_t n = carry + pn[i + j] + (uint64_t)a.pn[j] * b.pn[i];
-            pn[i + j] = n & 0xffffffff;
+            uint64_t n = carry + a.pn[i + j] + (uint64_t)pn[j] * b.pn[i];
+            a.pn[i + j] = n & 0xffffffff;
             carry = n >> 32;
         }
     }
+    *this = a;
     return *this;
 }
 
 template <unsigned int BITS>
 base_uint<BITS>& base_uint<BITS>::operator/=(const base_uint& b)
 {
-    base_uint<BITS> div = b; // make a copy, so we can shift.
+    base_uint<BITS> div = b;     // make a copy, so we can shift.
     base_uint<BITS> num = *this; // make a copy, so we can subtract.
-    *this = 0; // the quotient.
+    *this = 0;                   // the quotient.
     int num_bits = num.bits();
     int div_bits = div.bits();
     if (div_bits == 0)
@@ -176,7 +175,7 @@ unsigned int base_uint<BITS>::bits() const
     for (int pos = WIDTH - 1; pos >= 0; pos--) {
         if (pn[pos]) {
             for (int nbits = 31; nbits > 0; nbits--) {
-                if (pn[pos] & 1 << nbits)
+                if (pn[pos] & 1U << nbits)
                     return 32 * pos + nbits + 1;
             }
             return 32 * pos + 1;
@@ -218,8 +217,8 @@ arith_uint256& arith_uint256::SetCompact(uint32_t nCompact, bool* pfNegative, bo
         *pfNegative = nWord != 0 && (nCompact & 0x00800000) != 0;
     if (pfOverflow)
         *pfOverflow = nWord != 0 && ((nSize > 34) ||
-                                        (nWord > 0xff && nSize > 33) ||
-                                        (nWord > 0xffff && nSize > 32));
+                                     (nWord > 0xff && nSize > 33) ||
+                                     (nWord > 0xffff && nSize > 32));
     return *this;
 }
 
@@ -246,17 +245,17 @@ uint32_t arith_uint256::GetCompact(bool fNegative) const
     return nCompact;
 }
 
-uint256 ArithToUint256(const arith_uint256& a)
+uint256 ArithToUint256(const arith_uint256 &a)
 {
     uint256 b;
-    for (int x = 0; x < a.WIDTH; ++x)
-        WriteLE32(b.begin() + x * 4, a.pn[x]);
+    for(int x=0; x<a.WIDTH; ++x)
+        WriteLE32(b.begin() + x*4, a.pn[x]);
     return b;
 }
-arith_uint256 UintToArith256(const uint256& a)
+arith_uint256 UintToArith256(const uint256 &a)
 {
     arith_uint256 b;
-    for (int x = 0; x < b.WIDTH; ++x)
-        b.pn[x] = ReadLE32(a.begin() + x * 4);
+    for(int x=0; x<b.WIDTH; ++x)
+        b.pn[x] = ReadLE32(a.begin() + x*4);
     return b;
 }

@@ -1,29 +1,33 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
+export LC_ALL=C
 TOPDIR=${TOPDIR:-$(git rev-parse --show-toplevel)}
-SRCDIR=${SRCDIR:-$TOPDIR/src}
+BUILDDIR=${BUILDDIR:-$TOPDIR}
+
+BINDIR=${BINDIR:-$BUILDDIR/src}
 MANDIR=${MANDIR:-$TOPDIR/doc/man}
 
-GLEECGBCD=${GLEECGBCD:-$SRCDIR/gleecbtcd}
-GLEECGBCCLI=${GLEECGBCCLI:-$SRCDIR/gleecbtc-cli}
-GLEECGBCTX=${GLEECGBCTX:-$SRCDIR/gleecbtc-tx}
-GLEECGBCQT=${GLEECGBCQT:-$SRCDIR/qt/gleecbtc-qt}
+GLEECBTCD=${GLEECBTCD:-$BINDIR/gleecbtcd}
+GLEECBTCCLI=${GLEECBTCCLI:-$BINDIR/gleecbtc-cli}
+GLEECBTCTX=${GLEECBTCTX:-$BINDIR/gleecbtc-tx}
+WALLET_TOOL=${WALLET_TOOL:-$BINDIR/gleecbtc-wallet}
+GLEECBTCQT=${GLEECBTCQT:-$BINDIR/qt/gleecbtc-qt}
 
-[ ! -x $GLEECGBCD ] && echo "$GLEECGBCD not found or not executable." && exit 1
+[ ! -x $GLEECBTCD ] && echo "$GLEECBTCD not found or not executable." && exit 1
 
 # The autodetected version git tag can screw up manpage output a little bit
-GBCVER=($($GLEECGBCCLI --version | head -n1 | awk -F'[ -]' '{ print $6, $7 }'))
+read -r -a GLEECVER <<< "$($GLEECBTCCLI --version | head -n1 | awk -F'[ -]' '{ print $6, $7 }')"
 
 # Create a footer file with copyright content.
 # This gets autodetected fine for gleecbtcd if --version-string is not set,
 # but has different outcomes for gleecbtc-qt and gleecbtc-cli.
 echo "[COPYRIGHT]" > footer.h2m
-$GLEECGBCD --version | sed -n '1!p' >> footer.h2m
+$GLEECBTCD --version | sed -n '1!p' >> footer.h2m
 
-for cmd in $GLEECGBCD $GLEECGBCCLI $GLEECGBCTX $GLEECGBCQT; do
+for cmd in $GLEECBTCD $GLEECBTCCLI $GLEECBTCTX $WALLET_TOOL $GLEECBTCQT; do
   cmdname="${cmd##*/}"
-  help2man -N --version-string=${GBCVER[0]} --include=footer.h2m -o ${MANDIR}/${cmdname}.1 ${cmd}
-  sed -i "s/\\\-${GBCVER[1]}//g" ${MANDIR}/${cmdname}.1
+  help2man -N --version-string=${GLEECVER[0]} --include=footer.h2m -o ${MANDIR}/${cmdname}.1 ${cmd}
+  sed -i "s/\\\-${GLEECVER[1]}//g" ${MANDIR}/${cmdname}.1
 done
 
 rm -f footer.h2m

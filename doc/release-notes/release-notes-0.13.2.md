@@ -11,7 +11,7 @@ Please report bugs using the issue tracker at github:
 
 To receive security and update notifications, please subscribe to:
 
-  <https://gleecbtccore.org/en/list/announcements/join/>
+  <https://gleecbtc.com/en/list/announcements/join/>
 
 Compatibility
 ==============
@@ -134,7 +134,7 @@ git merge commit are mentioned.
 - #8838 `094848b` Calculate size and weight of block correctly in CreateNewBlock() (jnewbery)
 - #8920 `40169dc` Set minimum required Boost to 1.47.0 (fanquake)
 - #9251 `a710a43` Improvement of documentation of command line parameter 'whitelist' (wodry)
-- #8932 `106da69` Allow gleecbtc-tx to create v2 transactions (btcdrak)
+- #8932 `106da69` Allow gleecbtc-tx to create v2 transactions (gleecdrak)
 - #8929 `12428b4` add software-properties-common (sigwo)
 - #9120 `08d1c90` bug: Missed one "return false" in recent refactoring in #9067 (UdjinM6)
 - #9067 `f85ee01` Fix exit codes (UdjinM6)
@@ -147,7 +147,7 @@ Credits
 Thanks to everyone who directly contributed to this release:
 
 - Alex Morcos
-- BtcDrak
+- GleecDrak
 - Cory Fields
 - fanquake
 - Gregory Maxwell

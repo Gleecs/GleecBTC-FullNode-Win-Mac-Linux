@@ -1,20 +1,20 @@
-// Copyright (c) 2015 The Bitcoin Core developers
+// Copyright (c) 2015-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 /**
  * Functionality for communicating with Tor.
  */
-#ifndef GLEECGBC_TORCONTROL_H
-#define GLEECGBC_TORCONTROL_H
+#ifndef GLEECBTC_TORCONTROL_H
+#define GLEECBTC_TORCONTROL_H
 
-#include "scheduler.h"
+#include <scheduler.h>
 
 extern const std::string DEFAULT_TOR_CONTROL;
 static const bool DEFAULT_LISTEN_ONION = true;
 
-void StartTorControl(boost::thread_group& threadGroup, CScheduler& scheduler);
+void StartTorControl();
 void InterruptTorControl();
 void StopTorControl();
 
-#endif /* GLEECGBC_TORCONTROL_H */
+#endif /* GLEECBTC_TORCONTROL_H */

@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2016 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_QT_OPTIONSDIALOG_H
-#define GLEECGBC_QT_OPTIONSDIALOG_H
+#ifndef GLEECBTC_QT_OPTIONSDIALOG_H
+#define GLEECBTC_QT_OPTIONSDIALOG_H
 
 #include <QDialog>
 #include <QValidator>
@@ -15,8 +15,7 @@ QT_BEGIN_NAMESPACE
 class QDataWidgetMapper;
 QT_END_NAMESPACE
 
-namespace Ui
-{
+namespace Ui {
 class OptionsDialog;
 }
 
@@ -27,9 +26,9 @@ class ProxyAddressValidator : public QValidator
     Q_OBJECT
 
 public:
-    explicit ProxyAddressValidator(QObject* parent);
+    explicit ProxyAddressValidator(QObject *parent);
 
-    State validate(QString& input, int& pos) const;
+    State validate(QString &input, int &pos) const;
 };
 
 /** Preferences dialog. */
@@ -38,11 +37,17 @@ class OptionsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit OptionsDialog(QWidget* parent, bool enableWallet);
+    explicit OptionsDialog(QWidget *parent, bool enableWallet);
     ~OptionsDialog();
 
-    void setModel(OptionsModel* model);
+    enum Tab {
+        TAB_MAIN,
+        TAB_NETWORK,
+    };
+
+    void setModel(OptionsModel *model);
     void setMapper();
+    void setCurrentTab(OptionsDialog::Tab tab);
 
 private Q_SLOTS:
     /* set OK button state (enabled / disabled) */
@@ -54,6 +59,7 @@ private Q_SLOTS:
 
     void on_hideTrayIcon_stateChanged(int fState);
 
+    void togglePruneWarning(bool enabled);
     void showRestartWarning(bool fPersistent = false);
     void clearStatusLabel();
     void updateProxyValidationState();
@@ -61,12 +67,12 @@ private Q_SLOTS:
     void updateDefaultProxyNets();
 
 Q_SIGNALS:
-    void proxyIpChecks(QValidatedLineEdit* pUiProxyIp, int nProxyPort);
+    void proxyIpChecks(QValidatedLineEdit *pUiProxyIp, int nProxyPort);
 
 private:
-    Ui::OptionsDialog* ui;
-    OptionsModel* model;
-    QDataWidgetMapper* mapper;
+    Ui::OptionsDialog *ui;
+    OptionsModel *model;
+    QDataWidgetMapper *mapper;
 };
 
-#endif // GLEECGBC_QT_OPTIONSDIALOG_H
+#endif // GLEECBTC_QT_OPTIONSDIALOG_H

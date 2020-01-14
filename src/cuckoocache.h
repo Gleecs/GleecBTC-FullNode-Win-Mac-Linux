@@ -2,14 +2,14 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef _GLEECGBC_CUCKOOCACHE_H_
-#define _GLEECGBC_CUCKOOCACHE_H_
+#ifndef GLEECBTC_CUCKOOCACHE_H
+#define GLEECBTC_CUCKOOCACHE_H
 
-#include <algorithm>
 #include <array>
+#include <algorithm>
 #include <atomic>
-#include <cmath>
 #include <cstring>
+#include <cmath>
 #include <memory>
 #include <vector>
 
@@ -58,7 +58,7 @@ public:
      * @post All calls to bit_is_set (without subsequent bit_unset) will return
      * true.
      */
-    bit_packed_atomic_flags(uint32_t size)
+    explicit bit_packed_atomic_flags(uint32_t size)
     {
         // pad out the size if needed
         size = (size + 7) / 8;
@@ -224,7 +224,7 @@ private:
      *
      * Instead we treat the 32-bit random number as a Q32 fixed-point number in the range
      *  [0,1) and simply multiply it by the size.  Then we just shift the result down by
-     *  32-bits to get our bucket number.  The results has non-uniformity the same as a
+     *  32-bits to get our bucket number.  The result has non-uniformity the same as a
      *  mod, but it is much faster to compute. More about this technique can be found at
      *  http://lemire.me/blog/2016/06/27/a-fast-alternative-to-the-modulo-reduction/
      *
@@ -242,14 +242,14 @@ private:
      */
     inline std::array<uint32_t, 8> compute_hashes(const Element& e) const
     {
-        return {{(uint32_t)((hash_function.template operator()<0>(e) * (uint64_t)size) >> 32),
-            (uint32_t)((hash_function.template operator()<1>(e) * (uint64_t)size) >> 32),
-            (uint32_t)((hash_function.template operator()<2>(e) * (uint64_t)size) >> 32),
-            (uint32_t)((hash_function.template operator()<3>(e) * (uint64_t)size) >> 32),
-            (uint32_t)((hash_function.template operator()<4>(e) * (uint64_t)size) >> 32),
-            (uint32_t)((hash_function.template operator()<5>(e) * (uint64_t)size) >> 32),
-            (uint32_t)((hash_function.template operator()<6>(e) * (uint64_t)size) >> 32),
-            (uint32_t)((hash_function.template operator()<7>(e) * (uint64_t)size) >> 32)}};
+        return {{(uint32_t)(((uint64_t)hash_function.template operator()<0>(e) * (uint64_t)size) >> 32),
+                 (uint32_t)(((uint64_t)hash_function.template operator()<1>(e) * (uint64_t)size) >> 32),
+                 (uint32_t)(((uint64_t)hash_function.template operator()<2>(e) * (uint64_t)size) >> 32),
+                 (uint32_t)(((uint64_t)hash_function.template operator()<3>(e) * (uint64_t)size) >> 32),
+                 (uint32_t)(((uint64_t)hash_function.template operator()<4>(e) * (uint64_t)size) >> 32),
+                 (uint32_t)(((uint64_t)hash_function.template operator()<5>(e) * (uint64_t)size) >> 32),
+                 (uint32_t)(((uint64_t)hash_function.template operator()<6>(e) * (uint64_t)size) >> 32),
+                 (uint32_t)(((uint64_t)hash_function.template operator()<7>(e) * (uint64_t)size) >> 32)}};
     }
 
     /* end
@@ -317,7 +317,7 @@ private:
             // epoch_unused_count), but we already know that `epoch_unused_count
             // < epoch_size` in this branch
             epoch_heuristic_counter = std::max(1u, std::max(epoch_size / 16,
-                                                       epoch_size - epoch_unused_count));
+                        epoch_size - epoch_unused_count));
     }
 
 public:
@@ -325,7 +325,7 @@ public:
      * call to setup or setup_bytes, otherwise operations may segfault.
      */
     cache() : table(), size(), collection_flags(0), epoch_flags(),
-              epoch_heuristic_counter(), epoch_size(), depth_limit(0), hash_function()
+    epoch_heuristic_counter(), epoch_size(), depth_limit(0), hash_function()
     {
     }
 
@@ -366,7 +366,7 @@ public:
      */
     uint32_t setup_bytes(size_t bytes)
     {
-        return setup(bytes / sizeof(Element));
+        return setup(bytes/sizeof(Element));
     }
 
     /** insert loops at most depth_limit times trying to insert a hash
@@ -397,7 +397,7 @@ public:
         std::array<uint32_t, 8> locs = compute_hashes(e);
         // Make sure we have not already inserted this element
         // If we have, make sure that it does not get deleted
-        for (uint32_t loc : locs)
+        for (const uint32_t loc : locs)
             if (table[loc] == e) {
                 please_keep(loc);
                 epoch_flags[loc] = last_epoch;
@@ -405,7 +405,7 @@ public:
             }
         for (uint8_t depth = 0; depth < depth_limit; ++depth) {
             // First try to insert to an empty slot, if one exists
-            for (uint32_t loc : locs) {
+            for (const uint32_t loc : locs) {
                 if (!collection_flags.bit_is_set(loc))
                     continue;
                 table[loc] = std::move(e);
@@ -467,7 +467,7 @@ public:
     inline bool contains(const Element& e, const bool erase) const
     {
         std::array<uint32_t, 8> locs = compute_hashes(e);
-        for (uint32_t loc : locs)
+        for (const uint32_t loc : locs)
             if (table[loc] == e) {
                 if (erase)
                     allow_erase(loc);
@@ -478,4 +478,4 @@ public:
 };
 } // namespace CuckooCache
 
-#endif
+#endif // GLEECBTC_CUCKOOCACHE_H

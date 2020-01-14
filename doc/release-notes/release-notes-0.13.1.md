@@ -12,7 +12,7 @@ Please report bugs using the issue tracker at github:
 
 To receive security and update notifications, please subscribe to:
 
-  <https://gleecbtccore.org/en/list/announcements/join/>
+  <https://gleecbtc.com/en/list/announcements/join/>
 
 Compatibility
 ==============
@@ -159,13 +159,13 @@ For more information about segwit, please see the [segwit FAQ][], the
 operator, please see the [versionbits FAQ][] for information about
 signaling support for a soft fork.
 
-[Segwit FAQ]: https://gleecbtccore.org/en/2016/01/26/segwit-benefits/
-[segwit wallet developers guide]: https://gleecbtccore.org/en/segwit_wallet_dev/
+[Segwit FAQ]: https://gleecbtc.com/en/2016/01/26/segwit-benefits/
+[segwit wallet developers guide]: https://gleecbtc.com/en/segwit_wallet_dev/
 [BIP141]: https://github.com/gleecbtc/bips/blob/master/bip-0141.mediawiki
 [BIP143]: https://github.com/gleecbtc/bips/blob/master/bip-0143.mediawiki
 [BIP144]: https://github.com/gleecbtc/bips/blob/master/bip-0144.mediawiki
 [BIP145]: https://github.com/gleecbtc/bips/blob/master/bip-0145.mediawiki
-[versionbits FAQ]: https://gleecbtccore.org/en/2016/06/08/version-bits-miners-faq/
+[versionbits FAQ]: https://gleecbtc.com/en/2016/06/08/version-bits-miners-faq/
 
 
 Null dummy soft fork
@@ -368,7 +368,7 @@ Thanks to everyone who directly contributed to this release:
 - Anders Øyvind Urke-Sætre
 - Andrew Chow
 - Anthony Towns
-- BtcDrak
+- GleecDrak
 - Chris Stewart
 - Christian Barcenas
 - Christian Decker

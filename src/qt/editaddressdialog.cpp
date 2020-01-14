@@ -1,31 +1,30 @@
-// Copyright (c) 2011-2016 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "editaddressdialog.h"
-#include "ui_editaddressdialog.h"
+#include <qt/editaddressdialog.h>
+#include <qt/forms/ui_editaddressdialog.h>
 
-#include "addresstablemodel.h"
-#include "guiutil.h"
+#include <qt/addresstablemodel.h>
+#include <qt/guiutil.h>
 
 #include <QDataWidgetMapper>
 #include <QMessageBox>
 
-EditAddressDialog::EditAddressDialog(Mode _mode, QWidget* parent) : QDialog(parent),
-                                                                    ui(new Ui::EditAddressDialog),
-                                                                    mapper(0),
-                                                                    mode(_mode),
-                                                                    model(0)
+
+EditAddressDialog::EditAddressDialog(Mode _mode, QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::EditAddressDialog),
+    mapper(nullptr),
+    mode(_mode),
+    model(nullptr)
 {
     ui->setupUi(this);
 
     GUIUtil::setupAddressWidget(ui->addressEdit, this);
 
-    switch (mode) {
-    case NewReceivingAddress:
-        setWindowTitle(tr("New receiving address"));
-        ui->addressEdit->setEnabled(false);
-        break;
+    switch(mode)
+    {
     case NewSendingAddress:
         setWindowTitle(tr("New sending address"));
         break;
@@ -40,6 +39,10 @@ EditAddressDialog::EditAddressDialog(Mode _mode, QWidget* parent) : QDialog(pare
 
     mapper = new QDataWidgetMapper(this);
     mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
+
+    GUIUtil::ItemDelegate* delegate = new GUIUtil::ItemDelegate(mapper);
+    connect(delegate, &GUIUtil::ItemDelegate::keyEscapePressed, this, &EditAddressDialog::reject);
+    mapper->setItemDelegate(delegate);
 }
 
 EditAddressDialog::~EditAddressDialog()
@@ -47,10 +50,10 @@ EditAddressDialog::~EditAddressDialog()
     delete ui;
 }
 
-void EditAddressDialog::setModel(AddressTableModel* _model)
+void EditAddressDialog::setModel(AddressTableModel *_model)
 {
     this->model = _model;
-    if (!_model)
+    if(!_model)
         return;
 
     mapper->setModel(_model);
@@ -65,20 +68,22 @@ void EditAddressDialog::loadRow(int row)
 
 bool EditAddressDialog::saveCurrentRow()
 {
-    if (!model)
+    if(!model)
         return false;
 
-    switch (mode) {
-    case NewReceivingAddress:
+    switch(mode)
+    {
     case NewSendingAddress:
         address = model->addRow(
-            mode == NewSendingAddress ? AddressTableModel::Send : AddressTableModel::Receive,
-            ui->labelEdit->text(),
-            ui->addressEdit->text());
+                AddressTableModel::Send,
+                ui->labelEdit->text(),
+                ui->addressEdit->text(),
+                model->GetDefaultAddressType());
         break;
     case EditReceivingAddress:
     case EditSendingAddress:
-        if (mapper->submit()) {
+        if(mapper->submit())
+        {
             address = ui->addressEdit->text();
         }
         break;
@@ -88,11 +93,13 @@ bool EditAddressDialog::saveCurrentRow()
 
 void EditAddressDialog::accept()
 {
-    if (!model)
+    if(!model)
         return;
 
-    if (!saveCurrentRow()) {
-        switch (model->getEditStatus()) {
+    if(!saveCurrentRow())
+    {
+        switch(model->getEditStatus())
+        {
         case AddressTableModel::OK:
             // Failed with unknown reason. Just reject.
             break;
@@ -106,7 +113,7 @@ void EditAddressDialog::accept()
             break;
         case AddressTableModel::DUPLICATE_ADDRESS:
             QMessageBox::warning(this, windowTitle(),
-                tr("The entered address \"%1\" is already in the address book.").arg(ui->addressEdit->text()),
+                getDuplicateAddressWarning(),
                 QMessageBox::Ok, QMessageBox::Ok);
             break;
         case AddressTableModel::WALLET_UNLOCK_FAILURE:
@@ -119,10 +126,30 @@ void EditAddressDialog::accept()
                 tr("New key generation failed."),
                 QMessageBox::Ok, QMessageBox::Ok);
             break;
+
         }
         return;
     }
     QDialog::accept();
+}
+
+QString EditAddressDialog::getDuplicateAddressWarning() const
+{
+    QString dup_address = ui->addressEdit->text();
+    QString existing_label = model->labelForAddress(dup_address);
+    QString existing_purpose = model->purposeForAddress(dup_address);
+
+    if (existing_purpose == "receive" &&
+            (mode == NewSendingAddress || mode == EditSendingAddress)) {
+        return tr(
+            "Address \"%1\" already exists as a receiving address with label "
+            "\"%2\" and so cannot be added as a sending address."
+            ).arg(dup_address).arg(existing_label);
+    }
+    return tr(
+        "The entered address \"%1\" is already in the address book with "
+        "label \"%2\"."
+        ).arg(dup_address).arg(existing_label);
 }
 
 QString EditAddressDialog::getAddress() const
@@ -130,7 +157,7 @@ QString EditAddressDialog::getAddress() const
     return address;
 }
 
-void EditAddressDialog::setAddress(const QString& _address)
+void EditAddressDialog::setAddress(const QString &_address)
 {
     this->address = _address;
     ui->addressEdit->setText(_address);

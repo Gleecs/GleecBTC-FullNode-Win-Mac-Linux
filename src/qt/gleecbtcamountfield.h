@@ -1,11 +1,11 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_QT_GLEECGBCAMOUNTFIELD_H
-#define GLEECGBC_QT_GLEECGBCAMOUNTFIELD_H
+#ifndef GLEECBTC_QT_GLEECBTCAMOUNTFIELD_H
+#define GLEECBTC_QT_GLEECBTCAMOUNTFIELD_H
 
-#include "amount.h"
+#include <amount.h>
 
 #include <QWidget>
 
@@ -17,7 +17,7 @@ QT_END_NAMESPACE
 
 /** Widget for entering gleecbtc amounts.
   */
-class GleecBTCAmountField : public QWidget
+class GleecBTCAmountField: public QWidget
 {
     Q_OBJECT
 
@@ -26,10 +26,19 @@ class GleecBTCAmountField : public QWidget
     Q_PROPERTY(qint64 value READ value WRITE setValue NOTIFY valueChanged USER true)
 
 public:
-    explicit GleecBTCAmountField(QWidget* parent = 0);
+    explicit GleecBTCAmountField(QWidget *parent = nullptr);
 
-    CAmount value(bool* value = 0) const;
+    CAmount value(bool *value=nullptr) const;
     void setValue(const CAmount& value);
+
+    /** If allow empty is set to false the field will be set to the minimum allowed value if left empty. **/
+    void SetAllowEmpty(bool allow);
+
+    /** Set the minimum value in satoshis **/
+    void SetMinValue(const CAmount& value);
+
+    /** Set the maximum value in satoshis **/
+    void SetMaxValue(const CAmount& value);
 
     /** Set single step in satoshis **/
     void setSingleStep(const CAmount& step);
@@ -54,21 +63,22 @@ public:
     /** Qt messes up the tab chain by default in some cases (issue https://bugreports.qt-project.org/browse/QTBUG-10907),
         in these cases we have to set it up manually.
     */
-    QWidget* setupTabChain(QWidget* prev);
+    QWidget *setupTabChain(QWidget *prev);
 
 Q_SIGNALS:
     void valueChanged();
 
 protected:
     /** Intercept focus-in event and ',' key presses */
-    bool eventFilter(QObject* object, QEvent* event);
+    bool eventFilter(QObject *object, QEvent *event);
 
 private:
-    AmountSpinBox* amount;
-    QValueComboBox* unit;
+    AmountSpinBox *amount;
+    QValueComboBox *unit;
 
 private Q_SLOTS:
     void unitChanged(int idx);
+
 };
 
-#endif // GLEECGBC_QT_GLEECGBCAMOUNTFIELD_H
+#endif // GLEECBTC_QT_GLEECBTCAMOUNTFIELD_H

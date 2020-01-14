@@ -1,15 +1,16 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "gleecbtcamountfield.h"
+#include <qt/gleecbtcamountfield.h>
 
-#include "gleecbtcunits.h"
-#include "guiconstants.h"
-#include "qvaluecombobox.h"
+#include <qt/gleecbtcunits.h>
+#include <qt/guiconstants.h>
+#include <qt/guiutil.h>
+#include <qt/qvaluecombobox.h>
 
-#include <QAbstractSpinBox>
 #include <QApplication>
+#include <QAbstractSpinBox>
 #include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QLineEdit>
@@ -17,23 +18,22 @@
 /** QSpinBox that uses fixed-point numbers internally and uses our own
  * formatting/parsing functions.
  */
-class AmountSpinBox : public QAbstractSpinBox
+class AmountSpinBox: public QAbstractSpinBox
 {
     Q_OBJECT
 
 public:
-    explicit AmountSpinBox(QWidget* parent) : QAbstractSpinBox(parent),
-                                              currentUnit(GleecBTCUnits::GBC),
-                                              singleStep(100000) // satoshis
+    explicit AmountSpinBox(QWidget *parent):
+        QAbstractSpinBox(parent)
     {
         setAlignment(Qt::AlignRight);
 
-        connect(lineEdit(), SIGNAL(textEdited(QString)), this, SIGNAL(valueChanged()));
+        connect(lineEdit(), &QLineEdit::textEdited, this, &AmountSpinBox::valueChanged);
     }
 
-    QValidator::State validate(QString& text, int& pos) const
+    QValidator::State validate(QString &text, int &pos) const
     {
-        if (text.isEmpty())
+        if(text.isEmpty())
             return QValidator::Intermediate;
         bool valid = false;
         parse(text, &valid);
@@ -41,17 +41,27 @@ public:
         return valid ? QValidator::Intermediate : QValidator::Invalid;
     }
 
-    void fixup(QString& input) const
+    void fixup(QString &input) const
     {
-        bool valid = false;
-        CAmount val = parse(input, &valid);
+        bool valid;
+        CAmount val;
+
+        if (input.isEmpty() && !m_allow_empty) {
+            valid = true;
+            val = m_min_amount;
+        } else {
+            valid = false;
+            val = parse(input, &valid);
+        }
+
         if (valid) {
+            val = qBound(m_min_amount, val, m_max_amount);
             input = GleecBTCUnits::format(currentUnit, val, false, GleecBTCUnits::separatorAlways);
             lineEdit()->setText(input);
         }
     }
 
-    CAmount value(bool* valid_out = 0) const
+    CAmount value(bool *valid_out=nullptr) const
     {
         return parse(text(), valid_out);
     }
@@ -62,12 +72,27 @@ public:
         Q_EMIT valueChanged();
     }
 
+    void SetAllowEmpty(bool allow)
+    {
+        m_allow_empty = allow;
+    }
+
+    void SetMinValue(const CAmount& value)
+    {
+        m_min_amount = value;
+    }
+
+    void SetMaxValue(const CAmount& value)
+    {
+        m_max_amount = value;
+    }
+
     void stepBy(int steps)
     {
         bool valid = false;
         CAmount val = value(&valid);
         val = val + steps * singleStep;
-        val = qMin(qMax(val, CAmount(0)), GleecBTCUnits::maxMoney());
+        val = qBound(m_min_amount, val, m_max_amount);
         setValue(val);
     }
 
@@ -78,7 +103,7 @@ public:
 
         currentUnit = unit;
 
-        if (valid)
+        if(valid)
             setValue(val);
         else
             clear();
@@ -91,12 +116,13 @@ public:
 
     QSize minimumSizeHint() const
     {
-        if (cachedMinimumSizeHint.isEmpty()) {
+        if(cachedMinimumSizeHint.isEmpty())
+        {
             ensurePolished();
 
             const QFontMetrics fm(fontMetrics());
             int h = lineEdit()->minimumSizeHint().height();
-            int w = fm.width(GleecBTCUnits::format(GleecBTCUnits::GBC, GleecBTCUnits::maxMoney(), false, GleecBTCUnits::separatorAlways));
+            int w = GUIUtil::TextWidth(fm, GleecBTCUnits::format(GleecBTCUnits::GLEEC, GleecBTCUnits::maxMoney(), false, GleecBTCUnits::separatorAlways));
             w += 2; // cursor blinking space
 
             QStyleOptionSpinBox opt;
@@ -105,52 +131,57 @@ public:
             QSize extra(35, 6);
             opt.rect.setSize(hint + extra);
             extra += hint - style()->subControlRect(QStyle::CC_SpinBox, &opt,
-                                       QStyle::SC_SpinBoxEditField, this)
-                                .size();
+                                                    QStyle::SC_SpinBoxEditField, this).size();
             // get closer to final result by repeating the calculation
             opt.rect.setSize(hint + extra);
             extra += hint - style()->subControlRect(QStyle::CC_SpinBox, &opt,
-                                       QStyle::SC_SpinBoxEditField, this)
-                                .size();
+                                                    QStyle::SC_SpinBoxEditField, this).size();
             hint += extra;
             hint.setHeight(h);
 
             opt.rect = rect();
 
-            cachedMinimumSizeHint = style()->sizeFromContents(QStyle::CT_SpinBox, &opt, hint, this).expandedTo(QApplication::globalStrut());
+            cachedMinimumSizeHint = style()->sizeFromContents(QStyle::CT_SpinBox, &opt, hint, this)
+                                    .expandedTo(QApplication::globalStrut());
         }
         return cachedMinimumSizeHint;
     }
 
 private:
-    int currentUnit;
-    CAmount singleStep;
+    int currentUnit{GleecBTCUnits::GLEEC};
+    CAmount singleStep{CAmount(100000)}; // satoshis
     mutable QSize cachedMinimumSizeHint;
+    bool m_allow_empty{true};
+    CAmount m_min_amount{CAmount(0)};
+    CAmount m_max_amount{GleecBTCUnits::maxMoney()};
 
     /**
      * Parse a string into a number of base monetary units and
      * return validity.
      * @note Must return 0 if !valid.
      */
-    CAmount parse(const QString& text, bool* valid_out = 0) const
+    CAmount parse(const QString &text, bool *valid_out=nullptr) const
     {
         CAmount val = 0;
         bool valid = GleecBTCUnits::parse(currentUnit, text, &val);
-        if (valid) {
-            if (val < 0 || val > GleecBTCUnits::maxMoney())
+        if(valid)
+        {
+            if(val < 0 || val > GleecBTCUnits::maxMoney())
                 valid = false;
         }
-        if (valid_out)
+        if(valid_out)
             *valid_out = valid;
         return valid ? val : 0;
     }
 
 protected:
-    bool event(QEvent* event)
+    bool event(QEvent *event)
     {
-        if (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease) {
-            QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
-            if (keyEvent->key() == Qt::Key_Comma) {
+        if (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease)
+        {
+            QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+            if (keyEvent->key() == Qt::Key_Comma)
+            {
                 // Translate a comma into a period
                 QKeyEvent periodKeyEvent(event->type(), Qt::Key_Period, keyEvent->modifiers(), ".", keyEvent->isAutoRepeat(), keyEvent->count());
                 return QAbstractSpinBox::event(&periodKeyEvent);
@@ -166,13 +197,13 @@ protected:
         if (text().isEmpty()) // Allow step-up with empty field
             return StepUpEnabled;
 
-        StepEnabled rv = 0;
+        StepEnabled rv = StepNone;
         bool valid = false;
         CAmount val = value(&valid);
         if (valid) {
-            if (val > 0)
+            if (val > m_min_amount)
                 rv |= StepDownEnabled;
-            if (val < GleecBTCUnits::maxMoney())
+            if (val < m_max_amount)
                 rv |= StepUpEnabled;
         }
         return rv;
@@ -182,23 +213,24 @@ Q_SIGNALS:
     void valueChanged();
 };
 
-#include "gleecbtcamountfield.moc"
+#include <qt/gleecbtcamountfield.moc>
 
-GleecBTCAmountField::GleecBTCAmountField(QWidget* parent) : QWidget(parent),
-                                                          amount(0)
+GleecBTCAmountField::GleecBTCAmountField(QWidget *parent) :
+    QWidget(parent),
+    amount(nullptr)
 {
     amount = new AmountSpinBox(this);
     amount->setLocale(QLocale::c());
     amount->installEventFilter(this);
-    amount->setMaximumWidth(170);
+    amount->setMaximumWidth(240);
 
-    QHBoxLayout* layout = new QHBoxLayout(this);
+    QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(amount);
     unit = new QValueComboBox(this);
     unit->setModel(new GleecBTCUnits(this));
     layout->addWidget(unit);
     layout->addStretch(1);
-    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(0,0,0,0);
 
     setLayout(layout);
 
@@ -206,8 +238,8 @@ GleecBTCAmountField::GleecBTCAmountField(QWidget* parent) : QWidget(parent),
     setFocusProxy(amount);
 
     // If one if the widgets changes, the combined content changes as well
-    connect(amount, SIGNAL(valueChanged()), this, SIGNAL(valueChanged()));
-    connect(unit, SIGNAL(currentIndexChanged(int)), this, SLOT(unitChanged(int)));
+    connect(amount, &AmountSpinBox::valueChanged, this, &GleecBTCAmountField::valueChanged);
+    connect(unit, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &GleecBTCAmountField::unitChanged);
 
     // Set default based on configuration
     unitChanged(unit->currentIndex());
@@ -241,23 +273,24 @@ void GleecBTCAmountField::setValid(bool valid)
         amount->setStyleSheet(STYLE_INVALID);
 }
 
-bool GleecBTCAmountField::eventFilter(QObject* object, QEvent* event)
+bool GleecBTCAmountField::eventFilter(QObject *object, QEvent *event)
 {
-    if (event->type() == QEvent::FocusIn) {
+    if (event->type() == QEvent::FocusIn)
+    {
         // Clear invalid flag on focus
         setValid(true);
     }
     return QWidget::eventFilter(object, event);
 }
 
-QWidget* GleecBTCAmountField::setupTabChain(QWidget* prev)
+QWidget *GleecBTCAmountField::setupTabChain(QWidget *prev)
 {
     QWidget::setTabOrder(prev, amount);
     QWidget::setTabOrder(amount, unit);
     return unit;
 }
 
-CAmount GleecBTCAmountField::value(bool* valid_out) const
+CAmount GleecBTCAmountField::value(bool *valid_out) const
 {
     return amount->value(valid_out);
 }
@@ -265,6 +298,21 @@ CAmount GleecBTCAmountField::value(bool* valid_out) const
 void GleecBTCAmountField::setValue(const CAmount& value)
 {
     amount->setValue(value);
+}
+
+void GleecBTCAmountField::SetAllowEmpty(bool allow)
+{
+    amount->SetAllowEmpty(allow);
+}
+
+void GleecBTCAmountField::SetMinValue(const CAmount& value)
+{
+    amount->SetMinValue(value);
+}
+
+void GleecBTCAmountField::SetMaxValue(const CAmount& value)
+{
+    amount->SetMaxValue(value);
 }
 
 void GleecBTCAmountField::setReadOnly(bool fReadOnly)

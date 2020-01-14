@@ -1,9 +1,9 @@
-// Copyright (c) 2012-2016 The Bitcoin Core developers
+// Copyright (c) 2012-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_LIMITEDMAP_H
-#define GLEECGBC_LIMITEDMAP_H
+#ifndef GLEECBTC_LIMITEDMAP_H
+#define GLEECBTC_LIMITEDMAP_H
 
 #include <assert.h>
 #include <map>
@@ -27,7 +27,7 @@ protected:
     size_type nMaxSize;
 
 public:
-    limitedmap(size_type nMaxSizeIn)
+    explicit limitedmap(size_type nMaxSizeIn)
     {
         assert(nMaxSizeIn > 0);
         nMaxSize = nMaxSizeIn;
@@ -97,4 +97,4 @@ public:
     }
 };
 
-#endif // GLEECGBC_LIMITEDMAP_H
+#endif // GLEECBTC_LIMITEDMAP_H

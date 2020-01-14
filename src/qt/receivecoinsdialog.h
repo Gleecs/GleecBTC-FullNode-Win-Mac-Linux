@@ -1,11 +1,11 @@
-// Copyright (c) 2011-2016 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_QT_RECEIVECOINSDIALOG_H
-#define GLEECGBC_QT_RECEIVECOINSDIALOG_H
+#ifndef GLEECBTC_QT_RECEIVECOINSDIALOG_H
+#define GLEECBTC_QT_RECEIVECOINSDIALOG_H
 
-#include "guiutil.h"
+#include <qt/guiutil.h>
 
 #include <QDialog>
 #include <QHeaderView>
@@ -18,9 +18,8 @@
 class PlatformStyle;
 class WalletModel;
 
-namespace Ui
-{
-class ReceiveCoinsDialog;
+namespace Ui {
+    class ReceiveCoinsDialog;
 }
 
 QT_BEGIN_NAMESPACE
@@ -40,10 +39,10 @@ public:
         MINIMUM_COLUMN_WIDTH = 130
     };
 
-    explicit ReceiveCoinsDialog(const PlatformStyle* platformStyle, QWidget* parent = 0);
+    explicit ReceiveCoinsDialog(const PlatformStyle *platformStyle, QWidget *parent = nullptr);
     ~ReceiveCoinsDialog();
 
-    void setModel(WalletModel* model);
+    void setModel(WalletModel *model);
 
 public Q_SLOTS:
     void clear();
@@ -51,31 +50,31 @@ public Q_SLOTS:
     void accept();
 
 protected:
-    virtual void keyPressEvent(QKeyEvent* event);
+    virtual void keyPressEvent(QKeyEvent *event);
 
 private:
-    Ui::ReceiveCoinsDialog* ui;
-    GUIUtil::TableViewLastColumnResizingFixer* columnResizingFixer;
-    WalletModel* model;
-    QMenu* contextMenu;
-    const PlatformStyle* platformStyle;
+    Ui::ReceiveCoinsDialog *ui;
+    GUIUtil::TableViewLastColumnResizingFixer *columnResizingFixer;
+    WalletModel *model;
+    QMenu *contextMenu;
+    const PlatformStyle *platformStyle;
 
     QModelIndex selectedRow();
     void copyColumnToClipboard(int column);
-    virtual void resizeEvent(QResizeEvent* event);
+    virtual void resizeEvent(QResizeEvent *event);
 
 private Q_SLOTS:
     void on_receiveButton_clicked();
     void on_showRequestButton_clicked();
     void on_removeRequestButton_clicked();
-    void on_recentRequestsView_doubleClicked(const QModelIndex& index);
-    void recentRequestsView_selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+    void on_recentRequestsView_doubleClicked(const QModelIndex &index);
+    void recentRequestsView_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
     void updateDisplayUnit();
-    void showMenu(const QPoint& point);
+    void showMenu(const QPoint &point);
     void copyURI();
     void copyLabel();
     void copyMessage();
     void copyAmount();
 };
 
-#endif // GLEECGBC_QT_RECEIVECOINSDIALOG_H
+#endif // GLEECBTC_QT_RECEIVECOINSDIALOG_H

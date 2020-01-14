@@ -1,4 +1,4 @@
-# Copyright (c) 2013-2016 The Bitcoin Core developers
+# Copyright (c) 2013-2016 The GleecBTC Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -6,113 +6,13 @@ bin_PROGRAMS += qt/gleecbtc-qt
 EXTRA_LIBRARIES += qt/libgleecbtcqt.a
 
 # gleecbtc qt core #
-QT_TS = \
-  qt/locale/gleecbtc_af.ts \
-  qt/locale/gleecbtc_af_ZA.ts \
-  qt/locale/gleecbtc_ar.ts \
-  qt/locale/gleecbtc_be_BY.ts \
-  qt/locale/gleecbtc_bg_BG.ts \
-  qt/locale/gleecbtc_bg.ts \
-  qt/locale/gleecbtc_bn.ts \
-  qt/locale/gleecbtc_bs.ts \
-  qt/locale/gleecbtc_ca_ES.ts \
-  qt/locale/gleecbtc_ca.ts \
-  qt/locale/gleecbtc_ca@valencia.ts \
-  qt/locale/gleecbtc_cs.ts \
-  qt/locale/gleecbtc_cy.ts \
-  qt/locale/gleecbtc_da.ts \
-  qt/locale/gleecbtc_de_DE.ts \
-  qt/locale/gleecbtc_de.ts \
-  qt/locale/gleecbtc_el_GR.ts \
-  qt/locale/gleecbtc_el.ts \
-  qt/locale/gleecbtc_en_AU.ts \
-  qt/locale/gleecbtc_en_GB.ts \
-  qt/locale/gleecbtc_en.ts \
-  qt/locale/gleecbtc_en_US.ts \
-  qt/locale/gleecbtc_eo.ts \
-  qt/locale/gleecbtc_es_419.ts \
-  qt/locale/gleecbtc_es_AR.ts \
-  qt/locale/gleecbtc_es_CL.ts \
-  qt/locale/gleecbtc_es_CO.ts \
-  qt/locale/gleecbtc_es_DO.ts \
-  qt/locale/gleecbtc_es_ES.ts \
-  qt/locale/gleecbtc_es_MX.ts \
-  qt/locale/gleecbtc_es.ts \
-  qt/locale/gleecbtc_es_UY.ts \
-  qt/locale/gleecbtc_es_VE.ts \
-  qt/locale/gleecbtc_et_EE.ts \
-  qt/locale/gleecbtc_et.ts \
-  qt/locale/gleecbtc_eu_ES.ts \
-  qt/locale/gleecbtc_fa_IR.ts \
-  qt/locale/gleecbtc_fa.ts \
-  qt/locale/gleecbtc_fi.ts \
-  qt/locale/gleecbtc_fr_CA.ts \
-  qt/locale/gleecbtc_fr_FR.ts \
-  qt/locale/gleecbtc_fr.ts \
-  qt/locale/gleecbtc_gl.ts \
-  qt/locale/gleecbtc_he_IL.ts \
-  qt/locale/gleecbtc_he.ts \
-  qt/locale/gleecbtc_hi_IN.ts \
-  qt/locale/gleecbtc_hr.ts \
-  qt/locale/gleecbtc_hu.ts \
-  qt/locale/gleecbtc_id_ID.ts \
-  qt/locale/gleecbtc_id.ts \
-  qt/locale/gleecbtc_it_IT.ts \
-  qt/locale/gleecbtc_it.ts \
-  qt/locale/gleecbtc_ja_JP.ts \
-  qt/locale/gleecbtc_ja.ts \
-  qt/locale/gleecbtc_ka.ts \
-  qt/locale/gleecbtc_kk_KZ.ts \
-  qt/locale/gleecbtc_ko_KR.ts \
-  qt/locale/gleecbtc_ku_IQ.ts \
-  qt/locale/gleecbtc_ky.ts \
-  qt/locale/gleecbtc_la.ts \
-  qt/locale/gleecbtc_lt.ts \
-  qt/locale/gleecbtc_lv_LV.ts \
-  qt/locale/gleecbtc_mk_MK.ts \
-  qt/locale/gleecbtc_mn.ts \
-  qt/locale/gleecbtc_ms_MY.ts \
-  qt/locale/gleecbtc_my.ts \
-  qt/locale/gleecbtc_nb_NO.ts \
-  qt/locale/gleecbtc_nb.ts \
-  qt/locale/gleecbtc_ne.ts \
-  qt/locale/gleecbtc_nl_NL.ts \
-  qt/locale/gleecbtc_nl.ts \
-  qt/locale/gleecbtc_pam.ts \
-  qt/locale/gleecbtc_pl.ts \
-  qt/locale/gleecbtc_pt_BR.ts \
-  qt/locale/gleecbtc_pt_PT.ts \
-  qt/locale/gleecbtc_ro_RO.ts \
-  qt/locale/gleecbtc_ro.ts \
-  qt/locale/gleecbtc_ru_RU.ts \
-  qt/locale/gleecbtc_ru.ts \
-  qt/locale/gleecbtc_si.ts \
-  qt/locale/gleecbtc_sk.ts \
-  qt/locale/gleecbtc_sl_SI.ts \
-  qt/locale/gleecbtc_sq.ts \
-  qt/locale/gleecbtc_sr@latin.ts \
-  qt/locale/gleecbtc_sr.ts \
-  qt/locale/gleecbtc_sv.ts \
-  qt/locale/gleecbtc_ta.ts \
-  qt/locale/gleecbtc_te.ts \
-  qt/locale/gleecbtc_th_TH.ts \
-  qt/locale/gleecbtc_th.ts \
-  qt/locale/gleecbtc_tr_TR.ts \
-  qt/locale/gleecbtc_tr.ts \
-  qt/locale/gleecbtc_uk.ts \
-  qt/locale/gleecbtc_ur_PK.ts \
-  qt/locale/gleecbtc_uz@Cyrl.ts \
-  qt/locale/gleecbtc_vi.ts \
-  qt/locale/gleecbtc_vi_VN.ts \
-  qt/locale/gleecbtc_zh_CN.ts \
-  qt/locale/gleecbtc_zh_HK.ts \
-  qt/locale/gleecbtc_zh.ts \
-  qt/locale/gleecbtc_zh_TW.ts
+include Makefile.qt_locale.include
 
 QT_FORMS_UI = \
   qt/forms/addressbookpage.ui \
   qt/forms/askpassphrasedialog.ui \
   qt/forms/coincontroldialog.ui \
+  qt/forms/createwalletdialog.ui \
   qt/forms/editaddressdialog.ui \
   qt/forms/helpmessagedialog.ui \
   qt/forms/intro.ui \
@@ -132,12 +32,13 @@ QT_MOC_CPP = \
   qt/moc_addressbookpage.cpp \
   qt/moc_addresstablemodel.cpp \
   qt/moc_askpassphrasedialog.cpp \
+  qt/moc_createwalletdialog.cpp \
   qt/moc_bantablemodel.cpp \
   qt/moc_gleecbtcaddressvalidator.cpp \
   qt/moc_gleecbtcamountfield.cpp \
+  qt/moc_gleecbtc.cpp \
   qt/moc_gleecbtcgui.cpp \
   qt/moc_gleecbtcunits.cpp \
-  qt/moc_callback.cpp \
   qt/moc_clientmodel.cpp \
   qt/moc_coincontroldialog.cpp \
   qt/moc_coincontroltreewidget.cpp \
@@ -155,6 +56,7 @@ QT_MOC_CPP = \
   qt/moc_overviewpage.cpp \
   qt/moc_peertablemodel.cpp \
   qt/moc_paymentserver.cpp \
+  qt/moc_qrimagewidget.cpp \
   qt/moc_qvalidatedlineedit.cpp \
   qt/moc_qvaluecombobox.cpp \
   qt/moc_receivecoinsdialog.cpp \
@@ -172,18 +74,18 @@ QT_MOC_CPP = \
   qt/moc_transactiontablemodel.cpp \
   qt/moc_transactionview.cpp \
   qt/moc_utilitydialog.cpp \
+  qt/moc_walletcontroller.cpp \
   qt/moc_walletframe.cpp \
   qt/moc_walletmodel.cpp \
   qt/moc_walletview.cpp
 
-GLEECGBC_MM = \
+GLEECBTC_MM = \
   qt/macdockiconhandler.mm \
-  qt/macnotificationhandler.mm
+  qt/macnotificationhandler.mm \
+  qt/macos_appnap.mm
 
 QT_MOC = \
-  qt/gleecbtc.moc \
   qt/gleecbtcamountfield.moc \
-  qt/callback.moc \
   qt/intro.moc \
   qt/overviewpage.moc \
   qt/rpcconsole.moc
@@ -193,23 +95,30 @@ QT_QRC = qt/gleecbtc.qrc
 QT_QRC_LOCALE_CPP = qt/qrc_gleecbtc_locale.cpp
 QT_QRC_LOCALE = qt/gleecbtc_locale.qrc
 
+if ENABLE_BIP70
 PROTOBUF_CC = qt/paymentrequest.pb.cc
 PROTOBUF_H = qt/paymentrequest.pb.h
 PROTOBUF_PROTO = qt/paymentrequest.proto
+else
+PROTOBUF_CC =
+PROTOBUF_H =
+PROTOBUF_PROTO =
+endif
 
-GLEECGBC_QT_H = \
+GLEECBTC_QT_H = \
   qt/addressbookpage.h \
   qt/addresstablemodel.h \
   qt/askpassphrasedialog.h \
   qt/bantablemodel.h \
   qt/gleecbtcaddressvalidator.h \
   qt/gleecbtcamountfield.h \
+  qt/gleecbtc.h \
   qt/gleecbtcgui.h \
   qt/gleecbtcunits.h \
-  qt/callback.h \
   qt/clientmodel.h \
   qt/coincontroldialog.h \
   qt/coincontroltreewidget.h \
+  qt/createwalletdialog.h \
   qt/csvmodelwriter.h \
   qt/editaddressdialog.h \
   qt/guiconstants.h \
@@ -217,6 +126,7 @@ GLEECGBC_QT_H = \
   qt/intro.h \
   qt/macdockiconhandler.h \
   qt/macnotificationhandler.h \
+  qt/macos_appnap.h \
   qt/modaloverlay.h \
   qt/networkstyle.h \
   qt/notificator.h \
@@ -228,6 +138,7 @@ GLEECGBC_QT_H = \
   qt/paymentserver.h \
   qt/peertablemodel.h \
   qt/platformstyle.h \
+  qt/qrimagewidget.h \
   qt/qvalidatedlineedit.h \
   qt/qvaluecombobox.h \
   qt/receivecoinsdialog.h \
@@ -246,6 +157,7 @@ GLEECGBC_QT_H = \
   qt/transactiontablemodel.h \
   qt/transactionview.h \
   qt/utilitydialog.h \
+  qt/walletcontroller.h \
   qt/walletframe.h \
   qt/walletmodel.h \
   qt/walletmodeltransaction.h \
@@ -255,8 +167,6 @@ GLEECGBC_QT_H = \
 RES_ICONS = \
   qt/res/icons/add.png \
   qt/res/icons/address-book.png \
-  qt/res/icons/about.png \
-  qt/res/icons/about_qt.png \
   qt/res/icons/gleecbtc.ico \
   qt/res/icons/gleecbtc_testnet.ico \
   qt/res/icons/gleecbtc.png \
@@ -266,13 +176,11 @@ RES_ICONS = \
   qt/res/icons/clock3.png \
   qt/res/icons/clock4.png \
   qt/res/icons/clock5.png \
-  qt/res/icons/configure.png \
   qt/res/icons/connect0.png \
   qt/res/icons/connect1.png \
   qt/res/icons/connect2.png \
   qt/res/icons/connect3.png \
   qt/res/icons/connect4.png \
-  qt/res/icons/debugwindow.png \
   qt/res/icons/edit.png \
   qt/res/icons/editcopy.png \
   qt/res/icons/editpaste.png \
@@ -280,20 +188,16 @@ RES_ICONS = \
   qt/res/icons/eye.png \
   qt/res/icons/eye_minus.png \
   qt/res/icons/eye_plus.png \
-  qt/res/icons/filesave.png \
   qt/res/icons/fontbigger.png \
   qt/res/icons/fontsmaller.png \
   qt/res/icons/hd_disabled.png \
   qt/res/icons/hd_enabled.png \
   qt/res/icons/history.png \
-  qt/res/icons/info.png \
-  qt/res/icons/key.png \
   qt/res/icons/lock_closed.png \
   qt/res/icons/lock_open.png \
   qt/res/icons/network_disabled.png \
-  qt/res/icons/open.png \
   qt/res/icons/overview.png \
-  qt/res/icons/quit.png \
+  qt/res/icons/proxy.png \
   qt/res/icons/receive.png \
   qt/res/icons/remove.png \
   qt/res/icons/send.png \
@@ -306,11 +210,11 @@ RES_ICONS = \
   qt/res/icons/tx_input.png \
   qt/res/icons/tx_output.png \
   qt/res/icons/tx_mined.png \
-  qt/res/icons/warning.png \
-  qt/res/icons/verify.png
+  qt/res/icons/warning.png
 
-GLEECGBC_QT_BASE_CPP = \
+GLEECBTC_QT_BASE_CPP = \
   qt/bantablemodel.cpp \
+  qt/gleecbtc.cpp \
   qt/gleecbtcaddressvalidator.cpp \
   qt/gleecbtcamountfield.cpp \
   qt/gleecbtcgui.cpp \
@@ -333,19 +237,20 @@ GLEECGBC_QT_BASE_CPP = \
   qt/trafficgraphwidget.cpp \
   qt/utilitydialog.cpp
 
-GLEECGBC_QT_WINDOWS_CPP = qt/winshutdownmonitor.cpp
+GLEECBTC_QT_WINDOWS_CPP = qt/winshutdownmonitor.cpp
 
-GLEECGBC_QT_WALLET_CPP = \
+GLEECBTC_QT_WALLET_CPP = \
   qt/addressbookpage.cpp \
   qt/addresstablemodel.cpp \
   qt/askpassphrasedialog.cpp \
   qt/coincontroldialog.cpp \
   qt/coincontroltreewidget.cpp \
+  qt/createwalletdialog.cpp \
   qt/editaddressdialog.cpp \
   qt/openuridialog.cpp \
   qt/overviewpage.cpp \
-  qt/paymentrequestplus.cpp \
   qt/paymentserver.cpp \
+  qt/qrimagewidget.cpp \
   qt/receivecoinsdialog.cpp \
   qt/receiverequestdialog.cpp \
   qt/recentrequeststablemodel.cpp \
@@ -358,34 +263,44 @@ GLEECGBC_QT_WALLET_CPP = \
   qt/transactionrecord.cpp \
   qt/transactiontablemodel.cpp \
   qt/transactionview.cpp \
+  qt/walletcontroller.cpp \
   qt/walletframe.cpp \
   qt/walletmodel.cpp \
   qt/walletmodeltransaction.cpp \
   qt/walletview.cpp
 
-GLEECGBC_QT_CPP = $(GLEECGBC_QT_BASE_CPP)
+GLEECBTC_QT_WALLET_BIP70_CPP = \
+  qt/paymentrequestplus.cpp
+
+GLEECBTC_QT_CPP = $(GLEECBTC_QT_BASE_CPP)
 if TARGET_WINDOWS
-GLEECGBC_QT_CPP += $(GLEECGBC_QT_WINDOWS_CPP)
+GLEECBTC_QT_CPP += $(GLEECBTC_QT_WINDOWS_CPP)
 endif
 if ENABLE_WALLET
-GLEECGBC_QT_CPP += $(GLEECGBC_QT_WALLET_CPP)
-endif
+GLEECBTC_QT_CPP += $(GLEECBTC_QT_WALLET_CPP)
+if ENABLE_BIP70
+GLEECBTC_QT_CPP += $(GLEECBTC_QT_WALLET_BIP70_CPP)
+endif # ENABLE_BIP70
+endif # ENABLE_WALLET
 
-RES_IMAGES = 
+RES_IMAGES =
 
 RES_MOVIES = $(wildcard $(srcdir)/qt/res/movies/spinner-*.png)
 
-GLEECGBC_RC = qt/res/gleecbtc-qt-res.rc
+GLEECBTC_RC = qt/res/gleecbtc-qt-res.rc
 
-GLEECGBC_QT_INCLUDES = -I$(builddir)/qt -I$(srcdir)/qt -I$(srcdir)/qt/forms \
-  -I$(builddir)/qt/forms -DQT_NO_KEYWORDS
+GLEECBTC_QT_INCLUDES = -DQT_NO_KEYWORDS
 
-qt_libgleecbtcqt_a_CPPFLAGS = $(AM_CPPFLAGS) $(GLEECGBC_INCLUDES) $(GLEECGBC_QT_INCLUDES) \
+qt_libgleecbtcqt_a_CPPFLAGS = $(AM_CPPFLAGS) $(GLEECBTC_INCLUDES) $(GLEECBTC_QT_INCLUDES) \
   $(QT_INCLUDES) $(QT_DBUS_INCLUDES) $(PROTOBUF_CFLAGS) $(QR_CFLAGS)
 qt_libgleecbtcqt_a_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
+qt_libgleecbtcqt_a_OBJCXXFLAGS = $(AM_OBJCXXFLAGS) $(QT_PIE_FLAGS)
 
-qt_libgleecbtcqt_a_SOURCES = $(GLEECGBC_QT_CPP) $(GLEECGBC_QT_H) $(QT_FORMS_UI) \
+qt_libgleecbtcqt_a_SOURCES = $(GLEECBTC_QT_CPP) $(GLEECBTC_QT_H) $(QT_FORMS_UI) \
   $(QT_QRC) $(QT_QRC_LOCALE) $(QT_TS) $(PROTOBUF_PROTO) $(RES_ICONS) $(RES_IMAGES) $(RES_MOVIES)
+if TARGET_DARWIN
+  qt_libgleecbtcqt_a_SOURCES += $(GLEECBTC_MM)
+endif
 
 nodist_qt_libgleecbtcqt_a_SOURCES = $(QT_MOC_CPP) $(QT_MOC) $(PROTOBUF_CC) \
   $(PROTOBUF_H) $(QT_QRC_CPP) $(QT_QRC_LOCALE_CPP)
@@ -404,29 +319,34 @@ $(QT_MOC): $(PROTOBUF_H)
 $(QT_MOC_CPP): $(PROTOBUF_H)
 
 # gleecbtc-qt binary #
-qt_gleecbtc_qt_CPPFLAGS = $(AM_CPPFLAGS) $(GLEECGBC_INCLUDES) $(GLEECGBC_QT_INCLUDES) \
+qt_gleecbtc_qt_CPPFLAGS = $(AM_CPPFLAGS) $(GLEECBTC_INCLUDES) $(GLEECBTC_QT_INCLUDES) \
   $(QT_INCLUDES) $(PROTOBUF_CFLAGS) $(QR_CFLAGS)
 qt_gleecbtc_qt_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
 
-qt_gleecbtc_qt_SOURCES = qt/gleecbtc.cpp
-if TARGET_DARWIN
-  qt_gleecbtc_qt_SOURCES += $(GLEECGBC_MM)
-endif
+qt_gleecbtc_qt_SOURCES = qt/main.cpp
 if TARGET_WINDOWS
-  qt_gleecbtc_qt_SOURCES += $(GLEECGBC_RC)
+  qt_gleecbtc_qt_SOURCES += $(GLEECBTC_RC)
 endif
-qt_gleecbtc_qt_LDADD = qt/libgleecbtcqt.a $(LIBGLEECGBC_SERVER)
+qt_gleecbtc_qt_LDADD = qt/libgleecbtcqt.a $(LIBGLEECBTC_SERVER)
 if ENABLE_WALLET
-qt_gleecbtc_qt_LDADD += $(LIBGLEECGBC_WALLET)
+qt_gleecbtc_qt_LDADD += $(LIBGLEECBTC_UTIL) $(LIBGLEECBTC_WALLET)
 endif
 if ENABLE_ZMQ
-qt_gleecbtc_qt_LDADD += $(LIBGLEECGBC_ZMQ) $(ZMQ_LIBS)
+qt_gleecbtc_qt_LDADD += $(LIBGLEECBTC_ZMQ) $(ZMQ_LIBS)
 endif
-qt_gleecbtc_qt_LDADD += $(LIBGLEECGBC_CLI) $(LIBGLEECGBC_COMMON) $(LIBGLEECGBC_UTIL) $(LIBGLEECGBC_CONSENSUS) $(LIBGLEECGBC_CRYPTO) $(LIBUNIVALUE) $(LIBLEVELDB) $(LIBLEVELDB_SSE42) $(LIBMEMENV) \
-  $(BOOST_LIBS) $(QT_LIBS) $(QT_DBUS_LIBS) $(QR_LIBS) $(PROTOBUF_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(LIBSECP256K1) \
+qt_gleecbtc_qt_LDADD += $(LIBGLEECBTC_CLI) $(LIBGLEECBTC_COMMON) $(LIBGLEECBTC_UTIL) $(LIBGLEECBTC_CONSENSUS) $(LIBGLEECBTC_CRYPTO) $(LIBUNIVALUE) $(LIBLEVELDB) $(LIBLEVELDB_SSE42) $(LIBMEMENV) \
+  $(BOOST_LIBS) $(QT_LIBS) $(QT_DBUS_LIBS) $(QR_LIBS) $(PROTOBUF_LIBS) $(BDB_LIBS) $(MINIUPNPC_LIBS) $(LIBSECP256K1) \
   $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
+if ENABLE_BIP70
+qt_gleecbtc_qt_LDADD += $(SSL_LIBS)
+else
+if TARGET_WINDOWS
+qt_gleecbtc_qt_LDADD += $(SSL_LIBS)
+endif
+endif
+qt_gleecbtc_qt_LDADD += $(CRYPTO_LIBS)
 qt_gleecbtc_qt_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(QT_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
-qt_gleecbtc_qt_LIBTOOLFLAGS = --tag CXX
+qt_gleecbtc_qt_LIBTOOLFLAGS = $(AM_LIBTOOLFLAGS) --tag CXX
 
 #locale/foo.ts -> locale/foo.qm
 QT_QM=$(QT_TS:.ts=.qm)
@@ -435,9 +355,9 @@ SECONDARY: $(QT_QM)
 
 $(srcdir)/qt/gleecbtcstrings.cpp: $(libgleecbtc_server_a_SOURCES) $(libgleecbtc_wallet_a_SOURCES) $(libgleecbtc_common_a_SOURCES) $(libgleecbtc_zmq_a_SOURCES) $(libgleecbtc_consensus_a_SOURCES) $(libgleecbtc_util_a_SOURCES)
 	@test -n $(XGETTEXT) || echo "xgettext is required for updating translations"
-	$(AM_V_GEN) cd $(srcdir); XGETTEXT=$(XGETTEXT) PACKAGE_NAME="$(PACKAGE_NAME)" COPYRIGHT_HOLDERS="$(COPYRIGHT_HOLDERS)" COPYRIGHT_HOLDERS_SUBSTITUTION="$(COPYRIGHT_HOLDERS_SUBSTITUTION)" $(PYTHON) ../share/qt/extract_strings_qt.py $^
+	$(AM_V_GEN) cd $(srcdir); XGETTEXT=$(XGETTEXT) COPYRIGHT_HOLDERS="$(COPYRIGHT_HOLDERS)" $(PYTHON) ../share/qt/extract_strings_qt.py $^
 
-translate: $(srcdir)/qt/gleecbtcstrings.cpp $(QT_FORMS_UI) $(QT_FORMS_UI) $(GLEECGBC_QT_BASE_CPP) qt/gleecbtc.cpp $(GLEECGBC_QT_WINDOWS_CPP) $(GLEECGBC_QT_WALLET_CPP) $(GLEECGBC_QT_H) $(GLEECGBC_MM)
+translate: $(srcdir)/qt/gleecbtcstrings.cpp $(QT_FORMS_UI) $(QT_FORMS_UI) $(GLEECBTC_QT_BASE_CPP) qt/gleecbtc.cpp $(GLEECBTC_QT_WINDOWS_CPP) $(GLEECBTC_QT_WALLET_CPP) $(GLEECBTC_QT_H) $(GLEECBTC_MM)
 	@test -n $(LUPDATE) || echo "lupdate is required for updating translations"
 	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(LUPDATE) $^ -locations relative -no-obsolete -ts $(srcdir)/qt/locale/gleecbtc_en.ts
 
@@ -453,12 +373,12 @@ $(QT_QRC_CPP): $(QT_QRC) $(QT_FORMS_H) $(RES_ICONS) $(RES_IMAGES) $(RES_MOVIES) 
 	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name gleecbtc $< | \
 	  $(SED) -e '/^\*\*.*Created:/d' -e '/^\*\*.*by:/d' > $@
 
-CLEAN_QT = $(nodist_qt_libgleecbtcqt_a_SOURCES) $(QT_QM) $(QT_FORMS_H) qt/*.gcda qt/*.gcno
+CLEAN_QT = $(nodist_qt_libgleecbtcqt_a_SOURCES) $(QT_QM) $(QT_FORMS_H) qt/*.gcda qt/*.gcno qt/temp_gleecbtc_locale.qrc
 
 CLEANFILES += $(CLEAN_QT)
 
 gleecbtc_qt_clean: FORCE
-	rm -f $(CLEAN_QT) $(qt_libgleecbtcqt_a_OBJECTS) $(qt_gleecbtc_qt_OBJECTS) qt/gleecbtc-qt$(EXEEXT) $(LIBGLEECGBCQT)
+	rm -f $(CLEAN_QT) $(qt_libgleecbtcqt_a_OBJECTS) $(qt_gleecbtc_qt_OBJECTS) qt/gleecbtc-qt$(EXEEXT) $(LIBGLEECBTCQT)
 
 gleecbtc_qt : qt/gleecbtc-qt$(EXEEXT)
 

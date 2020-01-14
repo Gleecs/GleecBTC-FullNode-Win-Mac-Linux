@@ -58,7 +58,7 @@ possible to change a few configuration options to work around this. The growth
 of the mempool can be monitored with the RPC command `getmempoolinfo`.
 
 One is to increase the minimum transaction relay fee `minrelaytxfee`, which
-defaults to 0.00001. This will cause transactions with fewer GBC/kB fee to be
+defaults to 0.00001. This will cause transactions with fewer GLEEC/kB fee to be
 rejected, and thus fewer transactions entering the mempool.
 
 The other is to restrict the relaying of free transactions with
@@ -429,7 +429,7 @@ Thanks to everyone who directly contributed to this release:
 - bikinibabe
 - GleecBTCPRReadingGroup
 - Blake Jakopovic
-- BtcDrak
+- GleecDrak
 - charlescharles
 - Chris Arnesen
 - Ciemon

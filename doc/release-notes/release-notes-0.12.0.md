@@ -127,7 +127,7 @@ minimum relay feerate. The initial minimum relay feerate is set to
 GleecBTC Core 0.12 also introduces new default policy limits on the length and
 size of unconfirmed transaction chains that are allowed in the mempool
 (generally limiting the length of unconfirmed chains to 25 transactions, with a
-total size of 101 KB).  These limits can be overriden using command line
+total size of 101 KB).  These limits can be overridden using command line
 arguments; see the extended help (`--help -help-debug`) for more information.
 
 Opt-in Replace-by-fee transactions
@@ -273,10 +273,10 @@ with `-txconfirmtarget=<m>` (default: `2`).
 
 Sometimes, it is not possible to give good estimates, or an estimate
 at all. Therefore, a fallback value can be set with `-fallbackfee=<f>`
-(default: `0.0002` GBC/kB).
+(default: `0.0002` GLEEC/kB).
 
 At all times, GleecBTC Core will cap fees at `-maxtxfee=<x>` (default:
-0.10) GBC.
+0.10) GLEEC.
 Furthermore, GleecBTC Core will never create transactions paying less than
 the current minimum relay fee.
 Finally, a user can set the minimum fee rate for all transactions with
@@ -750,7 +750,7 @@ git merge commit are mentioned.
 - #7063 `6abf6eb` [Tests] Add prioritisetransaction RPC test (Suhas Daftuar)
 - #7137 `16f4a6e` Tests: Explicitly set chain limits in replace-by-fee test (Suhas Daftuar)
 - #7216 `9572e49` Removed offline testnet DNSSeed 'alexykot.me'. (tnull)
-- #7209 `f3ad812` test: don't override GLEECGBCD and GLEECGBCCLI if they're set (Wladimir J. van der Laan)
+- #7209 `f3ad812` test: don't override GLEECBTCD and GLEECBTCCLI if they're set (Wladimir J. van der Laan)
 - #7226 `301f16a` Tests: Add more tests to p2p-fullblocktest (Suhas Daftuar)
 - #7153 `9ef7c54` [Tests] Add mempool_limit.py test (Jonas Schnelli)
 - #7170 `453c567` tests: Disable Tor interaction (Wladimir J. van der Laan)
@@ -765,14 +765,14 @@ git merge commit are mentioned.
 - #6061 `eba2f06` Separate Consensus::CheckTxInputs and GetSpendHeight in CheckInputs (Jorge Timón)
 - #5994 `786ed11` detach wallet from miner (Jonas Schnelli)
 - #6387 `11576a5` [gleecbtc-cli] improve error output (Jonas Schnelli)
-- #6401 `6db53b4` Add GLEECGBCD_SIGTERM_TIMEOUT to OpenRC init scripts (Florian Schmaus)
+- #6401 `6db53b4` Add GLEECBTCD_SIGTERM_TIMEOUT to OpenRC init scripts (Florian Schmaus)
 - #6430 `b01981e` doc: add documentation for shared library libgleecbtcconsensus (Braydon Fuller)
 - #6372 `dcc495e` Update Linearize tool to support Windows paths; fix variable scope; update README and example configuration (Paul Georgiou)
 - #6453 `8fe5cce` Separate core memory usage computation in core_memusage.h (Pieter Wuille)
 - #6149 `633fe10` Buffer log messages and explicitly open logs (Adam Weiss)
 - #6488 `7cbed7f` Avoid leaking file descriptors in RegisterLoad (Casey Rodarmor)
 - #6497 `a2bf40d` Make sure LogPrintf strings are line-terminated (Wladimir J. van der Laan)
-- #6504 `b6fee6b` Rationalize currency unit to "GBC" (Ross Nicoll)
+- #6504 `b6fee6b` Rationalize currency unit to "GLEEC" (Ross Nicoll)
 - #6507 `9bb4dd8` Removed contrib/bitrpc (Casey Rodarmor)
 - #6527 `41d650f` Use unique name for AlertNotify tempfile (Casey Rodarmor)
 - #6561 `e08a7d9` limitedmap fixes and tests (Casey Rodarmor)
@@ -808,7 +808,7 @@ Thanks to everyone who directly contributed to this release:
 - Ashley Holman
 - Bob McElrath
 - Braydon Fuller
-- BtcDrak
+- GleecDrak
 - Casey Rodarmor
 - centaur1
 - Chris Kleeschulte

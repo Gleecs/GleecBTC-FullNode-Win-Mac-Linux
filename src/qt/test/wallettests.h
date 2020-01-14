@@ -1,5 +1,5 @@
-#ifndef GLEECGBC_QT_TEST_WALLETTESTS_H
-#define GLEECGBC_QT_TEST_WALLETTESTS_H
+#ifndef GLEECBTC_QT_TEST_WALLETTESTS_H
+#define GLEECBTC_QT_TEST_WALLETTESTS_H
 
 #include <QObject>
 #include <QTest>
@@ -12,4 +12,4 @@ private Q_SLOTS:
     void walletTests();
 };
 
-#endif // GLEECGBC_QT_TEST_WALLETTESTS_H
+#endif // GLEECBTC_QT_TEST_WALLETTESTS_H

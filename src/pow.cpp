@@ -1,39 +1,32 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2016 The Bitcoin Core developers
+// Copyright (c) 2009-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "pow.h"
+#include <pow.h>
 
-#include "arith_uint256.h"
-#include "chain.h"
-#include "consensus/consensus.h"
-#include "primitives/block.h"
-#include "uint256.h"
+#include <arith_uint256.h>
+#include <chain.h>
+#include <primitives/block.h>
+#include <uint256.h>
 
-unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader* pblock, const Consensus::Params& params)
+unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
 {
     assert(pindexLast != nullptr);
     unsigned int nProofOfWorkLimit = UintToArith256(params.powLimit).GetCompact();
 
-    // Difficulty changes to 1 on fork block, so that nBits of block
-    // [fork height] + 1 is minimum difficulty. We keep returning this for
-    // one full difficulty adjustment interval, and then let the system handle
-    // the difficulty adjustments as normal.
-    if (pindexLast->nHeight >= FORK_BLOCK &&
-        pindexLast->nHeight <= FORK_BLOCK + params.DifficultyAdjustmentInterval()) {
-        return nProofOfWorkLimit;
-    }
-
     // Only change once per difficulty adjustment interval
-    if ((pindexLast->nHeight + 1) % params.DifficultyAdjustmentInterval() != 0) {
-        if (params.fPowAllowMinDifficultyBlocks) {
+    if ((pindexLast->nHeight+1) % params.DifficultyAdjustmentInterval() != 0)
+    {
+        if (params.fPowAllowMinDifficultyBlocks)
+        {
             // Special difficulty rule for testnet:
             // If the new block's timestamp is more than 2* 10 minutes
             // then allow mining of a min-difficulty block.
-            if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + params.nPowTargetSpacing * 2)
+            if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + params.nPowTargetSpacing*2)
                 return nProofOfWorkLimit;
-            else {
+            else
+            {
                 // Return the last non-special-min-difficulty-rules-block
                 const CBlockIndex* pindex = pindexLast;
                 while (pindex->pprev && pindex->nHeight % params.DifficultyAdjustmentInterval() != 0 && pindex->nBits == nProofOfWorkLimit)
@@ -45,7 +38,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     }
 
     // Go back by what we want to be 14 days worth of blocks
-    int nHeightFirst = pindexLast->nHeight - (params.DifficultyAdjustmentInterval() - 1);
+    int nHeightFirst = pindexLast->nHeight - (params.DifficultyAdjustmentInterval()-1);
     assert(nHeightFirst >= 0);
     const CBlockIndex* pindexFirst = pindexLast->GetAncestor(nHeightFirst);
     assert(pindexFirst);
@@ -60,10 +53,10 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
 
     // Limit adjustment step
     int64_t nActualTimespan = pindexLast->GetBlockTime() - nFirstBlockTime;
-    if (nActualTimespan < params.nPowTargetTimespan / 4)
-        nActualTimespan = params.nPowTargetTimespan / 4;
-    if (nActualTimespan > params.nPowTargetTimespan * 4)
-        nActualTimespan = params.nPowTargetTimespan * 4;
+    if (nActualTimespan < params.nPowTargetTimespan/4)
+        nActualTimespan = params.nPowTargetTimespan/4;
+    if (nActualTimespan > params.nPowTargetTimespan*4)
+        nActualTimespan = params.nPowTargetTimespan*4;
 
     // Retarget
     const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
@@ -78,7 +71,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
     return bnNew.GetCompact();
 }
 
-bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params, uint256* best)
+bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params& params)
 {
     bool fNegative;
     bool fOverflow;
@@ -91,13 +84,8 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
         return false;
 
     // Check proof of work matches claimed amount
-    if (UintToArith256(hash) > bnTarget) {
-        if (best && (*best == uint256() || UintToArith256(*best) > UintToArith256(hash))) {
-            *best = hash;
-            printf("- new best:\n\t%s\nvs\t%s\n", hash.ToString().c_str(), ArithToUint256(bnTarget).ToString().c_str());
-        }
+    if (UintToArith256(hash) > bnTarget)
         return false;
-    }
 
     return true;
 }

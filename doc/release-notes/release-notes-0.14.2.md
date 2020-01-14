@@ -11,7 +11,7 @@ Please report bugs using the issue tracker at github:
 
 To receive security and update notifications, please subscribe to:
 
-  <https://gleecbtccore.org/en/list/announcements/join/>
+  <https://gleecbtc.com/en/list/announcements/join/>
 
 Compatibility
 ==============

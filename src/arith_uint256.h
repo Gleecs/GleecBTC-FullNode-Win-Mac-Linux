@@ -1,13 +1,14 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2016 The Bitcoin Core developers
+// Copyright (c) 2009-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_ARITH_UINT256_H
-#define GLEECGBC_ARITH_UINT256_H
+#ifndef GLEECBTC_ARITH_UINT256_H
+#define GLEECBTC_ARITH_UINT256_H
 
 #include <assert.h>
 #include <cstring>
+#include <limits>
 #include <stdexcept>
 #include <stdint.h>
 #include <string>
@@ -15,24 +16,23 @@
 
 class uint256;
 
-class uint_error : public std::runtime_error
-{
+class uint_error : public std::runtime_error {
 public:
     explicit uint_error(const std::string& str) : std::runtime_error(str) {}
 };
 
 /** Template base class for unsigned big integers. */
-template <unsigned int BITS>
+template<unsigned int BITS>
 class base_uint
 {
 protected:
-    enum { WIDTH = BITS / 32 };
+    static constexpr int WIDTH = BITS / 32;
     uint32_t pn[WIDTH];
-
 public:
+
     base_uint()
     {
-        static_assert(BITS / 32 > 0 && BITS % 32 == 0, "Template parameter BITS must be a positive multiple of 32.");
+        static_assert(BITS/32 > 0 && BITS%32 == 0, "Template parameter BITS must be a positive multiple of 32.");
 
         for (int i = 0; i < WIDTH; i++)
             pn[i] = 0;
@@ -40,7 +40,7 @@ public:
 
     base_uint(const base_uint& b)
     {
-        static_assert(BITS / 32 > 0 && BITS % 32 == 0, "Template parameter BITS must be a positive multiple of 32.");
+        static_assert(BITS/32 > 0 && BITS%32 == 0, "Template parameter BITS must be a positive multiple of 32.");
 
         for (int i = 0; i < WIDTH; i++)
             pn[i] = b.pn[i];
@@ -55,7 +55,7 @@ public:
 
     base_uint(uint64_t b)
     {
-        static_assert(BITS / 32 > 0 && BITS % 32 == 0, "Template parameter BITS must be a positive multiple of 32.");
+        static_assert(BITS/32 > 0 && BITS%32 == 0, "Template parameter BITS must be a positive multiple of 32.");
 
         pn[0] = (unsigned int)b;
         pn[1] = (unsigned int)(b >> 32);
@@ -64,14 +64,6 @@ public:
     }
 
     explicit base_uint(const std::string& str);
-
-    bool operator!() const
-    {
-        for (int i = 0; i < WIDTH; i++)
-            if (pn[i] != 0)
-                return false;
-        return true;
-    }
 
     const base_uint operator~() const
     {
@@ -86,7 +78,7 @@ public:
         base_uint ret;
         for (int i = 0; i < WIDTH; i++)
             ret.pn[i] = ~pn[i];
-        ret++;
+        ++ret;
         return ret;
     }
 
@@ -142,7 +134,8 @@ public:
     base_uint& operator+=(const base_uint& b)
     {
         uint64_t carry = 0;
-        for (int i = 0; i < WIDTH; i++) {
+        for (int i = 0; i < WIDTH; i++)
+        {
             uint64_t n = carry + pn[i] + b.pn[i];
             pn[i] = n & 0xffffffff;
             carry = n >> 32;
@@ -197,7 +190,7 @@ public:
     {
         // prefix operator
         int i = 0;
-        while (i < WIDTH && --pn[i] == (uint32_t)-1)
+        while (i < WIDTH && --pn[i] == std::numeric_limits<uint32_t>::max())
             i++;
         return *this;
     }
@@ -250,14 +243,13 @@ public:
 
     uint64_t GetLow64() const
     {
-        assert(WIDTH >= 2);
+        static_assert(WIDTH >= 2, "Assertion WIDTH >= 2 failed (WIDTH = BITS / 32). BITS is a template parameter.");
         return pn[0] | (uint64_t)pn[1] << 32;
     }
 };
 
 /** 256-bit unsigned big integer. */
-class arith_uint256 : public base_uint<256>
-{
+class arith_uint256 : public base_uint<256> {
 public:
     arith_uint256() {}
     arith_uint256(const base_uint<256>& b) : base_uint<256>(b) {}
@@ -284,14 +276,14 @@ public:
      * complexities of the sign bit and using base 256 are probably an
      * implementation accident.
      */
-    arith_uint256& SetCompact(uint32_t nCompact, bool* pfNegative = nullptr, bool* pfOverflow = nullptr);
+    arith_uint256& SetCompact(uint32_t nCompact, bool *pfNegative = nullptr, bool *pfOverflow = nullptr);
     uint32_t GetCompact(bool fNegative = false) const;
 
-    friend uint256 ArithToUint256(const arith_uint256&);
-    friend arith_uint256 UintToArith256(const uint256&);
+    friend uint256 ArithToUint256(const arith_uint256 &);
+    friend arith_uint256 UintToArith256(const uint256 &);
 };
 
-uint256 ArithToUint256(const arith_uint256&);
-arith_uint256 UintToArith256(const uint256&);
+uint256 ArithToUint256(const arith_uint256 &);
+arith_uint256 UintToArith256(const uint256 &);
 
-#endif // GLEECGBC_ARITH_UINT256_H
+#endif // GLEECBTC_ARITH_UINT256_H

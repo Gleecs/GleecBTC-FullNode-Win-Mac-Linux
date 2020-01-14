@@ -1,17 +1,17 @@
-// Copyright (c) 2012-2016 The Bitcoin Core developers
+// Copyright (c) 2012-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_DBWRAPPER_H
-#define GLEECGBC_DBWRAPPER_H
+#ifndef GLEECBTC_DBWRAPPER_H
+#define GLEECBTC_DBWRAPPER_H
 
-#include "clientversion.h"
-#include "fs.h"
-#include "serialize.h"
-#include "streams.h"
-#include "util.h"
-#include "utilstrencodings.h"
-#include "version.h"
+#include <clientversion.h>
+#include <fs.h>
+#include <serialize.h>
+#include <streams.h>
+#include <util/system.h>
+#include <util/strencodings.h>
+#include <version.h>
 
 #include <leveldb/db.h>
 #include <leveldb/write_batch.h>
@@ -22,15 +22,15 @@ static const size_t DBWRAPPER_PREALLOC_VALUE_SIZE = 1024;
 class dbwrapper_error : public std::runtime_error
 {
 public:
-    dbwrapper_error(const std::string& msg) : std::runtime_error(msg) {}
+    explicit dbwrapper_error(const std::string& msg) : std::runtime_error(msg) {}
 };
 
 class CDBWrapper;
 
 /** These should be considered an implementation detail of the specific database.
  */
-namespace dbwrapper_private
-{
+namespace dbwrapper_private {
+
 /** Handle database error by throwing dbwrapper_error exception.
  */
 void HandleError(const leveldb::Status& status);
@@ -39,7 +39,8 @@ void HandleError(const leveldb::Status& status);
  * Database obfuscation should be considered an implementation detail of the
  * specific database.
  */
-const std::vector<unsigned char>& GetObfuscateKey(const CDBWrapper& w);
+const std::vector<unsigned char>& GetObfuscateKey(const CDBWrapper &w);
+
 };
 
 /** Batch of changes queued to be written to a CDBWrapper */
@@ -48,7 +49,7 @@ class CDBBatch
     friend class CDBWrapper;
 
 private:
-    const CDBWrapper& parent;
+    const CDBWrapper &parent;
     leveldb::WriteBatch batch;
 
     CDataStream ssKey;
@@ -60,7 +61,7 @@ public:
     /**
      * @param[in] _parent   CDBWrapper that this batch is to be submitted to
      */
-    CDBBatch(const CDBWrapper& _parent) : parent(_parent), ssKey(SER_DISK, CLIENT_VERSION), ssValue(SER_DISK, CLIENT_VERSION), size_estimate(0){};
+    explicit CDBBatch(const CDBWrapper &_parent) : parent(_parent), ssKey(SER_DISK, CLIENT_VERSION), ssValue(SER_DISK, CLIENT_VERSION), size_estimate(0) { };
 
     void Clear()
     {
@@ -116,24 +117,24 @@ public:
 class CDBIterator
 {
 private:
-    const CDBWrapper& parent;
-    leveldb::Iterator* piter;
+    const CDBWrapper &parent;
+    leveldb::Iterator *piter;
 
 public:
+
     /**
      * @param[in] _parent          Parent CDBWrapper instance.
      * @param[in] _piter           The original leveldb iterator.
      */
-    CDBIterator(const CDBWrapper& _parent, leveldb::Iterator* _piter) : parent(_parent), piter(_piter){};
+    CDBIterator(const CDBWrapper &_parent, leveldb::Iterator *_piter) :
+        parent(_parent), piter(_piter) { };
     ~CDBIterator();
 
-    bool Valid();
+    bool Valid() const;
 
     void SeekToFirst();
 
-    template <typename K>
-    void Seek(const K& key)
-    {
+    template<typename K> void Seek(const K& key) {
         CDataStream ssKey(SER_DISK, CLIENT_VERSION);
         ssKey.reserve(DBWRAPPER_PREALLOC_KEY_SIZE);
         ssKey << key;
@@ -143,9 +144,7 @@ public:
 
     void Next();
 
-    template <typename K>
-    bool GetKey(K& key)
-    {
+    template<typename K> bool GetKey(K& key) {
         leveldb::Slice slKey = piter->key();
         try {
             CDataStream ssKey(slKey.data(), slKey.data() + slKey.size(), SER_DISK, CLIENT_VERSION);
@@ -156,9 +155,7 @@ public:
         return true;
     }
 
-    template <typename V>
-    bool GetValue(V& value)
-    {
+    template<typename V> bool GetValue(V& value) {
         leveldb::Slice slValue = piter->value();
         try {
             CDataStream ssValue(slValue.data(), slValue.data() + slValue.size(), SER_DISK, CLIENT_VERSION);
@@ -170,16 +167,15 @@ public:
         return true;
     }
 
-    unsigned int GetValueSize()
-    {
+    unsigned int GetValueSize() {
         return piter->value().size();
     }
+
 };
 
 class CDBWrapper
 {
-    friend const std::vector<unsigned char>& dbwrapper_private::GetObfuscateKey(const CDBWrapper& w);
-
+    friend const std::vector<unsigned char>& dbwrapper_private::GetObfuscateKey(const CDBWrapper &w);
 private:
     //! custom environment this database is using (may be nullptr in case of default environment)
     leveldb::Env* penv;
@@ -201,6 +197,9 @@ private:
 
     //! the database itself
     leveldb::DB* pdb;
+
+    //! the name of this database
+    std::string m_name;
 
     //! a key used for optional XOR-obfuscation of the database
     std::vector<unsigned char> obfuscate_key;
@@ -224,6 +223,9 @@ public:
      */
     CDBWrapper(const fs::path& path, size_t nCacheSize, bool fMemory = false, bool fWipe = false, bool obfuscate = false);
     ~CDBWrapper();
+
+    CDBWrapper(const CDBWrapper&) = delete;
+    CDBWrapper& operator=(const CDBWrapper&) = delete;
 
     template <typename K, typename V>
     bool Read(const K& key, V& value) const
@@ -288,6 +290,9 @@ public:
 
     bool WriteBatch(CDBBatch& batch, bool fSync = false);
 
+    // Get an estimate of LevelDB memory usage (in bytes).
+    size_t DynamicMemoryUsage() const;
+
     // not available for LevelDB; provide for compatibility with BDB
     bool Flush()
     {
@@ -300,7 +305,7 @@ public:
         return WriteBatch(batch, true);
     }
 
-    CDBIterator* NewIterator()
+    CDBIterator *NewIterator()
     {
         return new CDBIterator(*this, pdb->NewIterator(iteroptions));
     }
@@ -310,7 +315,7 @@ public:
      */
     bool IsEmpty();
 
-    template <typename K>
+    template<typename K>
     size_t EstimateSize(const K& key_begin, const K& key_end) const
     {
         CDataStream ssKey1(SER_DISK, CLIENT_VERSION), ssKey2(SER_DISK, CLIENT_VERSION);
@@ -329,7 +334,7 @@ public:
     /**
      * Compact a certain range of keys in the database.
      */
-    template <typename K>
+    template<typename K>
     void CompactRange(const K& key_begin, const K& key_end) const
     {
         CDataStream ssKey1(SER_DISK, CLIENT_VERSION), ssKey2(SER_DISK, CLIENT_VERSION);
@@ -341,6 +346,7 @@ public:
         leveldb::Slice slKey2(ssKey2.data(), ssKey2.size());
         pdb->CompactRange(&slKey1, &slKey2);
     }
+
 };
 
-#endif // GLEECGBC_DBWRAPPER_H
+#endif // GLEECBTC_DBWRAPPER_H

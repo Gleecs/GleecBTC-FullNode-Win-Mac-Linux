@@ -1,11 +1,11 @@
-// Copyright (c) 2011-2014 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_QT_TRANSACTIONFILTERPROXY_H
-#define GLEECGBC_QT_TRANSACTIONFILTERPROXY_H
+#ifndef GLEECBTC_QT_TRANSACTIONFILTERPROXY_H
+#define GLEECBTC_QT_TRANSACTIONFILTERPROXY_H
 
-#include "amount.h"
+#include <amount.h>
 
 #include <QDateTime>
 #include <QSortFilterProxyModel>
@@ -16,7 +16,7 @@ class TransactionFilterProxy : public QSortFilterProxyModel
     Q_OBJECT
 
 public:
-    explicit TransactionFilterProxy(QObject* parent = 0);
+    explicit TransactionFilterProxy(QObject *parent = nullptr);
 
     /** Earliest date that can be represented (far in the past) */
     static const QDateTime MIN_DATE;
@@ -25,16 +25,17 @@ public:
     /** Type filter bit field (all types) */
     static const quint32 ALL_TYPES = 0xFFFFFFFF;
 
-    static quint32 TYPE(int type) { return 1 << type; }
+    static quint32 TYPE(int type) { return 1<<type; }
 
-    enum WatchOnlyFilter {
+    enum WatchOnlyFilter
+    {
         WatchOnlyFilter_All,
         WatchOnlyFilter_Yes,
         WatchOnlyFilter_No
     };
 
-    void setDateRange(const QDateTime& from, const QDateTime& to);
-    void setAddressPrefix(const QString& addrPrefix);
+    void setDateRange(const QDateTime &from, const QDateTime &to);
+    void setSearchString(const QString &);
     /**
       @note Type filter takes a bit field created with TYPE() or ALL_TYPES
      */
@@ -48,15 +49,15 @@ public:
     /** Set whether to show conflicted transactions. */
     void setShowInactive(bool showInactive);
 
-    int rowCount(const QModelIndex& parent = QModelIndex()) const;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
 protected:
-    bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
+    bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const;
 
 private:
     QDateTime dateFrom;
     QDateTime dateTo;
-    QString addrPrefix;
+    QString m_search_string;
     quint32 typeFilter;
     WatchOnlyFilter watchOnlyFilter;
     CAmount minAmount;
@@ -64,4 +65,4 @@ private:
     bool showInactive;
 };
 
-#endif // GLEECGBC_QT_TRANSACTIONFILTERPROXY_H
+#endif // GLEECBTC_QT_TRANSACTIONFILTERPROXY_H

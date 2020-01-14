@@ -1,25 +1,19 @@
-// Copyright (c) 2016 The Bitcoin Core developers
+// Copyright (c) 2016-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_QT_TEST_RPC_NESTED_TESTS_H
-#define GLEECGBC_QT_TEST_RPC_NESTED_TESTS_H
+#ifndef GLEECBTC_QT_TEST_RPCNESTEDTESTS_H
+#define GLEECBTC_QT_TEST_RPCNESTEDTESTS_H
 
 #include <QObject>
 #include <QTest>
-
-#include "txdb.h"
-#include "txmempool.h"
 
 class RPCNestedTests : public QObject
 {
     Q_OBJECT
 
-private Q_SLOTS:
+    private Q_SLOTS:
     void rpcNestedTests();
-
-private:
-    CCoinsViewDB* pcoinsdbview;
 };
 
-#endif // GLEECGBC_QT_TEST_RPC_NESTED_TESTS_H
+#endif // GLEECBTC_QT_TEST_RPCNESTEDTESTS_H

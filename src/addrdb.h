@@ -1,31 +1,32 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2016 The Bitcoin Core developers
+// Copyright (c) 2009-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_ADDRDB_H
-#define GLEECGBC_ADDRDB_H
+#ifndef GLEECBTC_ADDRDB_H
+#define GLEECBTC_ADDRDB_H
 
-#include "fs.h"
-#include "serialize.h"
+#include <fs.h>
+#include <serialize.h>
 
-#include <map>
 #include <string>
+#include <map>
 
 class CSubNet;
 class CAddrMan;
 class CDataStream;
 
-typedef enum BanReason {
-    BanReasonUnknown = 0,
-    BanReasonNodeMisbehaving = 1,
-    BanReasonManuallyAdded = 2
+typedef enum BanReason
+{
+    BanReasonUnknown          = 0,
+    BanReasonNodeMisbehaving  = 1,
+    BanReasonManuallyAdded    = 2
 } BanReason;
 
 class CBanEntry
 {
 public:
-    static const int CURRENT_VERSION = 1;
+    static const int CURRENT_VERSION=1;
     int nVersion;
     int64_t nCreateTime;
     int64_t nBanUntil;
@@ -36,17 +37,21 @@ public:
         SetNull();
     }
 
-    CBanEntry(int64_t nCreateTimeIn)
+    explicit CBanEntry(int64_t nCreateTimeIn)
     {
         SetNull();
         nCreateTime = nCreateTimeIn;
     }
 
+    explicit CBanEntry(int64_t n_create_time_in, BanReason ban_reason_in) : CBanEntry(n_create_time_in)
+    {
+        banReason = ban_reason_in;
+    }
+
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action)
-    {
+    inline void SerializationOp(Stream& s, Operation ser_action) {
         READWRITE(this->nVersion);
         READWRITE(nCreateTime);
         READWRITE(nBanUntil);
@@ -61,7 +66,7 @@ public:
         banReason = BanReasonUnknown;
     }
 
-    std::string banReasonToString()
+    std::string banReasonToString() const
     {
         switch (banReason) {
         case BanReasonNodeMisbehaving:
@@ -81,7 +86,6 @@ class CAddrDB
 {
 private:
     fs::path pathAddr;
-
 public:
     CAddrDB();
     bool Write(const CAddrMan& addr);
@@ -93,12 +97,11 @@ public:
 class CBanDB
 {
 private:
-    fs::path pathBanlist;
-
+    const fs::path m_ban_list_path;
 public:
-    CBanDB();
+    explicit CBanDB(fs::path ban_list_path);
     bool Write(const banmap_t& banSet);
     bool Read(banmap_t& banSet);
 };
 
-#endif // GLEECGBC_ADDRDB_H
+#endif // GLEECBTC_ADDRDB_H

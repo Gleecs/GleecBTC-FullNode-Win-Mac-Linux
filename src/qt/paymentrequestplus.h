@@ -1,16 +1,17 @@
-// Copyright (c) 2011-2016 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_QT_PAYMENTREQUESTPLUS_H
-#define GLEECGBC_QT_PAYMENTREQUESTPLUS_H
+#ifndef GLEECBTC_QT_PAYMENTREQUESTPLUS_H
+#define GLEECBTC_QT_PAYMENTREQUESTPLUS_H
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#include "paymentrequest.pb.h"
+#include <qt/paymentrequest.pb.h>
 #pragma GCC diagnostic pop
 
-#include "base58.h"
+#include <amount.h>
+#include <script/script.h>
 
 #include <openssl/x509.h>
 
@@ -28,7 +29,7 @@ static const bool DEFAULT_SELFSIGNED_ROOTCERTS = false;
 class PaymentRequestPlus
 {
 public:
-    PaymentRequestPlus() {}
+    PaymentRequestPlus() { }
 
     bool parse(const QByteArray& data);
     bool SerializeToString(std::string* output) const;
@@ -39,7 +40,7 @@ public:
     bool getMerchant(X509_STORE* certStore, QString& merchant) const;
 
     // Returns list of outputs, amount
-    QList<std::pair<CScript, CAmount>> getPayTo() const;
+    QList<std::pair<CScript,CAmount> > getPayTo() const;
 
     const payments::PaymentDetails& getDetails() const { return details; }
 
@@ -48,4 +49,4 @@ private:
     payments::PaymentDetails details;
 };
 
-#endif // GLEECGBC_QT_PAYMENTREQUESTPLUS_H
+#endif // GLEECBTC_QT_PAYMENTREQUESTPLUS_H

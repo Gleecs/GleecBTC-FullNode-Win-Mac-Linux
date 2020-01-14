@@ -1,4 +1,4 @@
-# Copyright (c) 2013-2016 The Bitcoin Core developers
+# Copyright (c) 2013-2016 The GleecBTC Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -6,13 +6,16 @@
 # test/functional/test_runner.py and test/util/gleecbtc-util-test.py
 
 [environment]
+PACKAGE_NAME=@PACKAGE_NAME@
 SRCDIR=@abs_top_srcdir@
 BUILDDIR=@abs_top_builddir@
 EXEEXT=@EXEEXT@
+RPCAUTH=@abs_top_srcdir@/share/rpcauth/rpcauth.py
 
 [components]
 # Which components are enabled. These are commented out by `configure` if they were disabled when running config.
 @ENABLE_WALLET_TRUE@ENABLE_WALLET=true
-@BUILD_GLEECGBC_UTILS_TRUE@ENABLE_UTILS=true
-@BUILD_GLEECGBCD_TRUE@ENABLE_GLEECGBCD=true
+@BUILD_GLEECBTC_CLI_TRUE@ENABLE_CLI=true
+@BUILD_GLEECBTCD_TRUE@ENABLE_GLEECBTCD=true
+@ENABLE_FUZZ_TRUE@ENABLE_FUZZ=true
 @ENABLE_ZMQ_TRUE@ENABLE_ZMQ=true

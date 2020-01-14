@@ -1,15 +1,14 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2015 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_QT_OPENURIDIALOG_H
-#define GLEECGBC_QT_OPENURIDIALOG_H
+#ifndef GLEECBTC_QT_OPENURIDIALOG_H
+#define GLEECBTC_QT_OPENURIDIALOG_H
 
 #include <QDialog>
 
-namespace Ui
-{
-class OpenURIDialog;
+namespace Ui {
+    class OpenURIDialog;
 }
 
 class OpenURIDialog : public QDialog
@@ -17,7 +16,7 @@ class OpenURIDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit OpenURIDialog(QWidget* parent);
+    explicit OpenURIDialog(QWidget *parent);
     ~OpenURIDialog();
 
     QString getURI();
@@ -29,7 +28,7 @@ private Q_SLOTS:
     void on_selectFileButton_clicked();
 
 private:
-    Ui::OpenURIDialog* ui;
+    Ui::OpenURIDialog *ui;
 };
 
-#endif // GLEECGBC_QT_OPENURIDIALOG_H
+#endif // GLEECBTC_QT_OPENURIDIALOG_H

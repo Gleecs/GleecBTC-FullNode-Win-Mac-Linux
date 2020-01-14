@@ -1,18 +1,19 @@
-#!/bin/bash
-# Copyright (c) 2016 The Bitcoin Core developers
+#!/usr/bin/env bash
+# Copyright (c) 2016 The GleecBTC Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 ###   This script attempts to download the signature file SHA256SUMS.asc from
-###   gleecbtccore.org and gleecbtc.org and compares them.
+###   gleecbtc.com and gleecbtc.org and compares them.
 ###   It first checks if the signature passes, and then downloads the files specified in
 ###   the file, and checks if the hashes of these files match those that are specified
 ###   in the signature file.
 ###   The script returns 0 if everything passes the checks. It returns 1 if either the
 ###   signature check or the hash check doesn't pass. If an error occurs the return value is 2
 
+export LC_ALL=C
 function clean_up {
-   for file in $*
+   for file in "$@"
    do
       rm "$file" 2> /dev/null
    done
@@ -23,7 +24,7 @@ TMPFILE="hashes.tmp"
 
 SIGNATUREFILENAME="SHA256SUMS.asc"
 RCSUBDIR="test"
-HOST1="https://gleecbtccore.org"
+HOST1="https://gleecbtc.com"
 HOST2="https://gleecbtc.org"
 BASEDIR="/bin/"
 VERSIONPREFIX="gleecbtc-core-"
@@ -33,7 +34,7 @@ if [ ! -d "$WORKINGDIR" ]; then
    mkdir "$WORKINGDIR"
 fi
 
-cd "$WORKINGDIR"
+cd "$WORKINGDIR" || exit 1
 
 #test if a version number has been passed as an argument
 if [ -n "$1" ]; then
@@ -76,29 +77,25 @@ if [ -n "$1" ]; then
          BASEDIR="$BASEDIR$RCSUBDIR.$RCVERSION/"
       fi
    fi
-
-   SIGNATUREFILE="$BASEDIR$SIGNATUREFILENAME"
 else
    echo "Error: need to specify a version on the command line"
    exit 2
 fi
 
-#first we fetch the file containing the signature
-WGETOUT=$(wget -N "$HOST1$BASEDIR$SIGNATUREFILENAME" 2>&1)
-
-#and then see if wget completed successfully
-if [ $? -ne 0 ]; then
+if ! WGETOUT=$(wget -N "$HOST1$BASEDIR$SIGNATUREFILENAME" 2>&1); then
    echo "Error: couldn't fetch signature file. Have you specified the version number in the following format?"
-   echo "[$VERSIONPREFIX]<version>-[$RCVERSIONSTRING[0-9]] (example: "$VERSIONPREFIX"0.10.4-"$RCVERSIONSTRING"1)"
+   # shellcheck disable=SC1087
+   echo "[$VERSIONPREFIX]<version>-[$RCVERSIONSTRING[0-9]] (example: ${VERSIONPREFIX}0.10.4-${RCVERSIONSTRING}1)"
    echo "wget output:"
+   # shellcheck disable=SC2001
    echo "$WGETOUT"|sed 's/^/\t/g'
    exit 2
 fi
 
-WGETOUT=$(wget -N -O "$SIGNATUREFILENAME.2" "$HOST2$BASEDIR$SIGNATUREFILENAME" 2>&1)
-if [ $? -ne 0 ]; then
-   echo "gleecbtc.org failed to provide signature file, but gleecbtccore.org did?"
+if ! WGETOUT=$(wget -N -O "$SIGNATUREFILENAME.2" "$HOST2$BASEDIR$SIGNATUREFILENAME" 2>&1); then
+   echo "gleecbtc.org failed to provide signature file, but gleecbtc.com did?"
    echo "wget output:"
+   # shellcheck disable=SC2001
    echo "$WGETOUT"|sed 's/^/\t/g'
    clean_up $SIGNATUREFILENAME
    exit 3
@@ -106,7 +103,7 @@ fi
 
 SIGFILEDIFFS="$(diff $SIGNATUREFILENAME $SIGNATUREFILENAME.2)"
 if [ "$SIGFILEDIFFS" != "" ]; then
-   echo "gleecbtc.org and gleecbtccore.org signature files were not equal?"
+   echo "gleecbtc.org and gleecbtc.com signature files were not equal?"
    clean_up $SIGNATUREFILENAME $SIGNATUREFILENAME.2
    exit 4
 fi
@@ -129,6 +126,7 @@ if [ $RET -ne 0 ]; then
    fi
 
    echo "gpg output:"
+   # shellcheck disable=SC2001
    echo "$GPGOUT"|sed 's/^/\t/g'
    clean_up $SIGNATUREFILENAME $SIGNATUREFILENAME.2 $TMPFILE
    exit "$RET"

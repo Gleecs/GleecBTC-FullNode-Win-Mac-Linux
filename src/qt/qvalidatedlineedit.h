@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_QT_QVALIDATEDLINEEDIT_H
-#define GLEECGBC_QT_QVALIDATEDLINEEDIT_H
+#ifndef GLEECBTC_QT_QVALIDATEDLINEEDIT_H
+#define GLEECBTC_QT_QVALIDATEDLINEEDIT_H
 
 #include <QLineEdit>
 
@@ -15,29 +15,29 @@ class QValidatedLineEdit : public QLineEdit
     Q_OBJECT
 
 public:
-    explicit QValidatedLineEdit(QWidget* parent);
+    explicit QValidatedLineEdit(QWidget *parent);
     void clear();
-    void setCheckValidator(const QValidator* v);
+    void setCheckValidator(const QValidator *v);
     bool isValid();
 
 protected:
-    void focusInEvent(QFocusEvent* evt);
-    void focusOutEvent(QFocusEvent* evt);
+    void focusInEvent(QFocusEvent *evt);
+    void focusOutEvent(QFocusEvent *evt);
 
 private:
     bool valid;
-    const QValidator* checkValidator;
+    const QValidator *checkValidator;
 
 public Q_SLOTS:
     void setValid(bool valid);
     void setEnabled(bool enabled);
 
 Q_SIGNALS:
-    void validationDidChange(QValidatedLineEdit* validatedLineEdit);
+    void validationDidChange(QValidatedLineEdit *validatedLineEdit);
 
 private Q_SLOTS:
     void markValid();
     void checkValidity();
 };
 
-#endif // GLEECGBC_QT_QVALIDATEDLINEEDIT_H
+#endif // GLEECBTC_QT_QVALIDATEDLINEEDIT_H

@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2016 The Bitcoin Core developers
+// Copyright (c) 2011-2019 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_QT_WALLETFRAME_H
-#define GLEECGBC_QT_WALLETFRAME_H
+#ifndef GLEECBTC_QT_WALLETFRAME_H
+#define GLEECBTC_QT_WALLETFRAME_H
 
 #include <QFrame>
 #include <QMap>
@@ -31,14 +31,14 @@ class WalletFrame : public QFrame
     Q_OBJECT
 
 public:
-    explicit WalletFrame(const PlatformStyle* platformStyle, GleecBTCGUI* _gui = 0);
+    explicit WalletFrame(const PlatformStyle *platformStyle, GleecBTCGUI *_gui = nullptr);
     ~WalletFrame();
 
-    void setClientModel(ClientModel* clientModel);
+    void setClientModel(ClientModel *clientModel);
 
-    bool addWallet(const QString& name, WalletModel* walletModel);
-    bool setCurrentWallet(const QString& name);
-    bool removeWallet(const QString& name);
+    void addWallet(WalletModel *walletModel);
+    void setCurrentWallet(WalletModel* wallet_model);
+    void removeWallet(WalletModel* wallet_model);
     void removeAllWallets();
 
     bool handlePaymentRequest(const SendCoinsRecipient& recipient);
@@ -50,16 +50,18 @@ Q_SIGNALS:
     void requestedSyncWarningInfo();
 
 private:
-    QStackedWidget* walletStack;
-    GleecBTCGUI* gui;
-    ClientModel* clientModel;
-    QMap<QString, WalletView*> mapWalletViews;
+    QStackedWidget *walletStack;
+    GleecBTCGUI *gui;
+    ClientModel *clientModel;
+    QMap<WalletModel*, WalletView*> mapWalletViews;
 
     bool bOutOfSync;
 
-    const PlatformStyle* platformStyle;
+    const PlatformStyle *platformStyle;
 
-    WalletView* currentWalletView();
+public:
+    WalletView* currentWalletView() const;
+    WalletModel* currentWalletModel() const;
 
 public Q_SLOTS:
     /** Switch to overview (home) page */
@@ -93,4 +95,4 @@ public Q_SLOTS:
     void outOfSyncWarningClicked();
 };
 
-#endif // GLEECGBC_QT_WALLETFRAME_H
+#endif // GLEECBTC_QT_WALLETFRAME_H

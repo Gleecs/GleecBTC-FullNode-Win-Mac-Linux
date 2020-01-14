@@ -1,9 +1,9 @@
-// Copyright (c) 2014-2016 The Bitcoin Core developers
+// Copyright (c) 2014-2016 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_CRYPTO_SHA1_H
-#define GLEECGBC_CRYPTO_SHA1_H
+#ifndef GLEECBTC_CRYPTO_SHA1_H
+#define GLEECBTC_CRYPTO_SHA1_H
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -25,4 +25,4 @@ public:
     CSHA1& Reset();
 };
 
-#endif // GLEECGBC_CRYPTO_SHA1_H
+#endif // GLEECBTC_CRYPTO_SHA1_H

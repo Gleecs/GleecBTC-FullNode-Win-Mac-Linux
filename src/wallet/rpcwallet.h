@@ -1,14 +1,27 @@
-// Copyright (c) 2016 The Bitcoin Core developers
+// Copyright (c) 2016-2019 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_WALLET_RPCWALLET_H
-#define GLEECGBC_WALLET_RPCWALLET_H
+#ifndef GLEECBTC_WALLET_RPCWALLET_H
+#define GLEECBTC_WALLET_RPCWALLET_H
+
+#include <memory>
+#include <string>
+#include <vector>
 
 class CRPCTable;
+class CWallet;
 class JSONRPCRequest;
+class UniValue;
+struct PartiallySignedTransaction;
+class CTransaction;
 
-void RegisterWalletRPCCommands(CRPCTable& t);
+namespace interfaces {
+class Chain;
+class Handler;
+}
+
+void RegisterWalletRPCCommands(interfaces::Chain& chain, std::vector<std::unique_ptr<interfaces::Handler>>& handlers);
 
 /**
  * Figures out what wallet, if any, to use for a JSONRPCRequest.
@@ -16,10 +29,12 @@ void RegisterWalletRPCCommands(CRPCTable& t);
  * @param[in] request JSONRPCRequest that wishes to access a wallet
  * @return nullptr if no wallet should be used, or a pointer to the CWallet
  */
-CWallet* GetWalletForJSONRPCRequest(const JSONRPCRequest& request);
+std::shared_ptr<CWallet> GetWalletForJSONRPCRequest(const JSONRPCRequest& request);
 
-std::string HelpRequiringPassphrase(CWallet*);
-void EnsureWalletIsUnlocked(CWallet*);
-bool EnsureWalletIsAvailable(CWallet*, bool avoidException);
+std::string HelpRequiringPassphrase(const CWallet*);
+void EnsureWalletIsUnlocked(const CWallet*);
+bool EnsureWalletIsAvailable(const CWallet*, bool avoidException);
 
-#endif //GLEECGBC_WALLET_RPCWALLET_H
+UniValue getaddressinfo(const JSONRPCRequest& request);
+UniValue signrawtransactionwithwallet(const JSONRPCRequest& request);
+#endif //GLEECBTC_WALLET_RPCWALLET_H

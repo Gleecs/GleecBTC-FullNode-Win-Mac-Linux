@@ -1,12 +1,12 @@
-// Copyright (c) 2009-2016 The Bitcoin Core developers
+// Copyright (c) 2009-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_CLIENTVERSION_H
-#define GLEECGBC_CLIENTVERSION_H
+#ifndef GLEECBTC_CLIENTVERSION_H
+#define GLEECBTC_CLIENTVERSION_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/gleecbtc-config.h"
+#include <config/gleecbtc-config.h>
 #endif //HAVE_CONFIG_H
 
 // Check that required client information is defined
@@ -36,7 +36,10 @@
 #include <vector>
 
 static const int CLIENT_VERSION =
-    1000000 * CLIENT_VERSION_MAJOR + 10000 * CLIENT_VERSION_MINOR + 100 * CLIENT_VERSION_REVISION + 1 * CLIENT_VERSION_BUILD;
+                           1000000 * CLIENT_VERSION_MAJOR
+                         +   10000 * CLIENT_VERSION_MINOR
+                         +     100 * CLIENT_VERSION_REVISION
+                         +       1 * CLIENT_VERSION_BUILD;
 
 extern const std::string CLIENT_NAME;
 extern const std::string CLIENT_BUILD;
@@ -47,4 +50,4 @@ std::string FormatSubVersion(const std::string& name, int nClientVersion, const 
 
 #endif // WINDRES_PREPROC
 
-#endif // GLEECGBC_CLIENTVERSION_H
+#endif // GLEECBTC_CLIENTVERSION_H

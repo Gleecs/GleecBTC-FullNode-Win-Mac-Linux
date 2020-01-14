@@ -30,6 +30,10 @@
         <translation>მონიშნული მისამართის წაშლა სიიდან</translation>
     </message>
     <message>
+        <source>Enter address or label to search</source>
+        <translation>შეიყვანეთ საძებნი მისამართი ან ნიშნული</translation>
+    </message>
+    <message>
         <source>Export the data in the current tab to a file</source>
         <translation>ამ ბარათიდან მონაცემების ექსპორტი ფაილში</translation>
     </message>
@@ -40,6 +44,14 @@
     <message>
         <source>&amp;Delete</source>
         <translation>&amp;წაშლა</translation>
+    </message>
+    <message>
+        <source>Choose the address to send coins to</source>
+        <translation>აირჩიეთ კოინების გამგზავნი მისამართი</translation>
+    </message>
+    <message>
+        <source>Choose the address to receive coins with</source>
+        <translation>აირჩიეთ კოინების მიმღები მისამართი</translation>
     </message>
     <message>
         <source>C&amp;hoose</source>
@@ -54,17 +66,53 @@
         <translation>მიმღები მისამართი</translation>
     </message>
     <message>
+        <source>These are your GleecBTC addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>ეს არის თქვენი ბიტკოინ-მისამართები, რომელთაგანაც შეგიძლიათ გადახდა. აუცილებლად შეამოწმეთ თანხა და მიმღები მისამართი გაგზავნამდე.</translation>
+    </message>
+    <message>
+        <source>&amp;Copy Address</source>
+        <translation>მისამართის კოპირება</translation>
+    </message>
+    <message>
+        <source>Copy &amp;Label</source>
+        <translation>ნიშნულის კოპირება</translation>
+    </message>
+    <message>
         <source>&amp;Edit</source>
         <translation>&amp;რედაქტირება</translation>
     </message>
-    </context>
+    <message>
+        <source>Export Address List</source>
+        <translation>მისამართების სიის ექსპორტი</translation>
+    </message>
+    <message>
+        <source>Comma separated file (*.csv)</source>
+        <translation>CSV ფორმატის ფაილი (*.csv)</translation>
+    </message>
+    <message>
+        <source>Exporting Failed</source>
+        <translation>ექპორტი ვერ განხორციელდა</translation>
+    </message>
+    <message>
+        <source>There was an error trying to save the address list to %1. Please try again.</source>
+        <translation>მისამართების სიის %1 შენახვა ვერ მოხერხდა. გაიმეორეთ მცდელობა.</translation>
+    </message>
+</context>
 <context>
     <name>AddressTableModel</name>
+    <message>
+        <source>Label</source>
+        <translation>ნიშნული</translation>
+    </message>
     <message>
         <source>Address</source>
         <translation>მისამართი</translation>
     </message>
-    </context>
+    <message>
+        <source>(no label)</source>
+        <translation>(ნიშნული არ არის)</translation>
+    </message>
+</context>
 <context>
     <name>AskPassphraseDialog</name>
     <message>
@@ -88,8 +136,16 @@
         <translation>საფულის დაშიფრვა</translation>
     </message>
     <message>
+        <source>This operation needs your wallet passphrase to unlock the wallet.</source>
+        <translation>ამ ოპერაციის შესასრულებლად საჭიროა თქვენი საფულის განბლოკვა პასფრაზით.</translation>
+    </message>
+    <message>
         <source>Unlock wallet</source>
         <translation>საფულის განბლოკვა</translation>
+    </message>
+    <message>
+        <source>This operation needs your wallet passphrase to decrypt the wallet.</source>
+        <translation>ამ ოპერაციის შესასრულებლად საჭიროა თქვენი საფულის განშიფრვა პასფრაზით.</translation>
     </message>
     <message>
         <source>Decrypt wallet</source>
@@ -99,9 +155,53 @@
         <source>Change passphrase</source>
         <translation>პაროლის შეცვლა</translation>
     </message>
+    <message>
+        <source>Confirm wallet encryption</source>
+        <translation>საფულის დაშიფრვის დადასტურება</translation>
+    </message>
+    <message>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR GLEECBTCS&lt;/b&gt;!</source>
+        <translation>გაფრთხილება: თუ თქვენ დაშიფრავთ თქვენს საფულეს და ამის შემდეგ დაკარგავთ გასაშიფრ ფრაზას, &lt;b&gt;თქვენ დაკარგავთ ყველა ბიტკოინს!&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>Are you sure you wish to encrypt your wallet?</source>
+        <translation>დარწმუნებული ხარ რომ საფულის დაშიფვრა გსურს?</translation>
+    </message>
+    <message>
+        <source>Wallet encrypted</source>
+        <translation>საფულე დაშიფრულია</translation>
+    </message>
+    <message>
+        <source>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. For security reasons, previous backups of the unencrypted wallet file will become useless as soon as you start using the new, encrypted wallet.</source>
+        <translation>მნიშვნელოვანი: ნებისმიერი საფულის წინა სარეზერვო კოპია, რომელიც თქვენ შექმენით, უნდა იყოს ჩანაცვლებული ახლად გენერირებული, დაშიფრული საფულის ფაილით. უსაფრთხოების მიზნებისთვის, დაუშიფრავი საფულის ფაილის წინა სარეზევო კოპიები გახდება გამოუყენებული იმ წამსვე, როდესაც დაიწყებთ ახალი, დაშიფრული საფულის გამოყენებას.</translation>
+    </message>
+    <message>
+        <source>Wallet encryption failed</source>
+        <translation>საფულის დაშიფვრა წარუმატებით დამთვრდა</translation>
+    </message>
+    <message>
+        <source>Wallet encryption failed due to an internal error. Your wallet was not encrypted.</source>
+        <translation>საფულის დაშიფრვა ვერ მოხდა შიდა შეცდომის გამო. თქვენი საფულე არ არის დაშიფრული.</translation>
+    </message>
+    <message>
+        <source>The supplied passphrases do not match.</source>
+        <translation>მოწოდებული ფრაზა-პაროლები არ ემთხვევა ერთმანეთს.</translation>
+    </message>
+    <message>
+        <source>Wallet unlock failed</source>
+        <translation>საფულის გახსნა წარუმატებლად შესრულდა</translation>
+    </message>
+    <message>
+        <source>Wallet decryption failed</source>
+        <translation>საფულის გაშიფვრა ვერ შესრულდა</translation>
+    </message>
     </context>
 <context>
     <name>BanTableModel</name>
+    <message>
+        <source>IP/Netmask</source>
+        <translation>IP/ქსელის მასკა</translation>
+    </message>
     </context>
 <context>
     <name>GleecBTCGUI</name>
@@ -116,10 +216,6 @@
     <message>
         <source>&amp;Overview</source>
         <translation>მიმ&amp;ოხილვა</translation>
-    </message>
-    <message>
-        <source>Node</source>
-        <translation>კვანძი</translation>
     </message>
     <message>
         <source>Show general overview of wallet</source>
@@ -162,6 +258,10 @@
         <translation>&amp;ოპციები</translation>
     </message>
     <message>
+        <source>Modify configuration options for %1</source>
+        <translation>%1-ის კონფიგურირების პარამეტრების რედაქტირება</translation>
+    </message>
+    <message>
         <source>&amp;Encrypt Wallet...</source>
         <translation>საფულის &amp;დაშიფრვა</translation>
     </message>
@@ -174,16 +274,20 @@
         <translation>ფრაზა-პაროლის შე&amp;ცვლა</translation>
     </message>
     <message>
-        <source>&amp;Sending addresses...</source>
-        <translation>გაგზავნის მი&amp;სამართი</translation>
-    </message>
-    <message>
-        <source>&amp;Receiving addresses...</source>
-        <translation>მიღების მისამა&amp;რთი</translation>
-    </message>
-    <message>
         <source>Open &amp;URI...</source>
         <translation>&amp;URI-ის გახსნა...</translation>
+    </message>
+    <message>
+        <source>Wallet:</source>
+        <translation>საფულე:</translation>
+    </message>
+    <message>
+        <source>Click to disable network activity.</source>
+        <translation>დააწკაპეთ ქსელური აქტივობის გასათიშად.</translation>
+    </message>
+    <message>
+        <source>Network activity disabled.</source>
+        <translation>ქსელური აქტივობა გათიშულია.</translation>
     </message>
     <message>
         <source>Reindexing blocks on disk...</source>
@@ -212,14 +316,6 @@
     <message>
         <source>&amp;Verify message...</source>
         <translation>&amp;ვერიფიკაცია</translation>
-    </message>
-    <message>
-        <source>GleecBTC</source>
-        <translation>GleecBTC</translation>
-    </message>
-    <message>
-        <source>Wallet</source>
-        <translation>საფულე</translation>
     </message>
     <message>
         <source>&amp;Send</source>
@@ -314,12 +410,24 @@
         <translation>განახლებულია</translation>
     </message>
     <message>
+        <source>default wallet</source>
+        <translation>ნაგულისხმევი საფულე</translation>
+    </message>
+    <message>
+        <source>&amp;Window</source>
+        <translation>&amp;ფანჯარა</translation>
+    </message>
+    <message>
         <source>%1 client</source>
         <translation>%1 კლიენტი</translation>
     </message>
     <message>
+        <source>Connecting to peers...</source>
+        <translation>შეერთება ქსელთან...</translation>
+    </message>
+    <message>
         <source>Catching up...</source>
-        <translation>მიმდინარეობს განახლება...</translation>
+        <translation>ჩართვა...</translation>
     </message>
     <message>
         <source>Date: %1
@@ -330,13 +438,25 @@
     <message>
         <source>Amount: %1
 </source>
-        <translation>რაოდენობა: %1
+        <translation>რაოდენობა^ %1
+</translation>
+    </message>
+    <message>
+        <source>Wallet: %1
+</source>
+        <translation>საფულე: %1
 </translation>
     </message>
     <message>
         <source>Type: %1
 </source>
         <translation>ტიპი: %1
+</translation>
+    </message>
+    <message>
+        <source>Label: %1
+</source>
+        <translation>ლეიბლი: %1
 </translation>
     </message>
     <message>
@@ -421,6 +541,22 @@
         <translation>დადასტურებულია</translation>
     </message>
     <message>
+        <source>Copy address</source>
+        <translation>მისამართის კოპირება</translation>
+    </message>
+    <message>
+        <source>Copy label</source>
+        <translation>ლეიბლის კოპირება</translation>
+    </message>
+    <message>
+        <source>Copy amount</source>
+        <translation>რაოდენობის კოპირება</translation>
+    </message>
+    <message>
+        <source>Lock unspent</source>
+        <translation>დაუხარჯავის ჩაკეტვა</translation>
+    </message>
+    <message>
         <source>yes</source>
         <translation>დიახ</translation>
     </message>
@@ -429,10 +565,20 @@
         <translation>არა</translation>
     </message>
     <message>
+        <source>(no label)</source>
+        <translation>(ნიშნული არ არის)</translation>
+    </message>
+    <message>
         <source>(change)</source>
         <translation>(ხურდა)</translation>
     </message>
 </context>
+<context>
+    <name>CreateWalletActivity</name>
+    </context>
+<context>
+    <name>CreateWalletDialog</name>
+    </context>
 <context>
     <name>EditAddressDialog</name>
     <message>
@@ -497,19 +643,7 @@
         <source>Command-line options</source>
         <translation>კომანდების ზოლის ოპციები</translation>
     </message>
-    <message>
-        <source>Usage:</source>
-        <translation>გამოყენება:</translation>
-    </message>
-    <message>
-        <source>command-line options</source>
-        <translation>კომანდების ზოლის ოპციები</translation>
-    </message>
-    <message>
-        <source>UI Options:</source>
-        <translation>მომხმარებლის ინტერფეისის ოპციები:</translation>
-    </message>
-    </context>
+</context>
 <context>
     <name>Intro</name>
     <message>
@@ -529,18 +663,14 @@
         <translation>მითითებული კატალოგის გამოყენება:</translation>
     </message>
     <message>
+        <source>GleecBTC</source>
+        <translation>GleecBTC</translation>
+    </message>
+    <message>
         <source>Error</source>
         <translation>შეცდომა</translation>
     </message>
-    <message numerus="yes">
-        <source>%n GB of free space available</source>
-        <translation><numerusform>ხელმისაწვდომია თავისუფალი სივრცის %n გბ</numerusform></translation>
-    </message>
-    <message numerus="yes">
-        <source>(of %n GB needed)</source>
-        <translation><numerusform>(საჭირო %n გბ-დან)</numerusform></translation>
-    </message>
-</context>
+    </context>
 <context>
     <name>ModalOverlay</name>
     <message>
@@ -588,6 +718,13 @@
     </message>
     </context>
 <context>
+    <name>OpenWalletActivity</name>
+    <message>
+        <source>default wallet</source>
+        <translation>ნაგულისხმევი საფულე</translation>
+    </message>
+    </context>
+<context>
     <name>OptionsDialog</name>
     <message>
         <source>Options</source>
@@ -602,20 +739,12 @@
         <translation>მონაცემთა ბაზის კეშის სი&amp;დიდე</translation>
     </message>
     <message>
-        <source>MB</source>
-        <translation>MB</translation>
-    </message>
-    <message>
         <source>Number of script &amp;verification threads</source>
         <translation>სკრიპტის &amp;ვერიფიცირების ნაკადების რაოდენობა</translation>
     </message>
     <message>
         <source>IP address of the proxy (e.g. IPv4: 127.0.0.1 / IPv6: ::1)</source>
         <translation>პროქსის IP-მისამართი (მაგ.: IPv4: 127.0.0.1 / IPv6: ::1)</translation>
-    </message>
-    <message>
-        <source>Active command-line options that override above options:</source>
-        <translation>საკომანდო სტრიქონის აქტიური ოპციები, რომლებიც გადაფარავენ ზემოთნაჩვენებს:</translation>
     </message>
     <message>
         <source>Reset all client options to default.</source>
@@ -734,6 +863,10 @@
         <translation>ცვლილებები ძალაში შევა კლიენტის ხელახალი გაშვების შემდეგ.</translation>
     </message>
     <message>
+        <source>Error</source>
+        <translation>შეცდომა</translation>
+    </message>
+    <message>
         <source>This change would require a client restart.</source>
         <translation>ამ ცვლილებების ძალაში შესასვლელად საჭიროა კლიენტის დახურვა და ხელახალი გაშვება.</translation>
     </message>
@@ -813,12 +946,45 @@
         <source>%1 and %2</source>
         <translation>%1 და %2</translation>
     </message>
-    </context>
-<context>
-    <name>QObject::QObject</name>
-    </context>
+    <message>
+        <source>%1 B</source>
+        <translation>%1 B</translation>
+    </message>
+    <message>
+        <source>%1 KB</source>
+        <translation>%1 KB</translation>
+    </message>
+    <message>
+        <source>%1 MB</source>
+        <translation>%1 MB</translation>
+    </message>
+    <message>
+        <source>%1 GB</source>
+        <translation>%1 GB</translation>
+    </message>
+    <message>
+        <source>Error: Specified data directory "%1" does not exist.</source>
+        <translation>შეცდომა: მითითებული მონაცემთა კატალოგი "%1" არ არსებობს.</translation>
+    </message>
+    <message>
+        <source>unknown</source>
+        <translation>უცნობია</translation>
+    </message>
+</context>
 <context>
     <name>QRImageWidget</name>
+    <message>
+        <source>&amp;Save Image...</source>
+        <translation>გამო&amp;სახულების შენახვა...</translation>
+    </message>
+    <message>
+        <source>Resulting URI too long, try to reduce the text for label / message.</source>
+        <translation>URI ძალიან გრძელი გამოდის, შეამოკლეთ ნიშნულის/მესიჯის ტექსტი.</translation>
+    </message>
+    <message>
+        <source>Error encoding URI into QR Code.</source>
+        <translation>შედომა URI-ის QR-კოდში გადაყვანისას.</translation>
+    </message>
     </context>
 <context>
     <name>RPCConsole</name>
@@ -883,10 +1049,6 @@
         <translation>&amp;ქსელის ტრაფიკი</translation>
     </message>
     <message>
-        <source>&amp;Clear</source>
-        <translation>&amp;წაშლა</translation>
-    </message>
-    <message>
         <source>Totals</source>
         <translation>სულ:</translation>
     </message>
@@ -906,30 +1068,6 @@
         <source>Clear console</source>
         <translation>კონსოლის გასუფთავება</translation>
     </message>
-    <message>
-        <source>Use up and down arrows to navigate history, and &lt;b&gt;Ctrl-L&lt;/b&gt; to clear screen.</source>
-        <translation>კლავიშები "ზევით" და "ქვევით" - ისტორიაში მოძრაობა, &lt;b&gt;Ctrl-L&lt;/b&gt; - ეკრანის გასუფთავება.</translation>
-    </message>
-    <message>
-        <source>Type &lt;b&gt;help&lt;/b&gt; for an overview of available commands.</source>
-        <translation>აკრიფეთ &lt;b&gt;help&lt;/b&gt; ფაშვებული ბრძანებების სანახავად.</translation>
-    </message>
-    <message>
-        <source>%1 B</source>
-        <translation>%1 B</translation>
-    </message>
-    <message>
-        <source>%1 KB</source>
-        <translation>%1 KB</translation>
-    </message>
-    <message>
-        <source>%1 MB</source>
-        <translation>%1 MB</translation>
-    </message>
-    <message>
-        <source>%1 GB</source>
-        <translation>%1 GB</translation>
-    </message>
     </context>
 <context>
     <name>ReceiveCoinsDialog</name>
@@ -944,14 +1082,6 @@
     <message>
         <source>&amp;Message:</source>
         <translation>&amp;მესიჯი:</translation>
-    </message>
-    <message>
-        <source>Reuse one of the previously used receiving addresses. Reusing addresses has security and privacy issues. Do not use this unless re-generating a payment request made before.</source>
-        <translation>რომელიმე ადრე გამოყენებული მიღების მისამართის გამოყენება. ეს ამცირებს უსაფრთხოებასა და პრივატულობას. ნუ გამოიყენებთ ამ ოპციას, თუ არ ახდენთ ადრე მოთხოვნილი გადახდის ხელახლა გენერირებას.</translation>
-    </message>
-    <message>
-        <source>R&amp;euse an existing receiving address (not recommended)</source>
-        <translation>ად&amp;რე გამოყენებული მიღების მისამართის გამოყენება (არ არის რეკომენდებული)</translation>
     </message>
     <message>
         <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the GleecBTC network.</source>
@@ -982,10 +1112,6 @@
         <translation>მოთხოვნილი გადახდების ისტორია</translation>
     </message>
     <message>
-        <source>&amp;Request payment</source>
-        <translation>&amp;გადახდის მოთხოვნა</translation>
-    </message>
-    <message>
         <source>Show the selected request (does the same as double clicking an entry)</source>
         <translation>არჩეული მოთხოვნის ჩვენება (იგივეა, რაც ჩანაწერზე ორჯერ ჩხვლეტა)</translation>
     </message>
@@ -1001,7 +1127,15 @@
         <source>Remove</source>
         <translation>წაშლა</translation>
     </message>
-    </context>
+    <message>
+        <source>Copy label</source>
+        <translation>ლეიბლის კოპირება</translation>
+    </message>
+    <message>
+        <source>Copy amount</source>
+        <translation>რაოდენობის კოპირება</translation>
+    </message>
+</context>
 <context>
     <name>ReceiveRequestDialog</name>
     <message>
@@ -1024,9 +1158,33 @@
         <source>Address</source>
         <translation>მისამართი</translation>
     </message>
-    </context>
+    <message>
+        <source>Amount</source>
+        <translation>თანხა</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation>ნიშნული</translation>
+    </message>
+    <message>
+        <source>Wallet</source>
+        <translation>საფულე</translation>
+    </message>
+</context>
 <context>
     <name>RecentRequestsTableModel</name>
+    <message>
+        <source>Date</source>
+        <translation>თარიღი</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation>ნიშნული</translation>
+    </message>
+    <message>
+        <source>(no label)</source>
+        <translation>(ნიშნული არ არის)</translation>
+    </message>
     </context>
 <context>
     <name>SendCoinsDialog</name>
@@ -1122,7 +1280,19 @@
         <source>S&amp;end</source>
         <translation>გაგ&amp;ზავნა</translation>
     </message>
-    </context>
+    <message>
+        <source>Copy amount</source>
+        <translation>რაოდენობის კოპირება</translation>
+    </message>
+    <message>
+        <source>Transaction fee</source>
+        <translation>ტრანსაქციის საფასური - საკომისიო</translation>
+    </message>
+    <message>
+        <source>(no label)</source>
+        <translation>(ნიშნული არ არის)</translation>
+    </message>
+</context>
 <context>
     <name>SendCoinsEntry</name>
     <message>
@@ -1264,13 +1434,6 @@
     </message>
     </context>
 <context>
-    <name>SplashScreen</name>
-    <message>
-        <source>[testnet]</source>
-        <translation>[testnet]</translation>
-    </message>
-</context>
-<context>
     <name>TrafficGraphWidget</name>
     <message>
         <source>KB/s</source>
@@ -1279,6 +1442,22 @@
 </context>
 <context>
     <name>TransactionDesc</name>
+    <message>
+        <source>Date</source>
+        <translation>თარიღი</translation>
+    </message>
+    <message>
+        <source>unknown</source>
+        <translation>უცნობია</translation>
+    </message>
+    <message>
+        <source>Transaction fee</source>
+        <translation>ტრანსაქციის საფასური - საკომისიო</translation>
+    </message>
+    <message>
+        <source>Amount</source>
+        <translation>თანხა</translation>
+    </message>
     </context>
 <context>
     <name>TransactionDescDialog</name>
@@ -1289,79 +1468,94 @@
     </context>
 <context>
     <name>TransactionTableModel</name>
+    <message>
+        <source>Date</source>
+        <translation>თარიღი</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation>ნიშნული</translation>
+    </message>
+    <message>
+        <source>(no label)</source>
+        <translation>(ნიშნული არ არის)</translation>
+    </message>
     </context>
 <context>
     <name>TransactionView</name>
     <message>
+        <source>Copy address</source>
+        <translation>მისამართის კოპირება</translation>
+    </message>
+    <message>
+        <source>Copy label</source>
+        <translation>ლეიბლის კოპირება</translation>
+    </message>
+    <message>
+        <source>Copy amount</source>
+        <translation>რაოდენობის კოპირება</translation>
+    </message>
+    <message>
+        <source>Comma separated file (*.csv)</source>
+        <translation>CSV ფორმატის ფაილი (*.csv)</translation>
+    </message>
+    <message>
+        <source>Confirmed</source>
+        <translation>დადასტურებულია</translation>
+    </message>
+    <message>
+        <source>Date</source>
+        <translation>თარიღი</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation>ნიშნული</translation>
+    </message>
+    <message>
         <source>Address</source>
         <translation>მისამართი</translation>
+    </message>
+    <message>
+        <source>Exporting Failed</source>
+        <translation>ექპორტი ვერ განხორციელდა</translation>
     </message>
     </context>
 <context>
     <name>UnitDisplayStatusBarControl</name>
     </context>
 <context>
+    <name>WalletController</name>
+    </context>
+<context>
     <name>WalletFrame</name>
     </context>
 <context>
     <name>WalletModel</name>
-    </context>
+    <message>
+        <source>Send Coins</source>
+        <translation>მონეტების გაგზავნა</translation>
+    </message>
+    <message>
+        <source>default wallet</source>
+        <translation>ნაგულისხმევი საფულე</translation>
+    </message>
+</context>
 <context>
     <name>WalletView</name>
+    <message>
+        <source>&amp;Export</source>
+        <translation>&amp;ექსპორტი</translation>
+    </message>
+    <message>
+        <source>Export the data in the current tab to a file</source>
+        <translation>ამ ბარათიდან მონაცემების ექსპორტი ფაილში</translation>
+    </message>
     </context>
 <context>
     <name>gleecbtc-core</name>
     <message>
-        <source>Options:</source>
-        <translation>ოპციები:</translation>
-    </message>
-    <message>
-        <source>Specify data directory</source>
-        <translation>მიუთითეთ მონაცემთა კატალოგი</translation>
-    </message>
-    <message>
-        <source>Connect to a node to retrieve peer addresses, and disconnect</source>
-        <translation>მიერთება კვანძთან, პირების მისამართების მიღება და გათიშვა</translation>
-    </message>
-    <message>
-        <source>Specify your own public address</source>
-        <translation>მიუთითეთ თქვენი საჯარო მისამართი</translation>
-    </message>
-    <message>
-        <source>Accept command line and JSON-RPC commands</source>
-        <translation>საკომანდო სტრიქონისა და JSON-RPC-კომამდების ნებართვა</translation>
-    </message>
-    <message>
-        <source>Run in the background as a daemon and accept commands</source>
-        <translation>რეზიდენტულად გაშვება და კომანდების მიღება</translation>
-    </message>
-    <message>
-        <source>GleecBTC Core</source>
-        <translation>GleecBTC Core</translation>
-    </message>
-    <message>
-        <source>Bind to given address and always listen on it. Use [host]:port notation for IPv6</source>
-        <translation>მოცემულ მისამართზე მიჯაჭვა მუდმივად მასზე მიყურადებით. გამოიყენეთ [host]:port ფორმა IPv6-სათვის</translation>
-    </message>
-    <message>
-        <source>Execute command when a wallet transaction changes (%s in cmd is replaced by TxID)</source>
-        <translation>კომანდის შესრულება საფულის ტრანსაქციის ცვლილებისას (%s კომანდაში ჩანაცვლდება TxID-ით)</translation>
-    </message>
-    <message>
-        <source>&lt;category&gt; can be:</source>
-        <translation>&lt;category&gt; შეიძლება იყოს:</translation>
-    </message>
-    <message>
-        <source>Block creation options:</source>
-        <translation>ბლოკის შექმნის ოპციები:</translation>
-    </message>
-    <message>
         <source>Corrupted block database detected</source>
         <translation>შენიშნულია ბლოკთა ბაზის დაზიანება</translation>
-    </message>
-    <message>
-        <source>Do not load the wallet and disable wallet RPC calls</source>
-        <translation>არ ჩაიტვირთოს საფულე და აიკრძალოს საფულისადმი RPC-მიმართვები</translation>
     </message>
     <message>
         <source>Do you want to rebuild the block database now?</source>
@@ -1384,10 +1578,6 @@
         <translation>ბლოკთა ბაზის შექმნა ვერ მოხერხდა</translation>
     </message>
     <message>
-        <source>Error: Disk space is low!</source>
-        <translation>შეცდომა: დისზე არ არის ადგილი!</translation>
-    </message>
-    <message>
         <source>Failed to listen on any port. Use -listen=0 if you want this.</source>
         <translation>ვერ ხერხდება პორტების მიყურადება. თუ გსურთ, გამოიყენეთ -listen=0.</translation>
     </message>
@@ -1396,56 +1586,12 @@
         <translation>საწყისი ბლოკი არ არსებობს ან არასწორია. ქსელის მონაცემთა კატალოგი datadir ხომ არის არასწორი?</translation>
     </message>
     <message>
-        <source>Invalid -onion address: '%s'</source>
-        <translation>არასწორია მისამართი -onion: '%s'</translation>
-    </message>
-    <message>
         <source>Not enough file descriptors available.</source>
         <translation>არ არის საკმარისი ფაილ-დესკრიპტორები.</translation>
     </message>
     <message>
-        <source>Set maximum block size in bytes (default: %d)</source>
-        <translation>ბლოკის მაქსიმალური ზომის განსაზღვრა ბაიტებში (ნადულისხმევი: %d)</translation>
-    </message>
-    <message>
-        <source>Specify wallet file (within data directory)</source>
-        <translation>მიუთითეთ საფულის ფაილი (კატალოგში)</translation>
-    </message>
-    <message>
         <source>Verifying blocks...</source>
         <translation>ბლოკების ვერიფიკაცია...</translation>
-    </message>
-    <message>
-        <source>Verifying wallet...</source>
-        <translation>საფულის ვერიფიკაცია...</translation>
-    </message>
-    <message>
-        <source>Wallet %s resides outside data directory %s</source>
-        <translation>საფულე %s მდებარეობს მონაცემთა კატალოგის %s გარეთ</translation>
-    </message>
-    <message>
-        <source>Wallet options:</source>
-        <translation>სფულის ოპციები:</translation>
-    </message>
-    <message>
-        <source>Execute command when a relevant alert is received or we see a really long fork (%s in cmd is replaced by message)</source>
-        <translation>ბრძანების შესრულება შესაბამისი უწყების მიღებისას ან როცა შეინიშნება საგრძნობი გახლეჩა (cmd-ში %s შეიცვლება მესიჯით)</translation>
-    </message>
-    <message>
-        <source>Set maximum size of high-priority/low-fee transactions in bytes (default: %d)</source>
-        <translation>მაღალპრიორიტეტული/დაბალსაკომისიოიანი ტრანსაქციების მაქსიმალური ზომა ბაიტებში (ნაგულისხმევი: %d)</translation>
-    </message>
-    <message>
-        <source>Information</source>
-        <translation>ინფორმაცია</translation>
-    </message>
-    <message>
-        <source>Send trace/debug info to console instead of debug.log file</source>
-        <translation>ტრასირების/დახვეწის ინფოს გაგზავნა კონსოლზე debug.log ფაილის ნაცვლად</translation>
-    </message>
-    <message>
-        <source>Shrink debug.log file on client startup (default: 1 when no -debug)</source>
-        <translation>debug.log ფაილის შეკუმშვა გაშვებისას (ნაგულისხმევია: 1 როცა არ აყენია -debug)</translation>
     </message>
     <message>
         <source>Signing transaction failed</source>
@@ -1460,36 +1606,8 @@
         <translation>ტრანსაქცია ძალიან დიდია</translation>
     </message>
     <message>
-        <source>Username for JSON-RPC connections</source>
-        <translation>მომხმარებლის სახელი JSON-RPC-შეერთებისათვის</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation>გაფრთხილება</translation>
-    </message>
-    <message>
         <source>Zapping all transactions from wallet...</source>
         <translation>ტრანსაქციების ჩახსნა საფულიდან...</translation>
-    </message>
-    <message>
-        <source>Password for JSON-RPC connections</source>
-        <translation>პაროლი JSON-RPC-შეერთებისათვის</translation>
-    </message>
-    <message>
-        <source>Execute command when the best block changes (%s in cmd is replaced by block hash)</source>
-        <translation>კომანდის შესრულება უკეთესი ბლოკის გამოჩენისას (%s კომანდაში ჩანაცვლდება ბლოკის ჰეშით)</translation>
-    </message>
-    <message>
-        <source>Allow DNS lookups for -addnode, -seednode and -connect</source>
-        <translation>DNS-ძებნის დაშვება -addnode, -seednode და -connect-სათვის</translation>
-    </message>
-    <message>
-        <source>Loading addresses...</source>
-        <translation>მისამართების ჩატვირთვა...</translation>
-    </message>
-    <message>
-        <source>Invalid -proxy address: '%s'</source>
-        <translation>არასწორია მისამართი -proxy: '%s'</translation>
     </message>
     <message>
         <source>Unknown network specified in -onlynet: '%s'</source>
@@ -1504,10 +1622,6 @@
         <translation>ბლოკების ინდექსის ჩატვირთვა...</translation>
     </message>
     <message>
-        <source>Add a node to connect to and attempt to keep the connection open</source>
-        <translation>მისაერთებელი კვანძის დამატება და მიერთების შეძლებისდაგვარად შენარჩუნება</translation>
-    </message>
-    <message>
         <source>Loading wallet...</source>
         <translation>საფულის ჩატვირთვა...</translation>
     </message>
@@ -1516,20 +1630,12 @@
         <translation>საფულის ძველ ვერსიაზე გადაყვანა შეუძლებელია</translation>
     </message>
     <message>
-        <source>Cannot write default address</source>
-        <translation>ვერ ხერხდება ნაგულისხმევი მისამართის ჩაწერა</translation>
-    </message>
-    <message>
         <source>Rescanning...</source>
         <translation>სკანირება...</translation>
     </message>
     <message>
         <source>Done loading</source>
         <translation>ჩატვირთვა დასრულებულია</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation>შეცდომა</translation>
     </message>
 </context>
 </TS>

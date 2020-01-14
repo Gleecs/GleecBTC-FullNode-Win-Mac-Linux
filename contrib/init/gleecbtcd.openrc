@@ -1,42 +1,42 @@
-#!/sbin/runscript
+#!/sbin/openrc-run
 
 # backward compatibility for existing gentoo layout 
 #
 if [ -d "/var/lib/gleecbtc/.gleecbtc" ]; then
-	GLEECGBCD_DEFAULT_DATADIR="/var/lib/gleecbtc/.gleecbtc"
+	GLEECBTCD_DEFAULT_DATADIR="/var/lib/gleecbtc/.gleecbtc"
 else
-	GLEECGBCD_DEFAULT_DATADIR="/var/lib/gleecbtcd"
+	GLEECBTCD_DEFAULT_DATADIR="/var/lib/gleecbtcd"
 fi
 
-GLEECGBCD_CONFIGFILE=${GLEECGBCD_CONFIGFILE:-/etc/gleecbtc/gleecbtc.conf}
-GLEECGBCD_PIDDIR=${GLEECGBCD_PIDDIR:-/var/run/gleecbtcd}
-GLEECGBCD_PIDFILE=${GLEECGBCD_PIDFILE:-${GLEECGBCD_PIDDIR}/gleecbtcd.pid}
-GLEECGBCD_DATADIR=${GLEECGBCD_DATADIR:-${GLEECGBCD_DEFAULT_DATADIR}}
-GLEECGBCD_USER=${GLEECGBCD_USER:-${GLEECGBC_USER:-gleecbtc}}
-GLEECGBCD_GROUP=${GLEECGBCD_GROUP:-gleecbtc}
-GLEECGBCD_BIN=${GLEECGBCD_BIN:-/usr/bin/gleecbtcd}
-GLEECGBCD_NICE=${GLEECGBCD_NICE:-${NICELEVEL:-0}}
-GLEECGBCD_OPTS="${GLEECGBCD_OPTS:-${GLEECGBC_OPTS}}"
+GLEECBTCD_CONFIGFILE=${GLEECBTCD_CONFIGFILE:-/etc/gleecbtc/gleecbtc.conf}
+GLEECBTCD_PIDDIR=${GLEECBTCD_PIDDIR:-/var/run/gleecbtcd}
+GLEECBTCD_PIDFILE=${GLEECBTCD_PIDFILE:-${GLEECBTCD_PIDDIR}/gleecbtcd.pid}
+GLEECBTCD_DATADIR=${GLEECBTCD_DATADIR:-${GLEECBTCD_DEFAULT_DATADIR}}
+GLEECBTCD_USER=${GLEECBTCD_USER:-${GLEECBTC_USER:-gleecbtc}}
+GLEECBTCD_GROUP=${GLEECBTCD_GROUP:-gleecbtc}
+GLEECBTCD_BIN=${GLEECBTCD_BIN:-/usr/bin/gleecbtcd}
+GLEECBTCD_NICE=${GLEECBTCD_NICE:-${NICELEVEL:-0}}
+GLEECBTCD_OPTS="${GLEECBTCD_OPTS:-${GLEECBTC_OPTS}}"
 
 name="GleecBTC Core Daemon"
 description="GleecBTC cryptocurrency P2P network daemon"
 
 command="/usr/bin/gleecbtcd"
-command_args="-pid=\"${GLEECGBCD_PIDFILE}\" \
-		-conf=\"${GLEECGBCD_CONFIGFILE}\" \
-		-datadir=\"${GLEECGBCD_DATADIR}\" \
+command_args="-pid=\"${GLEECBTCD_PIDFILE}\" \
+		-conf=\"${GLEECBTCD_CONFIGFILE}\" \
+		-datadir=\"${GLEECBTCD_DATADIR}\" \
 		-daemon \
-		${GLEECGBCD_OPTS}"
+		${GLEECBTCD_OPTS}"
 
-required_files="${GLEECGBCD_CONFIGFILE}"
-start_stop_daemon_args="-u ${GLEECGBCD_USER} \
-			-N ${GLEECGBCD_NICE} -w 2000"
-pidfile="${GLEECGBCD_PIDFILE}"
+required_files="${GLEECBTCD_CONFIGFILE}"
+start_stop_daemon_args="-u ${GLEECBTCD_USER} \
+			-N ${GLEECBTCD_NICE} -w 2000"
+pidfile="${GLEECBTCD_PIDFILE}"
 
 # The retry schedule to use when stopping the daemon. Could be either
 # a timeout in seconds or multiple signal/timeout pairs (like
 # "SIGKILL/180 SIGTERM/300")
-retry="${GLEECGBCD_SIGTERM_TIMEOUT}"
+retry="${GLEECBTCD_SIGTERM_TIMEOUT}"
 
 depend() {
 	need localmount net
@@ -50,38 +50,38 @@ start_pre() {
 	checkpath \
 	-d \
 	--mode 0750 \
-	--owner "${GLEECGBCD_USER}:${GLEECGBCD_GROUP}" \
-	"${GLEECGBCD_DATADIR}"
+	--owner "${GLEECBTCD_USER}:${GLEECBTCD_GROUP}" \
+	"${GLEECBTCD_DATADIR}"
 
 	checkpath \
 	-d \
 	--mode 0755 \
-	--owner "${GLEECGBCD_USER}:${GLEECGBCD_GROUP}" \
-	"${GLEECGBCD_PIDDIR}"
+	--owner "${GLEECBTCD_USER}:${GLEECBTCD_GROUP}" \
+	"${GLEECBTCD_PIDDIR}"
 
 	checkpath -f \
-	-o ${GLEECGBCD_USER}:${GLEECGBCD_GROUP} \
+	-o ${GLEECBTCD_USER}:${GLEECBTCD_GROUP} \
 	-m 0660 \
-	${GLEECGBCD_CONFIGFILE}
+	${GLEECBTCD_CONFIGFILE}
 
 	checkconfig || return 1
 }
 
 checkconfig()
 {
-	if ! grep -qs '^rpcpassword=' "${GLEECGBCD_CONFIGFILE}" ; then
+	if ! grep -qs '^rpcpassword=' "${GLEECBTCD_CONFIGFILE}" ; then
 		eerror ""
 		eerror "ERROR: You must set a secure rpcpassword to run gleecbtcd."
-		eerror "The setting must appear in ${GLEECGBCD_CONFIGFILE}"
+		eerror "The setting must appear in ${GLEECBTCD_CONFIGFILE}"
 		eerror ""
 		eerror "This password is security critical to securing wallets "
 		eerror "and must not be the same as the rpcuser setting."
-		eerror "You can generate a suitable random password using the following"
+		eerror "You can generate a suitable random password using the following "
 		eerror "command from the shell:"
 		eerror ""
 		eerror "bash -c 'tr -dc a-zA-Z0-9 < /dev/urandom | head -c32 && echo'"
 		eerror ""
-		eerror "It is also recommended that you also set alertnotify so you are "
+		eerror "It is recommended that you also set alertnotify so you are "
 		eerror "notified of problems:"
 		eerror ""
 		eerror "ie: alertnotify=echo %%s | mail -s \"GleecBTC Alert\"" \

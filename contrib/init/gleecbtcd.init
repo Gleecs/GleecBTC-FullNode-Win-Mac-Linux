@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 #  gleecbtcd The gleecbtc core server.
 #
@@ -19,14 +19,14 @@ fi
 RETVAL=0
 
 prog=gleecbtcd
-# you can override the lockfile via GLEECGBCD_LOCKFILE in /etc/sysconfig/gleecbtcd
-lockfile=${GLEECGBCD_LOCKFILE-/var/lock/subsys/gleecbtcd}
+# you can override the lockfile via GLEECBTCD_LOCKFILE in /etc/sysconfig/gleecbtcd
+lockfile=${GLEECBTCD_LOCKFILE-/var/lock/subsys/gleecbtcd}
 
-# gleecbtcd defaults to /usr/bin/gleecbtcd, override with GLEECGBCD_BIN
-gleecbtcd=${GLEECGBCD_BIN-/usr/bin/gleecbtcd}
+# gleecbtcd defaults to /usr/bin/gleecbtcd, override with GLEECBTCD_BIN
+gleecbtcd=${GLEECBTCD_BIN-/usr/bin/gleecbtcd}
 
-# gleecbtcd opts default to -disablewallet, override with GLEECGBCD_OPTS
-gleecbtcd_opts=${GLEECGBCD_OPTS--disablewallet}
+# gleecbtcd opts default to -disablewallet, override with GLEECBTCD_OPTS
+gleecbtcd_opts=${GLEECBTCD_OPTS--disablewallet}
 
 start() {
     echo -n $"Starting $prog: "

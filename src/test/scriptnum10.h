@@ -1,18 +1,17 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_TEST_SCRIPTNUM10_H
-#define GLEECGBC_TEST_SCRIPTNUM10_H
+#ifndef GLEECBTC_TEST_SCRIPTNUM10_H
+#define GLEECBTC_TEST_SCRIPTNUM10_H
 
-#include "assert.h"
-#include <algorithm>
 #include <limits>
 #include <stdexcept>
 #include <stdint.h>
 #include <string>
 #include <vector>
+#include <assert.h>
 
 class scriptnum10_error : public std::runtime_error
 {
@@ -22,10 +21,11 @@ public:
 
 class CScriptNum10
 {
-    /**
+/**
  * The ScriptNum implementation from GleecBTC Core 0.10.0, for cross-comparison.
  */
 public:
+
     explicit CScriptNum10(const int64_t& n)
     {
         m_value = n;
@@ -33,7 +33,8 @@ public:
 
     static const size_t nDefaultMaxNumSize = 4;
 
-    explicit CScriptNum10(const std::vector<unsigned char>& vch, bool fRequireMinimal, const size_t nMaxNumSize = nDefaultMaxNumSize)
+    explicit CScriptNum10(const std::vector<unsigned char>& vch, bool fRequireMinimal,
+                        const size_t nMaxNumSize = nDefaultMaxNumSize)
     {
         if (vch.size() > nMaxNumSize) {
             throw scriptnum10_error("script number overflow");
@@ -59,52 +60,52 @@ public:
         m_value = set_vch(vch);
     }
 
-    inline bool operator==(const int64_t& rhs) const { return m_value == rhs; }
-    inline bool operator!=(const int64_t& rhs) const { return m_value != rhs; }
-    inline bool operator<=(const int64_t& rhs) const { return m_value <= rhs; }
-    inline bool operator<(const int64_t& rhs) const { return m_value < rhs; }
-    inline bool operator>=(const int64_t& rhs) const { return m_value >= rhs; }
-    inline bool operator>(const int64_t& rhs) const { return m_value > rhs; }
+    inline bool operator==(const int64_t& rhs) const    { return m_value == rhs; }
+    inline bool operator!=(const int64_t& rhs) const    { return m_value != rhs; }
+    inline bool operator<=(const int64_t& rhs) const    { return m_value <= rhs; }
+    inline bool operator< (const int64_t& rhs) const    { return m_value <  rhs; }
+    inline bool operator>=(const int64_t& rhs) const    { return m_value >= rhs; }
+    inline bool operator> (const int64_t& rhs) const    { return m_value >  rhs; }
 
     inline bool operator==(const CScriptNum10& rhs) const { return operator==(rhs.m_value); }
     inline bool operator!=(const CScriptNum10& rhs) const { return operator!=(rhs.m_value); }
     inline bool operator<=(const CScriptNum10& rhs) const { return operator<=(rhs.m_value); }
-    inline bool operator<(const CScriptNum10& rhs) const { return operator<(rhs.m_value); }
+    inline bool operator< (const CScriptNum10& rhs) const { return operator< (rhs.m_value); }
     inline bool operator>=(const CScriptNum10& rhs) const { return operator>=(rhs.m_value); }
-    inline bool operator>(const CScriptNum10& rhs) const { return operator>(rhs.m_value); }
+    inline bool operator> (const CScriptNum10& rhs) const { return operator> (rhs.m_value); }
 
-    inline CScriptNum10 operator+(const int64_t& rhs) const { return CScriptNum10(m_value + rhs); }
-    inline CScriptNum10 operator-(const int64_t& rhs) const { return CScriptNum10(m_value - rhs); }
-    inline CScriptNum10 operator+(const CScriptNum10& rhs) const { return operator+(rhs.m_value); }
-    inline CScriptNum10 operator-(const CScriptNum10& rhs) const { return operator-(rhs.m_value); }
+    inline CScriptNum10 operator+(   const int64_t& rhs)    const { return CScriptNum10(m_value + rhs);}
+    inline CScriptNum10 operator-(   const int64_t& rhs)    const { return CScriptNum10(m_value - rhs);}
+    inline CScriptNum10 operator+(   const CScriptNum10& rhs) const { return operator+(rhs.m_value);   }
+    inline CScriptNum10 operator-(   const CScriptNum10& rhs) const { return operator-(rhs.m_value);   }
 
-    inline CScriptNum10& operator+=(const CScriptNum10& rhs) { return operator+=(rhs.m_value); }
-    inline CScriptNum10& operator-=(const CScriptNum10& rhs) { return operator-=(rhs.m_value); }
+    inline CScriptNum10& operator+=( const CScriptNum10& rhs)       { return operator+=(rhs.m_value);  }
+    inline CScriptNum10& operator-=( const CScriptNum10& rhs)       { return operator-=(rhs.m_value);  }
 
-    inline CScriptNum10 operator-() const
+    inline CScriptNum10 operator-()                         const
     {
         assert(m_value != std::numeric_limits<int64_t>::min());
         return CScriptNum10(-m_value);
     }
 
-    inline CScriptNum10& operator=(const int64_t& rhs)
+    inline CScriptNum10& operator=( const int64_t& rhs)
     {
         m_value = rhs;
         return *this;
     }
 
-    inline CScriptNum10& operator+=(const int64_t& rhs)
+    inline CScriptNum10& operator+=( const int64_t& rhs)
     {
         assert(rhs == 0 || (rhs > 0 && m_value <= std::numeric_limits<int64_t>::max() - rhs) ||
-               (rhs < 0 && m_value >= std::numeric_limits<int64_t>::min() - rhs));
+                           (rhs < 0 && m_value >= std::numeric_limits<int64_t>::min() - rhs));
         m_value += rhs;
         return *this;
     }
 
-    inline CScriptNum10& operator-=(const int64_t& rhs)
+    inline CScriptNum10& operator-=( const int64_t& rhs)
     {
         assert(rhs == 0 || (rhs > 0 && m_value >= std::numeric_limits<int64_t>::min() + rhs) ||
-               (rhs < 0 && m_value <= std::numeric_limits<int64_t>::max() + rhs));
+                           (rhs < 0 && m_value <= std::numeric_limits<int64_t>::max() + rhs));
         m_value -= rhs;
         return *this;
     }
@@ -125,27 +126,28 @@ public:
 
     static std::vector<unsigned char> serialize(const int64_t& value)
     {
-        if (value == 0)
+        if(value == 0)
             return std::vector<unsigned char>();
 
         std::vector<unsigned char> result;
         const bool neg = value < 0;
         uint64_t absvalue = neg ? -value : value;
 
-        while (absvalue) {
+        while(absvalue)
+        {
             result.push_back(absvalue & 0xff);
             absvalue >>= 8;
         }
 
-        //    - If the most significant byte is >= 0x80 and the value is positive, push a
-        //    new zero-byte to make the significant byte < 0x80 again.
+//    - If the most significant byte is >= 0x80 and the value is positive, push a
+//    new zero-byte to make the significant byte < 0x80 again.
 
-        //    - If the most significant byte is >= 0x80 and the value is negative, push a
-        //    new 0x80 byte that will be popped off when converting to an integral.
+//    - If the most significant byte is >= 0x80 and the value is negative, push a
+//    new 0x80 byte that will be popped off when converting to an integral.
 
-        //    - If the most significant byte is < 0x80 and the value is negative, add
-        //    0x80 to it, since it will be subtracted and interpreted as a negative when
-        //    converting to an integral.
+//    - If the most significant byte is < 0x80 and the value is negative, add
+//    0x80 to it, since it will be subtracted and interpreted as a negative when
+//    converting to an integral.
 
         if (result.back() & 0x80)
             result.push_back(neg ? 0x80 : 0);
@@ -158,23 +160,23 @@ public:
 private:
     static int64_t set_vch(const std::vector<unsigned char>& vch)
     {
-        if (vch.empty())
-            return 0;
+      if (vch.empty())
+          return 0;
 
-        int64_t result = 0;
-        for (size_t i = 0; i != vch.size(); ++i)
-            result |= static_cast<int64_t>(vch[i]) << 8 * i;
+      int64_t result = 0;
+      for (size_t i = 0; i != vch.size(); ++i)
+          result |= static_cast<int64_t>(vch[i]) << 8*i;
 
-        // If the input vector's most significant byte is 0x80, remove it from
-        // the result's msb and return a negative.
-        if (vch.back() & 0x80)
-            return -((int64_t)(result & ~(0x80ULL << (8 * (vch.size() - 1)))));
+      // If the input vector's most significant byte is 0x80, remove it from
+      // the result's msb and return a negative.
+      if (vch.back() & 0x80)
+          return -((int64_t)(result & ~(0x80ULL << (8 * (vch.size() - 1)))));
 
-        return result;
+      return result;
     }
 
     int64_t m_value;
 };
 
 
-#endif // GLEECGBC_TEST_BIGNUM_H
+#endif // GLEECBTC_TEST_BIGNUM_H

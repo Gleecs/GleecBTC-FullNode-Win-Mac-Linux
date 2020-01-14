@@ -1,47 +1,45 @@
-// Copyright (c) 2011-2014 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef GLEECGBC_QT_WALLETMODELTRANSACTION_H
-#define GLEECGBC_QT_WALLETMODELTRANSACTION_H
+#ifndef GLEECBTC_QT_WALLETMODELTRANSACTION_H
+#define GLEECBTC_QT_WALLETMODELTRANSACTION_H
 
-#include "walletmodel.h"
+#include <qt/walletmodel.h>
+
+#include <memory>
+#include <amount.h>
 
 #include <QObject>
 
 class SendCoinsRecipient;
 
-class CReserveKey;
-class CWallet;
-class CWalletTx;
+namespace interfaces {
+class Node;
+}
 
 /** Data model for a walletmodel transaction. */
 class WalletModelTransaction
 {
 public:
-    explicit WalletModelTransaction(const QList<SendCoinsRecipient>& recipients);
-    ~WalletModelTransaction();
+    explicit WalletModelTransaction(const QList<SendCoinsRecipient> &recipients);
 
-    QList<SendCoinsRecipient> getRecipients();
+    QList<SendCoinsRecipient> getRecipients() const;
 
-    CWalletTx* getTransaction();
+    CTransactionRef& getWtx();
     unsigned int getTransactionSize();
 
     void setTransactionFee(const CAmount& newFee);
-    CAmount getTransactionFee();
+    CAmount getTransactionFee() const;
 
-    CAmount getTotalTransactionAmount();
-
-    void newPossibleKeyChange(CWallet* wallet);
-    CReserveKey* getPossibleKeyChange();
+    CAmount getTotalTransactionAmount() const;
 
     void reassignAmounts(int nChangePosRet); // needed for the subtract-fee-from-amount feature
 
 private:
     QList<SendCoinsRecipient> recipients;
-    CWalletTx* walletTransaction;
-    CReserveKey* keyChange;
+    CTransactionRef wtx;
     CAmount fee;
 };
 
-#endif // GLEECGBC_QT_WALLETMODELTRANSACTION_H
+#endif // GLEECBTC_QT_WALLETMODELTRANSACTION_H
