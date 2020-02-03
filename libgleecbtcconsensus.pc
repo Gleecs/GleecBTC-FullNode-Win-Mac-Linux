@@ -1,0 +1,11 @@
+prefix=/
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: GleecBTC Core consensus library
+Description: Library for the GleecBTC consensus protocol.
+Version: 0.19.0.1
+Libs: -L${libdir} -lgleecbtcconsensus
+Cflags: -I${includedir}
+Requires.private: libcrypto
