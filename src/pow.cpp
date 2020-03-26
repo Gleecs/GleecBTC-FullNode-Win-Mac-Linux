@@ -59,12 +59,21 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
         nActualTimespan = params.nPowTargetTimespan*4;
 
     // Retarget
-    const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
     arith_uint256 bnNew;
+    arith_uint256 bnOld;
     bnNew.SetCompact(pindexLast->nBits);
+    bnOld = bnNew;
+    
+    const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
+    bool fShift = bnNew.bits() > bnPowLimit.bits() - 1;
+    if (fShift)
+        bnNew >>= 1;
     bnNew *= nActualTimespan;
     bnNew /= params.nPowTargetTimespan;
 
+	if (fShift)
+        bnNew <<= 1;
+        
     if (bnNew > bnPowLimit)
         bnNew = bnPowLimit;
 

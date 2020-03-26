@@ -54,7 +54,7 @@
 #define ENABLE_WALLET 1
 
 /* Define to 1 to enable ZMQ functions */
-#define ENABLE_ZMQ 0
+#define ENABLE_ZMQ 1
 
 /* parameter and return value type for __fdelt_chk */
 /* #undef FDELT_TYPE */
@@ -116,7 +116,7 @@
 
 /* Define to 1 if you have the declaration of `daemon', and to 0 if you don't.
    */
-#define HAVE_DECL_DAEMON 0
+#define HAVE_DECL_DAEMON 1
 
 /* Define to 1 if you have the declaration of `EVP_MD_CTX_new', and to 0 if
    you don't. */
@@ -124,11 +124,11 @@
 
 /* Define to 1 if you have the declaration of `freeifaddrs', and to 0 if you
    don't. */
-#define HAVE_DECL_FREEIFADDRS 0
+#define HAVE_DECL_FREEIFADDRS 1
 
 /* Define to 1 if you have the declaration of `getifaddrs', and to 0 if you
    don't. */
-#define HAVE_DECL_GETIFADDRS 0
+#define HAVE_DECL_GETIFADDRS 1
 
 /* Define to 1 if you have the declaration of `htobe16', and to 0 if you
    don't. */
@@ -168,7 +168,7 @@
 
 /* Define to 1 if you have the declaration of `strerror_r', and to 0 if you
    don't. */
-#define HAVE_DECL_STRERROR_R 0
+#define HAVE_DECL_STRERROR_R 1
 
 /* Define to 1 if you have the declaration of `strnlen', and to 0 if you
    don't. */
@@ -176,30 +176,30 @@
 
 /* Define to 1 if you have the declaration of `__builtin_clz', and to 0 if you
    don't. */
-#define HAVE_DECL___BUILTIN_CLZ 1
+#define HAVE_DECL___BUILTIN_CLZ 0
 
 /* Define to 1 if you have the declaration of `__builtin_clzl', and to 0 if
    you don't. */
-#define HAVE_DECL___BUILTIN_CLZL 1
+#define HAVE_DECL___BUILTIN_CLZL 0
 
 /* Define to 1 if you have the declaration of `__builtin_clzll', and to 0 if
    you don't. */
-#define HAVE_DECL___BUILTIN_CLZLL 1
+#define HAVE_DECL___BUILTIN_CLZLL 0
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
-/* #undef HAVE_DLFCN_H */
+#define HAVE_DLFCN_H 1
 
 /* Define to 1 if you have the <endian.h> header file. */
 /* #undef HAVE_ENDIAN_H */
 
 /* Define to 1 if the system has the `dllexport' function attribute */
-#define HAVE_FUNC_ATTRIBUTE_DLLEXPORT 1
+/* #undef HAVE_FUNC_ATTRIBUTE_DLLEXPORT */
 
 /* Define to 1 if the system has the `dllimport' function attribute */
-#define HAVE_FUNC_ATTRIBUTE_DLLIMPORT 1
+/* #undef HAVE_FUNC_ATTRIBUTE_DLLIMPORT */
 
 /* Define to 1 if the system has the `visibility' function attribute */
-#define HAVE_FUNC_ATTRIBUTE_VISIBILITY 1
+/* #undef HAVE_FUNC_ATTRIBUTE_VISIBILITY */
 
 /* Define this symbol if the BSD getentropy system call is available */
 /* #undef HAVE_GETENTROPY */
@@ -212,73 +212,73 @@
 #define HAVE_INTTYPES_H 1
 
 /* Define to 1 if you have the `advapi32' library (-ladvapi32). */
-#define HAVE_LIBADVAPI32 1
+/* #undef HAVE_LIBADVAPI32 */
 
 /* Define to 1 if you have the `comctl32' library (-lcomctl32). */
-#define HAVE_LIBCOMCTL32 1
+/* #undef HAVE_LIBCOMCTL32 */
 
 /* Define to 1 if you have the `comdlg32' library (-lcomdlg32). */
-#define HAVE_LIBCOMDLG32 1
+/* #undef HAVE_LIBCOMDLG32 */
 
 /* Define to 1 if you have the `crypt32' library (-lcrypt32). */
-#define HAVE_LIBCRYPT32 1
+/* #undef HAVE_LIBCRYPT32 */
 
 /* Define to 1 if you have the `gdi32' library (-lgdi32). */
-#define HAVE_LIBGDI32 1
+/* #undef HAVE_LIBGDI32 */
 
 /* Define to 1 if you have the `imm32' library (-limm32). */
-#define HAVE_LIBIMM32 1
+/* #undef HAVE_LIBIMM32 */
 
 /* Define to 1 if you have the `iphlpapi' library (-liphlpapi). */
-#define HAVE_LIBIPHLPAPI 1
+/* #undef HAVE_LIBIPHLPAPI */
 
 /* Define to 1 if you have the `kernel32' library (-lkernel32). */
-#define HAVE_LIBKERNEL32 1
+/* #undef HAVE_LIBKERNEL32 */
 
 /* Define to 1 if you have the `mingwthrd' library (-lmingwthrd). */
-#define HAVE_LIBMINGWTHRD 1
+/* #undef HAVE_LIBMINGWTHRD */
 
 /* Define to 1 if you have the `mswsock' library (-lmswsock). */
-#define HAVE_LIBMSWSOCK 1
+/* #undef HAVE_LIBMSWSOCK */
 
 /* Define to 1 if you have the `ole32' library (-lole32). */
-#define HAVE_LIBOLE32 1
+/* #undef HAVE_LIBOLE32 */
 
 /* Define to 1 if you have the `oleaut32' library (-loleaut32). */
-#define HAVE_LIBOLEAUT32 1
+/* #undef HAVE_LIBOLEAUT32 */
 
 /* Define to 1 if you have the `rpcrt4' library (-lrpcrt4). */
-#define HAVE_LIBRPCRT4 1
+/* #undef HAVE_LIBRPCRT4 */
 
 /* Define to 1 if you have the `rt' library (-lrt). */
 /* #undef HAVE_LIBRT */
 
 /* Define to 1 if you have the `shell32' library (-lshell32). */
-#define HAVE_LIBSHELL32 1
+/* #undef HAVE_LIBSHELL32 */
 
 /* Define to 1 if you have the `shlwapi' library (-lshlwapi). */
-#define HAVE_LIBSHLWAPI 1
+/* #undef HAVE_LIBSHLWAPI */
 
 /* Define to 1 if you have the `ssp' library (-lssp). */
-#define HAVE_LIBSSP 1
+/* #undef HAVE_LIBSSP */
 
 /* Define to 1 if you have the `user32' library (-luser32). */
-#define HAVE_LIBUSER32 1
+/* #undef HAVE_LIBUSER32 */
 
 /* Define to 1 if you have the `uuid' library (-luuid). */
-#define HAVE_LIBUUID 1
+/* #undef HAVE_LIBUUID */
 
 /* Define to 1 if you have the `winmm' library (-lwinmm). */
-#define HAVE_LIBWINMM 1
+/* #undef HAVE_LIBWINMM */
 
 /* Define to 1 if you have the `winspool' library (-lwinspool). */
-#define HAVE_LIBWINSPOOL 1
+/* #undef HAVE_LIBWINSPOOL */
 
 /* Define to 1 if you have the `ws2_32' library (-lws2_32). */
-#define HAVE_LIBWS2_32 1
+/* #undef HAVE_LIBWS2_32 */
 
 /* Define to 1 if you have the `z ' library (-lz ). */
-#define HAVE_LIBZ_ 1
+/* #undef HAVE_LIBZ_ */
 
 /* Define this symbol if you have malloc_info */
 /* #undef HAVE_MALLOC_INFO */
@@ -323,7 +323,7 @@
 #define HAVE_STD__SYSTEM 1
 
 /* Define to 1 if you have the `strerror_r' function. */
-/* #undef HAVE_STRERROR_R */
+#define HAVE_STRERROR_R 1
 
 /* Define to 1 if you have the <strings.h> header file. */
 #define HAVE_STRINGS_H 1
@@ -347,7 +347,7 @@
 /* #undef HAVE_SYS_PRCTL_H */
 
 /* Define to 1 if you have the <sys/select.h> header file. */
-/* #undef HAVE_SYS_SELECT_H */
+#define HAVE_SYS_SELECT_H 1
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #define HAVE_SYS_STAT_H 1
@@ -399,13 +399,13 @@
 /* #undef PTHREAD_CREATE_JOINABLE */
 
 /* Define this symbol if the qt platform is cocoa */
-/* #undef QT_QPA_PLATFORM_COCOA */
+#define QT_QPA_PLATFORM_COCOA 1
 
 /* Define this symbol if the minimal qt platform exists */
 #define QT_QPA_PLATFORM_MINIMAL 1
 
 /* Define this symbol if the qt platform is windows */
-#define QT_QPA_PLATFORM_WINDOWS 1
+/* #undef QT_QPA_PLATFORM_WINDOWS */
 
 /* Define this symbol if the qt platform is xcb */
 /* #undef QT_QPA_PLATFORM_XCB */
@@ -426,7 +426,7 @@
 /* #undef USE_COVERAGE */
 
 /* Define if dbus support should be compiled in */
-/* #undef USE_DBUS */
+#define USE_DBUS 1
 
 /* Define if QR support should be compiled in */
 #define USE_QRCODE 1
@@ -453,7 +453,7 @@
 #endif
 
 /* Number of bits in a file offset, on hosts where this is settable. */
-#define _FILE_OFFSET_BITS 64
+/* #undef _FILE_OFFSET_BITS */
 
 /* Define for large files, on AIX-style hosts. */
 /* #undef _LARGE_FILES */
