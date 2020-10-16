@@ -81,7 +81,7 @@ extern char ASSETCHAINS_SYMBOL[65]; // defined in validation.cpp
 // first season had no third party coins, so it ends at block 0. 
 // second season ends at approx block 4,173,578, please check this!!!!! it should be as close as possible to July 15th 0:00 UTC. 
 // third season ending height is unknown so it set to very very far in future. 
-static const int32_t KMD_SEASON_HEIGHTS[NUM_KMD_SEASONS] = {0, 4173578, 6415000, 999999999};
+static const int32_t KMD_SEASON_HEIGHTS[NUM_KMD_SEASONS] = {0, 4173578, 1675000, 999999999};
 
 // Era array of pubkeys. Add extra seasons to bottom as requried, after adding appropriate info above. 
 static const char *notaries_elected[NUM_KMD_SEASONS][NUM_KMD_NOTARIES][2] =
@@ -285,7 +285,7 @@ static const char *notaries_elected[NUM_KMD_SEASONS][NUM_KMD_NOTARIES][2] =
         {"decker_AR", "02a85540db8d41c7e60bf0d33d1364b4151cad883dd032878ea4c037f67b769635" },
     },
   {
-   {"alien_AR", "024f20c096b085308e21893383f44b4faf1cdedea9ad53cc7d7e7fbfa0c30c1e71" },
+        {"alien_AR", "024f20c096b085308e21893383f44b4faf1cdedea9ad53cc7d7e7fbfa0c30c1e71" },
         {"alien_EU", "022b85908191788f409506ebcf96a892f3274f352864c3ed566c5a16de63953236" },
         {"strob_NA", "02285bf2f9e96068ecac14bc6f770e394927b4da9f5ba833eaa9468b5d47f203a3" },
         {"titomane_SH", "02abf206bafc8048dbdc042b8eb6b1e356ea5dbe149eae3532b4811d4905e5cf01" },
@@ -405,7 +405,7 @@ int32_t gettxout_scriptPubKey(int32_t height,uint8_t *scriptPubKey,int32_t maxsi
 CTxDestination DecodeDestination(const std::string& str);
 std::string EncodeDestination(const CTxDestination& dest);
 
-int32_t komodo_importaddress(std::string addr)
+int32_t komodo_importaddress(const std::string &addr, const std::string &strLabel = "")
 {
     std::vector<std::shared_ptr<CWallet>> vpwallets = GetWallets();
     CWallet* const pwallet = vpwallets[0].get();
@@ -428,6 +428,7 @@ int32_t komodo_importaddress(std::string addr)
                 pwallet->MarkDirty();
                 // pwallet->ImportScriptPubKeys("", {GetScriptForDestination(dest)}, false /* have_solving_data */, true /* apply_label */, 1 /* timestamp */);
                 pwallet->AddWatchOnly(GetScriptForDestination(dest), 0);
+                pwallet->SetAddressBook(dest, strLabel, "receive"); // comment this line, if you don't need notary addresses appear in address book
                 return 1;
             }
         }
@@ -909,7 +910,8 @@ bool pubkey2addr(char *destaddr,uint8_t *pubkey33)
 void komodo_importpubkeys()
 {
     int32_t i,n,val,dispflag = 0; std::string addr;
-    for (n = 0; n < NUM_KMD_SEASONS-1; n++) // FIXME: -1 to stop segfault on season 3 until we get keys!
+    //for (n = 0; n < NUM_KMD_SEASONS-1; n++) // FIXME: -1 to stop segfault on season 3 until we get keys!
+    for (n = 0; n < NUM_KMD_SEASONS; n++)
     {
         for (i=0; i<NUM_KMD_NOTARIES; i++) 
         {
@@ -918,7 +920,8 @@ void komodo_importpubkeys()
             pubkey2addr((char *)address,(uint8_t *)pubkey);
             addr.clear();
             addr.append(address);
-            if ( (val= komodo_importaddress(addr)) < 0 )
+            std::string strLabel = "[" + std::to_string(n) + "] " + std::string(notaries_elected[n][i][0]);
+            if ( (val = komodo_importaddress(addr, strLabel)) < 0 )
                 fprintf(stderr,"error importing (%s)\n",addr.c_str());
             else if ( val != 0 )
                 dispflag++;
