@@ -82,7 +82,7 @@ extern char ASSETCHAINS_SYMBOL[65]; // defined in validation.cpp
 // Gleec dpow activation height set to 1677177 - estimated October 24th 2020
 // 4th season ending height is unknown so it set to very very far in future.
 
-static const int32_t KMD_SEASON_HEIGHTS[NUM_KMD_SEASONS] = {0, 7777777, 1677177, 999999999};
+static const int32_t KMD_SEASON_HEIGHTS[NUM_KMD_SEASONS] = {0, 1, 1677177, 999999999};
 
 // Era array of pubkeys. Add extra seasons to bottom as requried, after adding appropriate info above. 
 static const char *notaries_elected[NUM_KMD_SEASONS][NUM_KMD_NOTARIES][2] =
