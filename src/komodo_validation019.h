@@ -79,9 +79,10 @@ extern char ASSETCHAINS_SYMBOL[65]; // defined in validation.cpp
 #define NUM_KMD_SEASONS 4
 #define NUM_KMD_NOTARIES 64
 // first season had no third party coins, so it ends at block 0. 
-// second season ends at approx block 4,173,578, please check this!!!!! it should be as close as possible to July 15th 0:00 UTC. 
-// third season ending height is unknown so it set to very very far in future. 
-static const int32_t KMD_SEASON_HEIGHTS[NUM_KMD_SEASONS] = {0, 4173578, 1675000, 999999999};
+// Gleec dpow activation height set to 1677177 - estimated October 24th 2020
+// 4th season ending height is unknown so it set to very very far in future.
+
+static const int32_t KMD_SEASON_HEIGHTS[NUM_KMD_SEASONS] = {0, 1, 1677177, 999999999};
 
 // Era array of pubkeys. Add extra seasons to bottom as requried, after adding appropriate info above. 
 static const char *notaries_elected[NUM_KMD_SEASONS][NUM_KMD_NOTARIES][2] =
