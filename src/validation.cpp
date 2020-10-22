@@ -45,6 +45,7 @@
 #include <util/validation.h>
 #include <validationinterface.h>
 #include <warnings.h>
+#include <komodo_validation019.h>
 
 #include <future>
 #include <sstream>
@@ -188,6 +189,8 @@ bool CheckInputs(const CTransaction& tx, CValidationState &state, const CCoinsVi
 static FILE* OpenUndoFile(const FlatFilePos &pos, bool fReadOnly = false);
 static FlatFileSeq BlockFileSeq();
 static FlatFileSeq UndoFileSeq();
+
+char ASSETCHAINS_SYMBOL[65] = { "GLEEC" };
 
 bool CheckFinalTx(const CTransaction &tx, int flags)
 {
@@ -1737,6 +1740,8 @@ DisconnectResult CChainState::DisconnectBlock(const CBlock& block, const CBlockI
         }
     }
 
+    komodo_disconnect((CBlockIndex *)pindex,(CBlock *)&block);
+
     // move best block pointer to prevout block
     view.SetBestBlock(pindex->pprev->GetBlockHash());
 
@@ -2586,6 +2591,7 @@ bool CChainState::ConnectTip(CValidationState& state, const CChainParams& chainp
     LogPrint(BCLog::BENCH, "- Connect block: %.2fms [%.2fs (%.2fms/blk)]\n", (nTime6 - nTime1) * MILLI, nTimeTotal * MICRO, nTimeTotal * MILLI / nBlocksTotal);
 
     connectTrace.BlockConnected(pindexNew, std::move(pthisBlock));
+    komodo_connectblock(pindexNew,*(CBlock *)&blockConnecting);
     return true;
 }
 
@@ -3415,19 +3421,35 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
     assert(pindexPrev != nullptr);
     const int nHeight = pindexPrev->nHeight + 1;
 
+    //komodo
+    uint256 hash = block.GetHash();
+    int32_t notarized_height;
+
     // Check proof of work
     const Consensus::Params& consensusParams = params.GetConsensus();
     //if (block.nBits != GetNextWorkRequired(pindexPrev, &block, consensusParams))
     //   return state.Invalid(ValidationInvalidReason::BLOCK_INVALID_HEADER, false, REJECT_INVALID, "bad-diffbits", "incorrect proof of work");
 
     // Check against checkpoints
-    if (fCheckpointsEnabled) {
+    if (fCheckpointsEnabled)
+    {
         // Don't accept any forks from the main chain prior to last checkpoint.
         // GetLastCheckpoint finds the last checkpoint in MapCheckpoints that's in our
         // g_blockman.m_block_index.
-        CBlockIndex* pcheckpoint = GetLastCheckpoint(params.Checkpoints());
+        CBlockIndex *pcheckpoint = GetLastCheckpoint(params.Checkpoints());
         if (pcheckpoint && nHeight < pcheckpoint->nHeight)
             return state.Invalid(ValidationInvalidReason::BLOCK_CHECKPOINT, error("%s: forked chain older than last checkpoint (height %d)", __func__, nHeight), REJECT_CHECKPOINT, "bad-fork-prior-to-checkpoint");
+        else if (komodo_checkpoint(&notarized_height, (int32_t)nHeight, hash) < 0)
+        {
+            CBlockIndex *heightblock = ::ChainActive()[nHeight];
+            if (heightblock != 0 && heightblock->GetBlockHash() == hash)
+            {
+                //fprintf(stderr,"got a pre notarization block that matches height.%d\n",(int32_t)nHeight);
+                return true;
+            }
+            else
+                return state.Invalid(ValidationInvalidReason::BLOCK_CHECKPOINT, error("%s: forked chain %d older than last notarized (height %d) vs %d", __func__, nHeight, notarized_height));
+        }
     }
 
     // Check timestamp against prev
