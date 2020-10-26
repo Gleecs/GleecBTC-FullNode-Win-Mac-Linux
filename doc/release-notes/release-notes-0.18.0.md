@@ -428,7 +428,7 @@ other GleecBTC software and services.
   benefits. Currently, many wallets and services already support sending
   to bech32 addresses, and if the GleecBTC Core project sees enough
   additional adoption, it will instead default to bech32 receiving
-  addresses in GleecBTC Core 0.19 (approximately November 2019).
+  addresses in GleecBTC Core 0.19 (approximately November 2020).
   P2SH-wrapped segwit addresses will continue to be provided if the user
   requests them in the GUI or by RPC, and anyone who doesn’t want the
   update will be able to configure their default address type.

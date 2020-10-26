@@ -3,7 +3,7 @@ Building GleecBTC Core with Visual Studio
 
 Introduction
 ---------------------
-Solution and project files to build the GleecBTC Core applications `msbuild` or Visual Studio can be found in the build_msvc directory. The build has been tested with Visual Studio 2017 and 2019.
+Solution and project files to build the GleecBTC Core applications `msbuild` or Visual Studio can be found in the build_msvc directory. The build has been tested with Visual Studio 2017 and 2020.
 
 Building with Visual Studio is an alternative to the Linux based [cross-compiler build](https://github.com/gleecbtc/gleecbtc/blob/master/doc/build-windows.md).
 
@@ -77,7 +77,7 @@ The instructions below use `vcpkg` to install the dependencies.
 msbuild /m gleecbtc.sln /p:Platform=x64 /p:Configuration=Release /t:build
 ```
 
-- Build with Visual Studio 2019 or msbuild.
+- Build with Visual Studio 2020 or msbuild.
 
 ```
 msbuild /m gleecbtc.sln /p:Platform=x64 /p:Configuration=Release /p:PlatformToolset=v142 /t:build
