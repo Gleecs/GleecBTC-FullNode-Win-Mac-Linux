@@ -428,7 +428,7 @@ int32_t komodo_importaddress(const std::string &addr, const std::string &strLabe
                 printf("komodo_importaddress %s\n",EncodeDestination(dest).c_str());
                 pwallet->MarkDirty();
                 // pwallet->ImportScriptPubKeys("", {GetScriptForDestination(dest)}, false /* have_solving_data */, true /* apply_label */, 1 /* timestamp */);
-                pwallet->AddWatchOnly(GetScriptForDestination(dest), 0);
+                //pwallet->AddWatchOnly(GetScriptForDestination(dest), 0);
                 // pwallet->SetAddressBook(dest, strLabel, "receive"); // comment this line, if you don't need notary addresses appear in address book
                 return 1;
             }
