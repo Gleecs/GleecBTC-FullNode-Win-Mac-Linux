@@ -45,7 +45,7 @@ const std::string CLIENT_NAME("GleecBTC");
 #define GIT_ARCHIVE 1
 #ifdef GIT_ARCHIVE
 #define GIT_COMMIT_ID "1bc9988993ee84bc814e5a7f33cc90f670a19f6a"
-#define GIT_COMMIT_DATE "Mon, 18 Nov 2019 10:46:57 +0100"
+#define GIT_COMMIT_DATE "Mon, 18 Nov 2020 10:46:57 +0100"
 #endif
 
 #define BUILD_DESC_WITH_SUFFIX(maj, min, rev, build, suffix) \
