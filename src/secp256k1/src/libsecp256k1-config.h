@@ -27,7 +27,7 @@
 #define HAVE_INTTYPES_H 1
 
 /* Define this symbol if libcrypto is installed */
-/* #undef HAVE_LIBCRYPTO */
+#define HAVE_LIBCRYPTO 1
 
 /* Define this symbol if libgmp is installed */
 /* #undef HAVE_LIBGMP */
