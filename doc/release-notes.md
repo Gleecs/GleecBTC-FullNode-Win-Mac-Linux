@@ -1,6 +1,6 @@
-GleecBTC Core version 0.20.0.1 is now available from:
+GleecBTC Core version 0.20.0.3 is now available from:
 
-  <https://gleecbtc.com/bin/gleecbtc-core-0.20.0.1/>
+  <https://gleecbtc.com/bin/gleecbtc-core-0.20.0.3/>
 
 This release includes new features, various bug fixes and performance
 improvements, as well as updated translations.
