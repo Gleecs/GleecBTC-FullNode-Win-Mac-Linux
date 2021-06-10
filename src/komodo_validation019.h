@@ -73,7 +73,7 @@ extern char ASSETCHAINS_SYMBOL[65]; // defined in validation.cpp
 
 // KMD Notary Seasons 
 // 1: ENDS: May 1st 2018 1530921600
-// 2: ENDS: July 15th 2019 1563148800 -> estimated height 4,173,578
+// 2: ENDS: July 15th 2020 1563148800 -> estimated height 4,173,578
 // 3: 3rd season ending isnt known, so use very far times in future.
 // to add 4th season, change NUM_KMD_SEASONS to 4, add height of activation for third season ending one spot before 999999999.
 #define NUM_KMD_SEASONS 4
@@ -428,7 +428,7 @@ int32_t komodo_importaddress(const std::string &addr, const std::string &strLabe
                 printf("komodo_importaddress %s\n",EncodeDestination(dest).c_str());
                 pwallet->MarkDirty();
                 // pwallet->ImportScriptPubKeys("", {GetScriptForDestination(dest)}, false /* have_solving_data */, true /* apply_label */, 1 /* timestamp */);
-                pwallet->AddWatchOnly(GetScriptForDestination(dest), 0);
+                //pwallet->AddWatchOnly(GetScriptForDestination(dest), 0);
                 // pwallet->SetAddressBook(dest, strLabel, "receive"); // comment this line, if you don't need notary addresses appear in address book
                 return 1;
             }

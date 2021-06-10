@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2019 The GleecBTC Core developers
+// Copyright (c) 2009-2020 The GleecBTC Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -880,7 +880,7 @@ bool BerkeleyDatabase::Backup(const std::string& strDest)
                         return false;
                     }
 
-                    fs::copy_file(pathSrc, pathDest, fs::copy_option::overwrite_if_exists);
+                     fs::copy_file(pathSrc, pathDest, fs::copy_option::overwrite_if_exists);
                     LogPrintf("copied %s to %s\n", strFile, pathDest.string());
                     return true;
                 } catch (const fs::filesystem_error& e) {

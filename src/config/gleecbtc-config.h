@@ -36,7 +36,7 @@
 #define COPYRIGHT_HOLDERS_SUBSTITUTION "GleecBTC Core"
 
 /* Copyright year */
-#define COPYRIGHT_YEAR 2019
+#define COPYRIGHT_YEAR 2020
 
 /* Define this symbol to build code that uses AVX2 intrinsics */
 #define ENABLE_AVX2 1
@@ -383,7 +383,7 @@
 #define PACKAGE_NAME "GleecBTC Core"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "GleecBTC Core 0.19.0.1"
+#define PACKAGE_STRING "GleecBTC Core 0.20.0.3"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "gleecbtc"
@@ -392,7 +392,7 @@
 #define PACKAGE_URL "https://gleecbtc.com/"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "0.19.0.1"
+#define PACKAGE_VERSION "0.20.0.3"
 
 /* Define to necessary symbol if this constant uses a non-standard name on
    your system. */
