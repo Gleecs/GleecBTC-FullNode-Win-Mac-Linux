@@ -372,7 +372,7 @@ Build system changes
 
 - Python >=3.5 is now required by all aspects of the project. This
   includes the build systems, test framework and linters. The previously
-  supported minimum (3.4), was EOL in March 2019. (#14954)
+  supported minimum (3.4), was EOL in March 2020. (#14954)
 
 - The minimum supported miniUPnPc API version is set to 10. This keeps
   compatibility with Ubuntu 16.04 LTS and Debian 8 `libminiupnpc-dev`
